@@ -19,20 +19,17 @@ namespace BCnEncTests
 			using FileStream fs = File.OpenRead(filename);
 			var ktx = KtxFile.Load(fs);
 			var decoder = new BcDecoder();
-			using var img = decoder.Decode(ktx);
+			using Image<Rgba32> img = decoder.Decode(ktx);
 
-			if (!original.TryGetSinglePixelSpan(out var pixels)) {
-				throw new Exception("Cannot get pixel span.");
-			}
-			if (!img.TryGetSinglePixelSpan(out var pixels2)) {
-				throw new Exception("Cannot get pixel span.");
-			}
+            return !original.TryGetSinglePixelSpan(out Span<Rgba32> pixels)
+                ?             throw new Exception("Cannot get pixel span.")
+                : !img.TryGetSinglePixelSpan(out Span<Rgba32> pixels2)
+                ?               throw new Exception("Cannot get pixel span.")
+                : ImageQuality.PeakSignalToNoiseRatio(pixels, pixels2, true);
+        }
 
-			return ImageQuality.PeakSignalToNoiseRatio(pixels, pixels2, true);
-		}
-
-		public static void ExecuteEncodingTest(Image<Rgba32> image, CompressionFormat format, CompressionQuality quality, string filename, ITestOutputHelper output) {
-			BcEncoder encoder = new BcEncoder();
+        public static void ExecuteEncodingTest(Image<Rgba32> image, CompressionFormat format, CompressionQuality quality, string filename, ITestOutputHelper output) {
+			var encoder = new BcEncoder();
 			encoder.OutputOptions.quality = quality;
 			encoder.OutputOptions.generateMipMaps = true;
 			encoder.OutputOptions.format = format;
@@ -40,7 +37,7 @@ namespace BCnEncTests
 			using FileStream fs = File.OpenWrite(filename);
 			encoder.Encode(image, fs);
 			fs.Close();
-			var psnr = TestHelper.DecodeCheckPSNR(filename, image);
+            float psnr = TestHelper.DecodeCheckPSNR(filename, image);
 			output.WriteLine("RGBA PSNR: " + psnr + "db");
 			if(quality == CompressionQuality.Fast)
 			{

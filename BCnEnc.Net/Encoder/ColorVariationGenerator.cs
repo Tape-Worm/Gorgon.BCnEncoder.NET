@@ -6,26 +6,26 @@ namespace BCnEncoder.Encoder
 	internal static class ColorVariationGenerator
 	{
 
-		private static int[] varPatternEp0R = new int[] { 1, 1, 0, 0, -1, 0, 0, -1, 1, -1, 1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		private static int[] varPatternEp0G = new int[] { 1, 0, 1, 0, 0, -1, 0, -1, 1, -1, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		private static int[] varPatternEp0B = new int[] { 1, 0, 0, 1, 0, 0, -1, -1, 1, -1, 0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0 };
-		private static int[] varPatternEp1R = new int[] { -1, -1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 1, 0, 0, -1, 0, 0 };
-		private static int[] varPatternEp1G = new int[] { -1, 0, -1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 0, 1, 0, 0, -1, 0 };
-		private static int[] varPatternEp1B = new int[] { -1, 0, 0, -1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 0, 0, 1, 0, 0, -1 };
-		public static int VarPatternCount => varPatternEp0R.Length;
+		private static readonly int[] _varPatternEp0R = new int[] { 1, 1, 0, 0, -1, 0, 0, -1, 1, -1, 1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		private static readonly int[] _varPatternEp0G = new int[] { 1, 0, 1, 0, 0, -1, 0, -1, 1, -1, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		private static readonly int[] _varPatternEp0B = new int[] { 1, 0, 0, 1, 0, 0, -1, -1, 1, -1, 0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0 };
+		private static readonly int[] _varPatternEp1R = new int[] { -1, -1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 1, 0, 0, -1, 0, 0 };
+		private static readonly int[] _varPatternEp1G = new int[] { -1, 0, -1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 0, 1, 0, 0, -1, 0 };
+		private static readonly int[] _varPatternEp1B = new int[] { -1, 0, 0, -1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 0, 0, 1, 0, 0, -1 };
+		public static int VarPatternCount => _varPatternEp0R.Length;
 
 		public static (ColorRgb565, ColorRgb565) Variate565(ColorRgb565 c0, ColorRgb565 c1, int i) {
-			int idx = i % varPatternEp0R.Length;
+			int idx = i % _varPatternEp0R.Length;
 			var newEp0 = new ColorRgb565();
 			var newEp1 = new ColorRgb565();
 
-			newEp0.RawR = ByteHelper.ClampToByte(c0.RawR + varPatternEp0R[idx]);
-			newEp0.RawG = ByteHelper.ClampToByte(c0.RawG + varPatternEp0G[idx]);
-			newEp0.RawB = ByteHelper.ClampToByte(c0.RawB + varPatternEp0B[idx]);
+			newEp0.RawR = ByteHelper.ClampToByte(c0.RawR + _varPatternEp0R[idx]);
+			newEp0.RawG = ByteHelper.ClampToByte(c0.RawG + _varPatternEp0G[idx]);
+			newEp0.RawB = ByteHelper.ClampToByte(c0.RawB + _varPatternEp0B[idx]);
 
-			newEp1.RawR = ByteHelper.ClampToByte(c1.RawR + varPatternEp1R[idx]);
-			newEp1.RawG = ByteHelper.ClampToByte(c1.RawG + varPatternEp1G[idx]);
-			newEp1.RawB = ByteHelper.ClampToByte(c1.RawB + varPatternEp1B[idx]);
+			newEp1.RawR = ByteHelper.ClampToByte(c1.RawR + _varPatternEp1R[idx]);
+			newEp1.RawG = ByteHelper.ClampToByte(c1.RawG + _varPatternEp1G[idx]);
+			newEp1.RawB = ByteHelper.ClampToByte(c1.RawB + _varPatternEp1B[idx]);
 
 			return (newEp0, newEp1);
 		}
@@ -33,11 +33,13 @@ namespace BCnEncoder.Encoder
 
 		public static List<ColorRgb565> GenerateVariationsSidewaysMax(int variations, ColorYCbCr min, ColorYCbCr max)
 		{
-			List<ColorRgb565> colors = new List<ColorRgb565>();
-			colors.Add(min.ToColorRgb565());
-			colors.Add(max.ToColorRgb565());
+            var colors = new List<ColorRgb565>
+            {
+                min.ToColorRgb565(),
+                max.ToColorRgb565()
+            };
 
-			for (int i = 0; i < variations; i++)
+            for (int i = 0; i < variations; i++)
 			{
 				max.y -= 0.05f;
 				min.y += 0.05f;
@@ -86,11 +88,13 @@ namespace BCnEncoder.Encoder
 
 		public static List<ColorRgb565> GenerateVariationsSidewaysMinMax(int variations, ColorYCbCr min, ColorYCbCr max)
 		{
-			List<ColorRgb565> colors = new List<ColorRgb565>();
-			colors.Add(min.ToColorRgb565());
-			colors.Add(max.ToColorRgb565());
+            var colors = new List<ColorRgb565>
+            {
+                min.ToColorRgb565(),
+                max.ToColorRgb565()
+            };
 
-			for (int i = 0; i < variations; i++)
+            for (int i = 0; i < variations; i++)
 			{
 				max.y -= 0.05f;
 				min.y += 0.05f;

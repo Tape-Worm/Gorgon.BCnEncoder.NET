@@ -18,18 +18,18 @@ namespace BCnEncTests {
 				new Vector4(0.456f, 0.34f, 0.23f, 0.45f)
 			};
 
-			var refMean = new[] { 0.3712, 0.308, 0.48600000000000004, 0.25};
-			var refCovar = new[] {
+            double[] refMean = new[] { 0.3712, 0.308, 0.48600000000000004, 0.25};
+            double[][] refCovar = new[] {
 				new[] {0.014747200000000002, 0.00084800000000000088, -0.0067839999999999992, 0.0028000000000000004},
 				new[] {0.00084800000000000088, 0.00032000000000000062, -0.0025600000000000024, 0.0020000000000000018},
 				new[] {-0.0067839999999999992, -0.0025600000000000024, 0.022979999999999993, -0.015999999999999997},
 				new[] {0.0028000000000000004, 0.0020000000000000018, -0.015999999999999997, 0.0174999}
 			};
 
-			var covarianceMatrix = PcaVectors.CalculateCovariance(testData, out Vector4 mean);
-			var pa = PcaVectors.CalculatePrincipalAxis(covarianceMatrix);
+            System.Numerics.Matrix4x4 covarianceMatrix = PcaVectors.CalculateCovariance(testData, out Vector4 mean);
+            Vector4 pa = PcaVectors.CalculatePrincipalAxis(covarianceMatrix);
 
-			var refPa = new double[4]
+            double[] refPa = new double[4]
 				{0.282, 0.087, -0.744, 0.603};
 
 			Assert.Equal(refMean[0], mean.X, 2);

@@ -12,9 +12,9 @@ namespace BCnEncTests
 	{
 		[Fact]
 		public void DdsWriteRgba() {
-			var image = ImageLoader.testLenna;
+            SixLabors.ImageSharp.Image<SixLabors.ImageSharp.PixelFormats.Rgba32> image = ImageLoader.testLenna;
 
-			BcEncoder encoder = new BcEncoder();
+			var encoder = new BcEncoder();
 			encoder.OutputOptions.quality = CompressionQuality.Fast;
 			encoder.OutputOptions.generateMipMaps = true;
 			encoder.OutputOptions.format = CompressionFormat.RGBA;
@@ -27,9 +27,9 @@ namespace BCnEncTests
 
 		[Fact]
 		public void DdsWriteBc1() {
-			var image = ImageLoader.testLenna;
+            SixLabors.ImageSharp.Image<SixLabors.ImageSharp.PixelFormats.Rgba32> image = ImageLoader.testLenna;
 
-			BcEncoder encoder = new BcEncoder();
+			var encoder = new BcEncoder();
 			encoder.OutputOptions.quality = CompressionQuality.Fast;
 			encoder.OutputOptions.generateMipMaps = true;
 			encoder.OutputOptions.format = CompressionFormat.BC1;
@@ -42,9 +42,9 @@ namespace BCnEncTests
 
 		[Fact]
 		public void DdsWriteBc2() {
-			var image = ImageLoader.testAlpha1;
+            SixLabors.ImageSharp.Image<SixLabors.ImageSharp.PixelFormats.Rgba32> image = ImageLoader.testAlpha1;
 
-			BcEncoder encoder = new BcEncoder();
+			var encoder = new BcEncoder();
 			encoder.OutputOptions.quality = CompressionQuality.Fast;
 			encoder.OutputOptions.generateMipMaps = true;
 			encoder.OutputOptions.format = CompressionFormat.BC2;
@@ -57,9 +57,9 @@ namespace BCnEncTests
 
 		[Fact]
 		public void DdsWriteBc3() {
-			var image = ImageLoader.testAlpha1;
+            SixLabors.ImageSharp.Image<SixLabors.ImageSharp.PixelFormats.Rgba32> image = ImageLoader.testAlpha1;
 
-			BcEncoder encoder = new BcEncoder();
+			var encoder = new BcEncoder();
 			encoder.OutputOptions.quality = CompressionQuality.Fast;
 			encoder.OutputOptions.generateMipMaps = true;
 			encoder.OutputOptions.format = CompressionFormat.BC3;
@@ -72,9 +72,9 @@ namespace BCnEncTests
 
 		[Fact]
 		public void DdsWriteBc4() {
-			var image = ImageLoader.testHeight1;
+            SixLabors.ImageSharp.Image<SixLabors.ImageSharp.PixelFormats.Rgba32> image = ImageLoader.testHeight1;
 
-			BcEncoder encoder = new BcEncoder();
+			var encoder = new BcEncoder();
 			encoder.OutputOptions.quality = CompressionQuality.Fast;
 			encoder.OutputOptions.generateMipMaps = true;
 			encoder.OutputOptions.format = CompressionFormat.BC4;
@@ -87,9 +87,9 @@ namespace BCnEncTests
 
 		[Fact]
 		public void DdsWriteBc5() {
-			var image = ImageLoader.testRedGreen1;
+            SixLabors.ImageSharp.Image<SixLabors.ImageSharp.PixelFormats.Rgba32> image = ImageLoader.testRedGreen1;
 
-			BcEncoder encoder = new BcEncoder();
+			var encoder = new BcEncoder();
 			encoder.OutputOptions.quality = CompressionQuality.Fast;
 			encoder.OutputOptions.generateMipMaps = true;
 			encoder.OutputOptions.format = CompressionFormat.BC5;
@@ -102,9 +102,9 @@ namespace BCnEncTests
 
 		[Fact]
 		public void DdsWriteBc7() {
-			var image = ImageLoader.testLenna;
+            SixLabors.ImageSharp.Image<SixLabors.ImageSharp.PixelFormats.Rgba32> image = ImageLoader.testLenna;
 
-			BcEncoder encoder = new BcEncoder();
+			var encoder = new BcEncoder();
 			encoder.OutputOptions.quality = CompressionQuality.Fast;
 			encoder.OutputOptions.generateMipMaps = true;
 			encoder.OutputOptions.format = CompressionFormat.BC7;
@@ -117,9 +117,9 @@ namespace BCnEncTests
 
 		[Fact]
 		public void DdsWriteCubemap() {
-			var images = ImageLoader.testCubemap;
+            SixLabors.ImageSharp.Image<SixLabors.ImageSharp.PixelFormats.Rgba32>[] images = ImageLoader.testCubemap;
 
-			BcEncoder encoder = new BcEncoder();
+			var encoder = new BcEncoder();
 			encoder.OutputOptions.quality = CompressionQuality.Fast;
 			encoder.OutputOptions.generateMipMaps = true;
 			encoder.OutputOptions.format = CompressionFormat.BC1;

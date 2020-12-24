@@ -9,11 +9,13 @@ namespace BCnEncTests
 		
 		[Fact]
 		public void Decode() {
-			Bc1Block block = new Bc1Block();
-			block.color0 = new ColorRgb565(255, 255, 255);
-			block.color1 = new ColorRgb565(0, 0, 0);
-			
-			Assert.False(block.HasAlphaOrBlack);
+            var block = new Bc1Block
+            {
+                color0 = new ColorRgb565(255, 255, 255),
+                color1 = new ColorRgb565(0, 0, 0)
+            };
+
+            Assert.False(block.HasAlphaOrBlack);
 			block[0] = 1;
 			block[1] = 1;
 			block[2] = 1;
@@ -34,7 +36,7 @@ namespace BCnEncTests
 			block[14] = 0;
 			block[15] = 0;
 
-			var raw = block.Decode(false);
+            RawBlock4X4Rgba32 raw = block.Decode(false);
 			Assert.Equal(new Rgba32(0, 0, 0), raw.p00);
 			Assert.Equal(new Rgba32(0, 0, 0), raw.p10);
 			Assert.Equal(new Rgba32(0, 0, 0), raw.p20);
@@ -58,11 +60,13 @@ namespace BCnEncTests
 
 		[Fact]
 		public void DecodeBlack() {
-			Bc1Block block = new Bc1Block();
-			block.color0 = new ColorRgb565(200, 200, 200);
-			block.color1 = new ColorRgb565(255, 255, 255);
+            var block = new Bc1Block
+            {
+                color0 = new ColorRgb565(200, 200, 200),
+                color1 = new ColorRgb565(255, 255, 255)
+            };
 
-			Assert.True(block.HasAlphaOrBlack);
+            Assert.True(block.HasAlphaOrBlack);
 			block[0] = 0;
 			block[1] = 0;
 			block[2] = 0;
@@ -83,7 +87,7 @@ namespace BCnEncTests
 			block[14] = 1;
 			block[15] = 1;
 
-			var raw = block.Decode(false);
+            RawBlock4X4Rgba32 raw = block.Decode(false);
 			Assert.Equal(new Rgba32(206, 203, 206), raw.p00);
 			Assert.Equal(new Rgba32(206, 203, 206), raw.p10);
 			Assert.Equal(new Rgba32(206, 203, 206), raw.p20);
@@ -107,11 +111,13 @@ namespace BCnEncTests
 
 		[Fact]
 		public void DecodeAlpha() {
-			Bc1Block block = new Bc1Block();
-			block.color0 = new ColorRgb565(200, 200, 200);
-			block.color1 = new ColorRgb565(255, 255, 255);
+            var block = new Bc1Block
+            {
+                color0 = new ColorRgb565(200, 200, 200),
+                color1 = new ColorRgb565(255, 255, 255)
+            };
 
-			Assert.True(block.HasAlphaOrBlack);
+            Assert.True(block.HasAlphaOrBlack);
 			block[0] = 0;
 			block[1] = 0;
 			block[2] = 0;
@@ -132,7 +138,7 @@ namespace BCnEncTests
 			block[14] = 1;
 			block[15] = 1;
 
-			var raw = block.Decode(true);
+            RawBlock4X4Rgba32 raw = block.Decode(true);
 			Assert.Equal(new Rgba32(206, 203, 206), raw.p00);
 			Assert.Equal(new Rgba32(206, 203, 206), raw.p10);
 			Assert.Equal(new Rgba32(206, 203, 206), raw.p20);

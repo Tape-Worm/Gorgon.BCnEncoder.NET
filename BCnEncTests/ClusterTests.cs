@@ -15,17 +15,17 @@ namespace BCnEncTests
 	{
 		[Fact]
 		public void Clusterize() {
-			using var testImage = ImageLoader.testBlur1.Clone();
+			using Image<Rgba32> testImage = ImageLoader.testBlur1.Clone();
 			
-			if (!testImage.TryGetSinglePixelSpan(out var pixels)) {
+			if (!testImage.TryGetSinglePixelSpan(out Span<Rgba32> pixels)) {
 				throw new Exception("Cannot get pixel span.");
 			}
 
 			int numClusters = (testImage.Width / 32) * (testImage.Height / 32);
-			
-			var clusters = LinearClustering.ClusterPixels(pixels, testImage.Width, testImage.Height, numClusters, 10, 10);
 
-			ColorYCbCr[] pixC = new ColorYCbCr[numClusters];
+            int[] clusters = LinearClustering.ClusterPixels(pixels, testImage.Width, testImage.Height, numClusters, 10, 10);
+
+			var pixC = new ColorYCbCr[numClusters];
 			int[] counts = new int[numClusters];
 			for (int i = 0; i < pixels.Length; i++) {
 				pixC[clusters[i]] += new ColorYCbCr(pixels[i]);
@@ -38,7 +38,7 @@ namespace BCnEncTests
 				pixels[i] = pixC[clusters[i]].ToRgba32();
 			}
 
-			using var fs = File.OpenWrite("test_cluster.png");
+			using FileStream fs = File.OpenWrite("test_cluster.png");
 			testImage.SaveAsPng(fs);
 		}
 	}

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using SixLabors.ImageSharp.PixelFormats;
+using Gorgon.Graphics;
 
 namespace BCnEncoder.Shared
 {
@@ -13,21 +13,21 @@ namespace BCnEncoder.Shared
 
 		public int this[int index]
 		{
-			readonly get => (int)(colorIndices >> (index * 2)) & 0b11;
+			get => (int)(colorIndices >> (index * 2)) & 0b11;
 			set
 			{
 				colorIndices = (uint)(colorIndices & (~(0b11 << (index * 2))));
 				int val = value & 0b11;
-				colorIndices = (colorIndices | ((uint)val << (index * 2)));
+				colorIndices |= ((uint)val << (index * 2));
 			}
 		}
 
-		public readonly bool HasAlphaOrBlack => color0.data <= color1.data;
+		public bool HasAlphaOrBlack => color0.data <= color1.data;
 
-		public readonly RawBlock4X4Rgba32 Decode(bool useAlpha)
+		public RawBlock4X4Rgba32 Decode(bool useAlpha)
 		{
-			RawBlock4X4Rgba32 output = new RawBlock4X4Rgba32();
-			var pixels = output.AsSpan;
+			var output = new RawBlock4X4Rgba32();
+            Span<GorgonColor> pixels = output.AsSpan;
 
 			var color0 = this.color0.ToColorRgb24();
 			var color1 = this.color1.ToColorRgb24();
@@ -50,14 +50,14 @@ namespace BCnEncoder.Shared
 			for (int i = 0; i < pixels.Length; i++)
 			{
 				int colorIndex = (int)((colorIndices >> (i * 2)) & 0b11);
-				var color = colors[colorIndex];
+                ColorRgb24 color = colors[colorIndex];
 				if (useAlpha && colorIndex == 3)
 				{
-					pixels[i] = new Rgba32(0, 0, 0, 0);
+					pixels[i] = GorgonColor.Black;
 				}
 				else
 				{
-					pixels[i] = new Rgba32(color.r, color.g, color.b, 255);
+					pixels[i] = color.ToGorgonColor();
 				}
 			}
 			return output;
@@ -75,16 +75,16 @@ namespace BCnEncoder.Shared
 
 		public int this[int index]
 		{
-			readonly get => (int)(colorIndices >> (index * 2)) & 0b11;
+			get => (int)(colorIndices >> (index * 2)) & 0b11;
 			set
 			{
 				colorIndices = (uint)(colorIndices & (~(0b11 << (index * 2))));
 				int val = value & 0b11;
-				colorIndices = (colorIndices | ((uint)val << (index * 2)));
+				colorIndices |= ((uint)val << (index * 2));
 			}
 		}
 
-		public readonly byte GetAlpha(int index)
+		public byte GetAlpha(int index)
 		{
 			ulong mask = 0xFUL << (index * 4);
 			int shift = (index * 4);
@@ -101,10 +101,10 @@ namespace BCnEncoder.Shared
 			alphaColors |= (ulong)(a & 0xF) << shift;
 		}
 
-		public readonly RawBlock4X4Rgba32 Decode()
+		public RawBlock4X4Rgba32 Decode()
 		{
-			RawBlock4X4Rgba32 output = new RawBlock4X4Rgba32();
-			var pixels = output.AsSpan;
+			var output = new RawBlock4X4Rgba32();
+            Span<GorgonColor> pixels = output.AsSpan;
 
 			var color0 = this.color0.ToColorRgb24();
 			var color1 = this.color1.ToColorRgb24();
@@ -119,9 +119,7 @@ namespace BCnEncoder.Shared
 			for (int i = 0; i < pixels.Length; i++)
 			{
 				int colorIndex = (int)((colorIndices >> (i * 2)) & 0b11);
-				var color = colors[colorIndex];
-
-				pixels[i] = new Rgba32(color.r, color.g, color.b, GetAlpha(i));
+                pixels[i] = new GorgonColor(colors[colorIndex].ToGorgonColor(), GetAlpha(i) / 255.0f);
 			}
 			return output;
 		}
@@ -137,18 +135,18 @@ namespace BCnEncoder.Shared
 
 		public int this[int index]
 		{
-			readonly get => (int)(colorIndices >> (index * 2)) & 0b11;
+			get => (int)(colorIndices >> (index * 2)) & 0b11;
 			set
 			{
 				colorIndices = (uint)(colorIndices & (~(0b11 << (index * 2))));
 				int val = value & 0b11;
-				colorIndices = (colorIndices | ((uint)val << (index * 2)));
+				colorIndices |= ((uint)val << (index * 2));
 			}
 		}
 
 		public byte Alpha0
 		{
-			readonly get => (byte)(alphaBlock & 0xFFUL);
+			get => (byte)(alphaBlock & 0xFFUL);
 			set
 			{
 				alphaBlock &= ~0xFFUL;
@@ -158,7 +156,7 @@ namespace BCnEncoder.Shared
 
 		public byte Alpha1
 		{
-			readonly get => (byte)((alphaBlock >> 8) & 0xFFUL);
+			get => (byte)((alphaBlock >> 8) & 0xFFUL);
 			set
 			{
 				alphaBlock &= ~0xFF00UL;
@@ -166,7 +164,7 @@ namespace BCnEncoder.Shared
 			}
 		}
 
-		public readonly byte GetAlphaIndex(int pixelIndex)
+		public byte GetAlphaIndex(int pixelIndex)
 		{
 			ulong mask = 0b0111UL << (pixelIndex * 3 + 16);
 			int shift = (pixelIndex * 3 + 16);
@@ -182,16 +180,16 @@ namespace BCnEncoder.Shared
 			alphaBlock |= (ulong)(alphaIndex & 0b111) << shift;
 		}
 
-		public readonly RawBlock4X4Rgba32 Decode()
+		public RawBlock4X4Rgba32 Decode()
 		{
-			RawBlock4X4Rgba32 output = new RawBlock4X4Rgba32();
-			var pixels = output.AsSpan;
+			var output = new RawBlock4X4Rgba32();
+            Span<GorgonColor> pixels = output.AsSpan;
 
 			var color0 = this.color0.ToColorRgb24();
 			var color1 = this.color1.ToColorRgb24();
 
-			var a0 = Alpha0;
-			var a1 = Alpha1;
+            byte a0 = Alpha0;
+            byte a1 = Alpha1;
 			Span<ColorRgb24> colors = stackalloc ColorRgb24[] {
 				color0,
 				color1,
@@ -222,9 +220,7 @@ namespace BCnEncoder.Shared
 			for (int i = 0; i < pixels.Length; i++)
 			{
 				int colorIndex = (int)((colorIndices >> (i * 2)) & 0b11);
-				var color = colors[colorIndex];
-
-				pixels[i] = new Rgba32(color.r, color.g, color.b, alphas[GetAlphaIndex(i)]);
+                pixels[i] = new GorgonColor(colors[colorIndex].ToGorgonColor(), alphas[GetAlphaIndex(i)] / 255.0f);
 			}
 			return output;
 		}
@@ -237,7 +233,7 @@ namespace BCnEncoder.Shared
 
 		public byte Red0
 		{
-			readonly get => (byte)(redBlock & 0xFFUL);
+			get => (byte)(redBlock & 0xFFUL);
 			set
 			{
 				redBlock &= ~0xFFUL;
@@ -247,7 +243,7 @@ namespace BCnEncoder.Shared
 
 		public byte Red1
 		{
-			readonly get => (byte)((redBlock >> 8) & 0xFFUL);
+			get => (byte)((redBlock >> 8) & 0xFFUL);
 			set
 			{
 				redBlock &= ~0xFF00UL;
@@ -255,7 +251,7 @@ namespace BCnEncoder.Shared
 			}
 		}
 
-		public readonly byte GetRedIndex(int pixelIndex)
+		public byte GetRedIndex(int pixelIndex)
 		{
 			ulong mask = 0b0111UL << (pixelIndex * 3 + 16);
 			int shift = (pixelIndex * 3 + 16);
@@ -271,13 +267,13 @@ namespace BCnEncoder.Shared
 			redBlock |= (ulong)(redIndex & 0b111) << shift;
 		}
 
-		public readonly RawBlock4X4Rgba32 Decode(bool redAsLuminance)
+		public RawBlock4X4Rgba32 Decode(bool redAsLuminance)
 		{
-			RawBlock4X4Rgba32 output = new RawBlock4X4Rgba32();
-			var pixels = output.AsSpan;
+			var output = new RawBlock4X4Rgba32();
+			Span<GorgonColor> pixels = output.AsSpan;
 
-			var r0 = Red0;
-			var r1 = Red1;
+			byte r0 = Red0;
+			byte r1 = Red1;
 
 			Span<byte> reds = r0 > r1 ? stackalloc byte[] {
 				r0,
@@ -299,21 +295,12 @@ namespace BCnEncoder.Shared
 				255
 			};
 
-			if (redAsLuminance)
+			float red = 0.0f;
+
+			for (int i = 0; i < pixels.Length; i++)
 			{
-				for (int i = 0; i < pixels.Length; i++)
-				{
-					var index = GetRedIndex(i);
-					pixels[i] = new Rgba32(reds[index], reds[index], reds[index], 255);
-				}
-			}
-			else
-			{
-				for (int i = 0; i < pixels.Length; i++)
-				{
-					var index = GetRedIndex(i);
-					pixels[i] = new Rgba32(reds[index], 0, 0, 255);
-				}
+				red = reds[GetRedIndex(i)] / 255.0f;
+				pixels[i] = redAsLuminance ? new GorgonColor(red, red, red, 1.0f) : new GorgonColor(red, 0, 0, 1.0f);
 			}
 
 			return output;
@@ -328,7 +315,7 @@ namespace BCnEncoder.Shared
 
 		public byte Red0
 		{
-			readonly get => (byte)(redBlock & 0xFFUL);
+			get => (byte)(redBlock & 0xFFUL);
 			set
 			{
 				redBlock &= ~0xFFUL;
@@ -338,7 +325,7 @@ namespace BCnEncoder.Shared
 
 		public byte Red1
 		{
-			readonly get => (byte)((redBlock >> 8) & 0xFFUL);
+			get => (byte)((redBlock >> 8) & 0xFFUL);
 			set
 			{
 				redBlock &= ~0xFF00UL;
@@ -348,7 +335,7 @@ namespace BCnEncoder.Shared
 
 		public byte Green0
 		{
-			readonly get => (byte)(greenBlock & 0xFFUL);
+			get => (byte)(greenBlock & 0xFFUL);
 			set
 			{
 				greenBlock &= ~0xFFUL;
@@ -358,7 +345,7 @@ namespace BCnEncoder.Shared
 
 		public byte Green1
 		{
-			readonly get => (byte)((greenBlock >> 8) & 0xFFUL);
+			get => (byte)((greenBlock >> 8) & 0xFFUL);
 			set
 			{
 				greenBlock &= ~0xFF00UL;
@@ -366,7 +353,7 @@ namespace BCnEncoder.Shared
 			}
 		}
 
-		public readonly byte GetRedIndex(int pixelIndex)
+		public byte GetRedIndex(int pixelIndex)
 		{
 			ulong mask = 0b0111UL << (pixelIndex * 3 + 16);
 			int shift = (pixelIndex * 3 + 16);
@@ -382,7 +369,7 @@ namespace BCnEncoder.Shared
 			redBlock |= (ulong)(redIndex & 0b111) << shift;
 		}
 
-		public readonly byte GetGreenIndex(int pixelIndex)
+		public byte GetGreenIndex(int pixelIndex)
 		{
 			ulong mask = 0b0111UL << (pixelIndex * 3 + 16);
 			int shift = (pixelIndex * 3 + 16);
@@ -398,13 +385,13 @@ namespace BCnEncoder.Shared
 			greenBlock |= (ulong)(greenIndex & 0b111) << shift;
 		}
 
-		public readonly RawBlock4X4Rgba32 Decode()
+		public RawBlock4X4Rgba32 Decode()
 		{
-			RawBlock4X4Rgba32 output = new RawBlock4X4Rgba32();
-			var pixels = output.AsSpan;
+			var output = new RawBlock4X4Rgba32();
+            Span<GorgonColor> pixels = output.AsSpan;
 
-			var r0 = Red0;
-			var r1 = Red1;
+            byte r0 = Red0;
+            byte r1 = Red1;
 
 			Span<byte> reds = r0 > r1 ? stackalloc byte[] {
 				r0,
@@ -426,8 +413,8 @@ namespace BCnEncoder.Shared
 				255
 			};
 
-			var g0 = Green0;
-			var g1 = Green1;
+            byte g0 = Green0;
+            byte g1 = Green1;
 
 			Span<byte> greens = g0 > g1 ? stackalloc byte[] {
 				g0,
@@ -451,9 +438,9 @@ namespace BCnEncoder.Shared
 
 			for (int i = 0; i < pixels.Length; i++)
 			{
-				var redIndex = GetRedIndex(i);
-				var greenIndex = GetGreenIndex(i);
-				pixels[i] = new Rgba32(reds[redIndex], greens[greenIndex], 0, 255);
+                byte redIndex = GetRedIndex(i);
+                byte greenIndex = GetGreenIndex(i);
+				pixels[i] = new GorgonColor(reds[redIndex] / 255.0f, greens[greenIndex] / 255.0f, 0, 1.0f);
 			}
 
 			return output;

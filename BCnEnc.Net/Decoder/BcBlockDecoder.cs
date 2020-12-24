@@ -1,30 +1,37 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using BCnEncoder.Shared;
+using Gorgon.Native;
 
 namespace BCnEncoder.Decoder
 {
-	internal interface IBcBlockDecoder {
-		RawBlock4X4Rgba32[,] Decode(ReadOnlySpan<byte> data, int pixelWidth, int pixelHeight, out int blockWidth,
-			out int blockHeight);
+	internal interface IBcBlockDecoder
+	{
+		RawBlock4X4Rgba32[,] Decode(GorgonPtr<byte> data, int pixelWidth, int pixelHeight);
 	}
 
-	internal class Bc1NoAlphaDecoder : IBcBlockDecoder {
-		public RawBlock4X4Rgba32[,] Decode(ReadOnlySpan<byte> data, int pixelWidth, int pixelHeight, out int blockWidth, out int blockHeight) {
-			blockWidth = (int)MathF.Ceiling(pixelWidth / 4.0f);
-			blockHeight = (int)MathF.Ceiling(pixelHeight / 4.0f);
+	internal class Bc1NoAlphaDecoder : IBcBlockDecoder
+	{
+		public RawBlock4X4Rgba32[,] Decode(GorgonPtr<byte> data, int pixelWidth, int pixelHeight)
+		{
+			int blockWidth = (int)Math.Ceiling(pixelWidth / 4.0f);
+			int blockHeight = (int)Math.Ceiling(pixelHeight / 4.0f);
 
-			if (data.Length != (blockWidth * blockHeight * Marshal.SizeOf<Bc1Block>())) {
+			if (data.Length != (blockWidth * blockHeight * Unsafe.SizeOf<Bc1Block>()))
+			{
 				throw new InvalidDataException();
 			}
 
-			var encodedBlocks = MemoryMarshal.Cast<byte, Bc1Block>(data);
+			GorgonPtr<Bc1Block> encodedBlocks = data.To<Bc1Block>();
 
-			RawBlock4X4Rgba32[,] output = new RawBlock4X4Rgba32[blockWidth, blockHeight];
+			var output = new RawBlock4X4Rgba32[blockWidth, blockHeight];
 
-			for (int x = 0; x < blockWidth; x++) {
-				for (int y = 0; y < blockHeight; y++) {
+			for (int x = 0; x < blockWidth; x++)
+			{
+				for (int y = 0; y < blockHeight; y++)
+				{
 					output[x, y] = encodedBlocks[x + y * blockWidth].Decode(false);
 				}
 			}
@@ -33,21 +40,26 @@ namespace BCnEncoder.Decoder
 		}
 	}
 
-	internal class Bc1ADecoder : IBcBlockDecoder {
-		public RawBlock4X4Rgba32[,] Decode(ReadOnlySpan<byte> data, int pixelWidth, int pixelHeight, out int blockWidth, out int blockHeight) {
-			blockWidth = (int)MathF.Ceiling(pixelWidth / 4.0f);
-			blockHeight = (int)MathF.Ceiling(pixelHeight / 4.0f);
+	internal class Bc1ADecoder : IBcBlockDecoder
+	{
+		public RawBlock4X4Rgba32[,] Decode(GorgonPtr<byte> data, int pixelWidth, int pixelHeight)
+		{
+			int blockWidth = (int)Math.Ceiling(pixelWidth / 4.0f);
+			int blockHeight = (int)Math.Ceiling(pixelHeight / 4.0f);
 
-			if (data.Length != (blockWidth * blockHeight * Marshal.SizeOf<Bc1Block>())) {
+			if (data.Length != (blockWidth * blockHeight * Unsafe.SizeOf<Bc1Block>()))
+			{
 				throw new InvalidDataException();
 			}
 
-			var encodedBlocks = MemoryMarshal.Cast<byte, Bc1Block>(data);
+			GorgonPtr<Bc1Block> encodedBlocks = data.To<Bc1Block>();
 
-			RawBlock4X4Rgba32[,] output = new RawBlock4X4Rgba32[blockWidth, blockHeight];
+			var output = new RawBlock4X4Rgba32[blockWidth, blockHeight];
 
-			for (int x = 0; x < blockWidth; x++) {
-				for (int y = 0; y < blockHeight; y++) {
+			for (int x = 0; x < blockWidth; x++)
+			{
+				for (int y = 0; y < blockHeight; y++)
+				{
 					output[x, y] = encodedBlocks[x + y * blockWidth].Decode(true);
 				}
 			}
@@ -56,21 +68,26 @@ namespace BCnEncoder.Decoder
 		}
 	}
 
-	internal class Bc2Decoder : IBcBlockDecoder {
-		public RawBlock4X4Rgba32[,] Decode(ReadOnlySpan<byte> data, int pixelWidth, int pixelHeight, out int blockWidth, out int blockHeight) {
-			blockWidth = (int)MathF.Ceiling(pixelWidth / 4.0f);
-			blockHeight = (int)MathF.Ceiling(pixelHeight / 4.0f);
+	internal class Bc2Decoder : IBcBlockDecoder
+	{
+		public RawBlock4X4Rgba32[,] Decode(GorgonPtr<byte> data, int pixelWidth, int pixelHeight)
+		{
+			int blockWidth = (int)Math.Ceiling(pixelWidth / 4.0f);
+			int blockHeight = (int)Math.Ceiling(pixelHeight / 4.0f);
 
-			if (data.Length != (blockWidth * blockHeight * Marshal.SizeOf<Bc2Block>())) {
+			if (data.Length != (blockWidth * blockHeight * Unsafe.SizeOf<Bc2Block>()))
+			{
 				throw new InvalidDataException();
 			}
 
-			var encodedBlocks = MemoryMarshal.Cast<byte, Bc2Block>(data);
+			GorgonPtr<Bc2Block> encodedBlocks = data.To<Bc2Block>();
 
-			RawBlock4X4Rgba32[,] output = new RawBlock4X4Rgba32[blockWidth, blockHeight];
+			var output = new RawBlock4X4Rgba32[blockWidth, blockHeight];
 
-			for (int x = 0; x < blockWidth; x++) {
-				for (int y = 0; y < blockHeight; y++) {
+			for (int x = 0; x < blockWidth; x++)
+			{
+				for (int y = 0; y < blockHeight; y++)
+				{
 					output[x, y] = encodedBlocks[x + y * blockWidth].Decode();
 				}
 			}
@@ -79,21 +96,26 @@ namespace BCnEncoder.Decoder
 		}
 	}
 
-	internal class Bc3Decoder : IBcBlockDecoder {
-		public RawBlock4X4Rgba32[,] Decode(ReadOnlySpan<byte> data, int pixelWidth, int pixelHeight, out int blockWidth, out int blockHeight) {
-			blockWidth = (int)MathF.Ceiling(pixelWidth / 4.0f);
-			blockHeight = (int)MathF.Ceiling(pixelHeight / 4.0f);
+	internal class Bc3Decoder : IBcBlockDecoder
+	{
+		public RawBlock4X4Rgba32[,] Decode(GorgonPtr<byte> data, int pixelWidth, int pixelHeight)
+		{
+			int blockWidth = (int)Math.Ceiling(pixelWidth / 4.0f);
+			int blockHeight = (int)Math.Ceiling(pixelHeight / 4.0f);
 
-			if (data.Length != (blockWidth * blockHeight * Marshal.SizeOf<Bc3Block>())) {
+			if (data.Length != (blockWidth * blockHeight * Unsafe.SizeOf<Bc3Block>()))
+			{
 				throw new InvalidDataException();
 			}
 
-			var encodedBlocks = MemoryMarshal.Cast<byte, Bc3Block>(data);
+			GorgonPtr<Bc3Block> encodedBlocks = data.To<Bc3Block>();
 
-			RawBlock4X4Rgba32[,] output = new RawBlock4X4Rgba32[blockWidth, blockHeight];
+			var output = new RawBlock4X4Rgba32[blockWidth, blockHeight];
 
-			for (int x = 0; x < blockWidth; x++) {
-				for (int y = 0; y < blockHeight; y++) {
+			for (int x = 0; x < blockWidth; x++)
+			{
+				for (int y = 0; y < blockHeight; y++)
+				{
 					output[x, y] = encodedBlocks[x + y * blockWidth].Decode();
 				}
 			}
@@ -102,27 +124,30 @@ namespace BCnEncoder.Decoder
 		}
 	}
 
-	internal class Bc4Decoder : IBcBlockDecoder {
-		private readonly bool redAsLuminance;
-		public Bc4Decoder(bool redAsLuminance) {
-			this.redAsLuminance = redAsLuminance;
-		}
+	internal class Bc4Decoder : IBcBlockDecoder
+	{
+		private readonly bool _redAsLuminance;
+        public Bc4Decoder(bool redAsLuminance) => _redAsLuminance = redAsLuminance;
 
-		public RawBlock4X4Rgba32[,] Decode(ReadOnlySpan<byte> data, int pixelWidth, int pixelHeight, out int blockWidth, out int blockHeight) {
-			blockWidth = (int)MathF.Ceiling(pixelWidth / 4.0f);
-			blockHeight = (int)MathF.Ceiling(pixelHeight / 4.0f);
+        public RawBlock4X4Rgba32[,] Decode(GorgonPtr<byte> data, int pixelWidth, int pixelHeight)
+		{
+			int blockWidth = (int)Math.Ceiling(pixelWidth / 4.0f);
+			int blockHeight = (int)Math.Ceiling(pixelHeight / 4.0f);
 
-			if (data.Length != (blockWidth * blockHeight * Marshal.SizeOf<Bc4Block>())) {
+			if (data.Length != (blockWidth * blockHeight * Unsafe.SizeOf<Bc4Block>()))
+			{
 				throw new InvalidDataException();
 			}
 
-			var encodedBlocks = MemoryMarshal.Cast<byte, Bc4Block>(data);
+			GorgonPtr<Bc4Block> encodedBlocks = data.To<Bc4Block>();
 
-			RawBlock4X4Rgba32[,] output = new RawBlock4X4Rgba32[blockWidth, blockHeight];
+			var output = new RawBlock4X4Rgba32[blockWidth, blockHeight];
 
-			for (int x = 0; x < blockWidth; x++) {
-				for (int y = 0; y < blockHeight; y++) {
-					output[x, y] = encodedBlocks[x + y * blockWidth].Decode(redAsLuminance);
+			for (int x = 0; x < blockWidth; x++)
+			{
+				for (int y = 0; y < blockHeight; y++)
+				{
+					output[x, y] = encodedBlocks[x + y * blockWidth].Decode(_redAsLuminance);
 				}
 			}
 
@@ -130,22 +155,26 @@ namespace BCnEncoder.Decoder
 		}
 	}
 
-	internal class Bc5Decoder : IBcBlockDecoder {
+	internal class Bc5Decoder : IBcBlockDecoder
+	{
+		public RawBlock4X4Rgba32[,] Decode(GorgonPtr<byte> data, int pixelWidth, int pixelHeight)
+		{
+			int blockWidth = (int)Math.Ceiling(pixelWidth / 4.0f);
+			int blockHeight = (int)Math.Ceiling(pixelHeight / 4.0f);
 
-		public RawBlock4X4Rgba32[,] Decode(ReadOnlySpan<byte> data, int pixelWidth, int pixelHeight, out int blockWidth, out int blockHeight) {
-			blockWidth = (int)MathF.Ceiling(pixelWidth / 4.0f);
-			blockHeight = (int)MathF.Ceiling(pixelHeight / 4.0f);
-
-			if (data.Length != (blockWidth * blockHeight * Marshal.SizeOf<Bc5Block>())) {
+			if (data.Length != (blockWidth * blockHeight * Unsafe.SizeOf<Bc5Block>()))
+			{
 				throw new InvalidDataException();
 			}
 
-			var encodedBlocks = MemoryMarshal.Cast<byte, Bc5Block>(data);
+			GorgonPtr<Bc5Block> encodedBlocks = data.To<Bc5Block>();
 
-			RawBlock4X4Rgba32[,] output = new RawBlock4X4Rgba32[blockWidth, blockHeight];
+			var output = new RawBlock4X4Rgba32[blockWidth, blockHeight];
 
-			for (int x = 0; x < blockWidth; x++) {
-				for (int y = 0; y < blockHeight; y++) {
+			for (int x = 0; x < blockWidth; x++)
+			{
+				for (int y = 0; y < blockHeight; y++)
+				{
 					output[x, y] = encodedBlocks[x + y * blockWidth].Decode();
 				}
 			}

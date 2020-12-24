@@ -25,8 +25,6 @@ namespace BCnEncTests
 			LoadTestImage("../../../testImages/cubemap/forward.png")
 		};
 
-		private static Image<Rgba32> LoadTestImage(string filename) {
-			return Image.Load<Rgba32>(filename);
-		}
-	}
+        private static Image<Rgba32> LoadTestImage(string filename) => Image.Load<Rgba32>(filename);
+    }
 }

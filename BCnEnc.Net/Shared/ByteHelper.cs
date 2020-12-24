@@ -4,9 +4,17 @@
 	{
 		public static byte ClampToByte(int i)
 		{
-			if (i < 0) i = 0;
-			if (i > 255) i = 255;
-			return (byte)i;
+			if (i < 0)
+            {
+                i = 0;
+            }
+
+            if (i > 255)
+            {
+                i = 255;
+            }
+
+            return (byte)i;
 		}
 
 		public static byte ClampToByte(float f)
@@ -40,20 +48,6 @@
 			return dest;
 		}
 
-		public static byte Extract3(ulong source, int index)
-		{
-			const ulong mask = 0b111UL;
-			return (byte)((source >> index) & mask);
-		}
-
-		public static ulong Store3(ulong dest, int index, byte value)
-		{
-			const ulong mask = 0b111UL;
-			dest &= ~(mask << index);
-			dest |= (value & mask) << index;
-			return dest;
-		}
-
 		public static byte Extract4(ulong source, int index)
 		{
 			const ulong mask = 0b1111UL;
@@ -68,20 +62,6 @@
 			return dest;
 		}
 
-		public static byte Extract5(ulong source, int index)
-		{
-			const ulong mask = 0b1_1111UL;
-			return (byte)((source >> index) & mask);
-		}
-
-		public static ulong Store5(ulong dest, int index, byte value)
-		{
-			const ulong mask = 0b1_1111UL;
-			dest &= ~(mask << index);
-			dest |= (value & mask) << index;
-			return dest;
-		}
-
 		public static byte Extract6(ulong source, int index)
 		{
 			const ulong mask = 0b11_1111UL;
@@ -91,34 +71,6 @@
 		public static ulong Store6(ulong dest, int index, byte value)
 		{
 			const ulong mask = 0b11_1111UL;
-			dest &= ~(mask << index);
-			dest |= (value & mask) << index;
-			return dest;
-		}
-
-		public static byte Extract7(ulong source, int index)
-		{
-			const ulong mask = 0b111_1111UL;
-			return (byte)((source >> index) & mask);
-		}
-
-		public static ulong Store7(ulong dest, int index, byte value)
-		{
-			const ulong mask = 0b111_1111UL;
-			dest &= ~(mask << index);
-			dest |= (value & mask) << index;
-			return dest;
-		}
-
-		public static byte Extract8(ulong source, int index)
-		{
-			const ulong mask = 0b1111_1111UL;
-			return (byte)((source >> index) & mask);
-		}
-
-		public static ulong Store8(ulong dest, int index, byte value)
-		{
-			const ulong mask = 0b1111_1111UL;
 			dest &= ~(mask << index);
 			dest |= (value & mask) << index;
 			return dest;
@@ -185,9 +137,9 @@
 				int highBitCount = bitCount - lowBitCount;
 				int highIndex = 0;
 
-				var l = Store(low, lowIndex, lowBitCount, value);
+                ulong l = Store(low, lowIndex, lowBitCount, value);
 				value >>= lowBitCount;
-				var h = Store(high, highIndex, highBitCount, value);
+                ulong h = Store(high, highIndex, highBitCount, value);
 				return (l, h);
 			}
 		}

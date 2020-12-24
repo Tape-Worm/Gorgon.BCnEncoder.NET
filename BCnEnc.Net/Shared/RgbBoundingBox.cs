@@ -1,5 +1,5 @@
 ﻿using System;
-using SixLabors.ImageSharp.PixelFormats;
+using Gorgon.Graphics;
 
 namespace BCnEncoder.Shared
 {
@@ -11,7 +11,7 @@ namespace BCnEncoder.Shared
 	internal static class RgbBoundingBox
 	{
 
-		public static void Create565(ReadOnlySpan<Rgba32> colors, out ColorRgb565 min, out ColorRgb565 max)
+		public static void Create565(ReadOnlySpan<GorgonColor> colors, out ColorRgb565 min, out ColorRgb565 max)
 		{
 			const int colorInsetShift = 4;
 			const int c565_5_mask = 0xF8;
@@ -26,16 +26,38 @@ namespace BCnEncoder.Shared
 
 			for (int i = 0; i < colors.Length; i++)
 			{
-				var c = colors[i];
+				(int R, int G, int B, int _) = colors[i].GetIntegerComponents();
 
-				if (c.R < minR) minR = c.R;
-				if (c.G < minG) minG = c.G;
-				if (c.B < minB) minB = c.B;
+				if (R < minR)
+                {
+                    minR = R;
+                }
 
-				if (c.R > maxR) maxR = c.R;
-				if (c.G > maxG) maxG = c.G;
-				if (c.B > maxB) maxB = c.B;
-			}
+                if (G < minG)
+                {
+                    minG = G;
+                }
+
+                if (B < minB)
+                {
+                    minB = B;
+                }
+
+                if (R > maxR)
+                {
+                    maxR = R;
+                }
+
+                if (G > maxG)
+                {
+                    maxG = G;
+                }
+
+                if (B > maxB)
+                {
+                    maxB = B;
+                }
+            }
 
 			int insetR = (maxR - minR) >> colorInsetShift;
 			int insetG = (maxG - minG) >> colorInsetShift;
@@ -71,7 +93,7 @@ namespace BCnEncoder.Shared
 			max = new ColorRgb565((byte)maxR, (byte)maxG, (byte)maxB);
 		}
 
-		public static void Create565AlphaCutoff(ReadOnlySpan<Rgba32> colors, out ColorRgb565 min, out ColorRgb565 max, int alphaCutoff = 128)
+		public static void Create565AlphaCutoff(ReadOnlySpan<GorgonColor> colors, out ColorRgb565 min, out ColorRgb565 max, int alphaCutoff = 128)
 		{
 			const int colorInsetShift = 4;
 			const int c565_5_mask = 0xF8;
@@ -86,16 +108,43 @@ namespace BCnEncoder.Shared
 
 			for (int i = 0; i < colors.Length; i++)
 			{
-				var c = colors[i];
-				if (c.A < alphaCutoff) continue;
-				if (c.R < minR) minR = c.R;
-				if (c.G < minG) minG = c.G;
-				if (c.B < minB) minB = c.B;
+				(int R, int G, int B, int A) = colors[i].GetIntegerComponents();
+                
+				if (A < alphaCutoff)
+                {
+                    continue;
+                }
 
-				if (c.R > maxR) maxR = c.R;
-				if (c.G > maxG) maxG = c.G;
-				if (c.B > maxB) maxB = c.B;
-			}
+                if (R < minR)
+                {
+                    minR = R;
+                }
+
+                if (G < minG)
+                {
+                    minG = G;
+                }
+
+                if (B < minB)
+                {
+                    minB = B;
+                }
+
+                if (R > maxR)
+                {
+                    maxR = R;
+                }
+
+                if (G > maxG)
+                {
+                    maxG = G;
+                }
+
+                if (B > maxB)
+                {
+                    maxB = B;
+                }
+            }
 
 			int insetR = (maxR - minR) >> colorInsetShift;
 			int insetG = (maxG - minG) >> colorInsetShift;
@@ -129,7 +178,7 @@ namespace BCnEncoder.Shared
 			max = new ColorRgb565((byte)maxR, (byte)maxG, (byte)maxB);
 		}
 
-		public static void Create565a(ReadOnlySpan<Rgba32> colors, out ColorRgb565 min, out ColorRgb565 max, out byte minAlpha, out byte maxAlpha)
+		public static void Create565a(ReadOnlySpan<GorgonColor> colors, out ColorRgb565 min, out ColorRgb565 max, out byte minAlpha, out byte maxAlpha)
 		{
 			const int colorInsetShift = 4;
 			const int alphaInsetShift = 5;
@@ -147,17 +196,48 @@ namespace BCnEncoder.Shared
 
 			for (int i = 0; i < colors.Length; i++)
 			{
-				var c = colors[i];
-				if (c.R < minR) minR = c.R;
-				if (c.G < minG) minG = c.G;
-				if (c.B < minB) minB = c.B;
-				if (c.A < minA) minA = c.A;
+				(int R, int G, int B, int A) = colors[i].GetIntegerComponents();
 
-				if (c.R > maxR) maxR = c.R;
-				if (c.G > maxG) maxG = c.G;
-				if (c.B > maxB) maxB = c.B;
-				if (c.A > maxA) maxA = c.A;
-			}
+				if (R < minR)
+                {
+                    minR = R;
+                }
+
+                if (G < minG)
+                {
+                    minG = G;
+                }
+
+                if (B < minB)
+                {
+                    minB = B;
+                }
+
+                if (A < minA)
+                {
+                    minA = A;
+                }
+
+                if (R > maxR)
+                {
+                    maxR = R;
+                }
+
+                if (G > maxG)
+                {
+                    maxG = G;
+                }
+
+                if (B > maxB)
+                {
+                    maxB = B;
+                }
+
+                if (A > maxA)
+                {
+                    maxA = A;
+                }
+            }
 
 
 			int insetR = (maxR - minR) >> colorInsetShift;

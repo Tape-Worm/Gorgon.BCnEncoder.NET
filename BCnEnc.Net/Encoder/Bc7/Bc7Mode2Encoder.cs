@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using BCnEncoder.Shared;
 
 namespace BCnEncoder.Encoder.Bc7
@@ -8,13 +9,15 @@ namespace BCnEncoder.Encoder.Bc7
 
 		public static Bc7Block EncodeBlock(RawBlock4X4Rgba32 block, int startingVariation, int bestPartition)
 		{
-			Bc7Block output = new Bc7Block();
+			var output = new Bc7Block();
 			const Bc7BlockType type = Bc7BlockType.Type2;
 
-			ColorRgba32[] endpoints = new ColorRgba32[6];
+			ColorRgba32[] colors = ArrayPool<ColorRgba32>.Shared.Rent(6);
+			(byte r, byte g, byte b)[] endPoints = ArrayPool<(byte, byte, byte)>.Shared.Rent(6);
 			ReadOnlySpan<int> partitionTable = Bc7Block.Subsets3PartitionTable[bestPartition];
 
-			byte[] indices = new byte[16];
+			byte[] indicesArray = ArrayPool<byte>.Shared.Rent(16);
+			var indices = new Span<byte>(indicesArray, 0, 16);
 
 			int[] anchorIndices = new int[] {
 				0,
@@ -22,57 +25,64 @@ namespace BCnEncoder.Encoder.Bc7
 				Bc7Block.Subsets3AnchorIndices3[bestPartition]
 			};
 
-			for (int subset = 0; subset < 3; subset++) {
-				
-				Bc7EncodingHelpers.GetInitialUnscaledEndpointsForSubset(block, out var ep0, out var ep1,
-					partitionTable, subset);
-				ColorRgba32 scaledEp0 =
-					Bc7EncodingHelpers.ScaleDownEndpoint(ep0, type, true, out byte _);
-				ColorRgba32 scaledEp1 =
-					Bc7EncodingHelpers.ScaleDownEndpoint(ep1, type, true, out byte _);
-
-				byte pBit = 0;
-				Bc7EncodingHelpers.OptimizeSubsetEndpointsWithPBit(type, block, ref scaledEp0,
-					ref scaledEp1, ref pBit, ref pBit, startingVariation, partitionTable, subset, false, false);
-
-				ep0 = Bc7EncodingHelpers.ExpandEndpoint(type, scaledEp0, 0);
-				ep1 = Bc7EncodingHelpers.ExpandEndpoint(type, scaledEp1, 0);
-				Bc7EncodingHelpers.FillSubsetIndices(type, block,
-					ep0,
-					ep1,
-					partitionTable, subset, indices);
-
-				if ((indices[anchorIndices[subset]] & 0b10) > 0) //If anchor index most significant bit is 1, switch endpoints
+			try
+			{
+				for (int subset = 0; subset < 3; subset++)
 				{
-					var c = scaledEp0;
 
-					scaledEp0 = scaledEp1;
-					scaledEp1 = c;
+					Bc7EncodingHelpers.GetInitialUnscaledEndpointsForSubset(block, out ColorRgba32 ep0, out ColorRgba32 ep1,
+						partitionTable, subset);
+					ColorRgba32 scaledEp0 =
+						Bc7EncodingHelpers.ScaleDownEndpoint(ep0, type, true, out byte _);
+					ColorRgba32 scaledEp1 =
+						Bc7EncodingHelpers.ScaleDownEndpoint(ep1, type, true, out byte _);
 
-					//redo indices
+					byte pBit = 0;
+					Bc7EncodingHelpers.OptimizeSubsetEndpointsWithPBit(type, block, ref scaledEp0,
+						ref scaledEp1, ref pBit, ref pBit, startingVariation, partitionTable, subset, false, false);
+
 					ep0 = Bc7EncodingHelpers.ExpandEndpoint(type, scaledEp0, 0);
 					ep1 = Bc7EncodingHelpers.ExpandEndpoint(type, scaledEp1, 0);
 					Bc7EncodingHelpers.FillSubsetIndices(type, block,
 						ep0,
 						ep1,
 						partitionTable, subset, indices);
+
+					if ((indices[anchorIndices[subset]] & 0b10) > 0) //If anchor index most significant bit is 1, switch endpoints
+					{
+						ColorRgba32 c = scaledEp0;
+
+						scaledEp0 = scaledEp1;
+						scaledEp1 = c;
+
+						//redo indices
+						ep0 = Bc7EncodingHelpers.ExpandEndpoint(type, scaledEp0, 0);
+						ep1 = Bc7EncodingHelpers.ExpandEndpoint(type, scaledEp1, 0);
+						Bc7EncodingHelpers.FillSubsetIndices(type, block,
+							ep0,
+							ep1,
+							partitionTable, subset, indices);
+					}
+
+					colors[subset * 2] = scaledEp0;
+					colors[subset * 2 + 1] = scaledEp1;
 				}
 
-				endpoints[subset * 2] = scaledEp0;
-				endpoints[subset * 2 + 1] = scaledEp1;
+				for (int i = 0; i < 6; ++i)
+				{
+					endPoints[i] = (colors[i].r, colors[i].g, colors[i].b);
+				}
+
+				output.PackType2(bestPartition, new Span<(byte, byte, byte)>(endPoints, 0, 6), indices);
+
+				return output;
 			}
-
-			output.PackType2(bestPartition, new[]{
-					new byte[]{endpoints[0].r, endpoints[0].g, endpoints[0].b},
-					new byte[]{endpoints[1].r, endpoints[1].g, endpoints[1].b},
-					new byte[]{endpoints[2].r, endpoints[2].g, endpoints[2].b},
-					new byte[]{endpoints[3].r, endpoints[3].g, endpoints[3].b},
-					new byte[]{endpoints[4].r, endpoints[4].g, endpoints[4].b},
-					new byte[]{endpoints[5].r, endpoints[5].g, endpoints[5].b}
-				},
-				indices);
-
-			return output;
+			finally
+			{
+				ArrayPool<byte>.Shared.Return(indicesArray, true);
+				ArrayPool<ColorRgba32>.Shared.Return(colors, true);
+				ArrayPool<(byte, byte, byte)>.Shared.Return(endPoints, true);
+			}
 		}
 	}
 }

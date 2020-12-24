@@ -1,24 +1,25 @@
 ﻿using System;
-using SixLabors.ImageSharp.PixelFormats;
 using Vector3 = System.Numerics.Vector3;
 using Vector4 = System.Numerics.Vector4;
 using Matrix4x4 = System.Numerics.Matrix4x4;
+using Gorgon.Graphics;
 
 namespace BCnEncoder.Shared
 {
 	internal static class PcaVectors
 	{
-		private const int c565_5_mask = 0xF8;
-		private const int c565_6_mask = 0xFC;
+		private const int C565_5_mask = 0xF8;
+		private const int C565_6_mask = 0xFC;
 
-		private static void ConvertToVector4(ReadOnlySpan<Rgba32> colors, Span<Vector4> vectors)
+		private static void ConvertToVector4(ReadOnlySpan<GorgonColor> colors, Span<Vector4> vectors)
 		{
 			for (int i = 0; i < colors.Length; i++)
 			{
-				vectors[i].X += colors[i].R / 255f;
-				vectors[i].Y += colors[i].G / 255f;
-				vectors[i].Z += colors[i].B / 255f;
-				vectors[i].W += colors[i].A / 255f;
+				GorgonColor color = colors[i];
+				vectors[i].X += color.Red;
+				vectors[i].Y += color.Green;
+				vectors[i].Z += color.Blue;
+				vectors[i].W += color.Alpha;
 			}
 		}
 
@@ -54,7 +55,7 @@ namespace BCnEncoder.Shared
 			}
 
 			//4x4 matrix
-			Matrix4x4 mat = new Matrix4x4();
+			var mat = new Matrix4x4();
 
 			for (int i = 0; i < values.Length; i++)
 			{
@@ -112,16 +113,16 @@ namespace BCnEncoder.Shared
 			return lastDa;
 		}
 
-		public static void Create(Span<Rgba32> colors, out Vector3 mean, out Vector3 principalAxis)
+		public static void Create(Span<GorgonColor> colors, out Vector3 mean, out Vector3 principalAxis)
 		{
 			Span<Vector4> vectors = stackalloc Vector4[colors.Length];
 			ConvertToVector4(colors, vectors);
-			
 
-			var cov = CalculateCovariance(vectors, out Vector4 v4Mean);
+
+            Matrix4x4 cov = CalculateCovariance(vectors, out Vector4 v4Mean);
 			mean = new Vector3(v4Mean.X, v4Mean.Y, v4Mean.Z);
 
-			var pa = CalculatePrincipalAxis(cov);
+            Vector4 pa = CalculatePrincipalAxis(cov);
 			principalAxis = new Vector3(pa.X, pa.Y, pa.Z);
 			if (principalAxis.LengthSquared() == 0) {
 				principalAxis = Vector3.UnitY;
@@ -132,17 +133,17 @@ namespace BCnEncoder.Shared
 
 		}
 
-		public static void CreateWithAlpha(Span<Rgba32> colors, out Vector4 mean, out Vector4 principalAxis)
+		public static void CreateWithAlpha(Span<GorgonColor> colors, out Vector4 mean, out Vector4 principalAxis)
 		{
 			Span<Vector4> vectors = stackalloc Vector4[colors.Length];
 			ConvertToVector4(colors, vectors);
-			
-			var cov = CalculateCovariance(vectors, out mean);
+
+            Matrix4x4 cov = CalculateCovariance(vectors, out mean);
 			principalAxis = CalculatePrincipalAxis(cov);
 		}
 
 
-		public static void GetExtremePoints(Span<Rgba32> colors, Vector3 mean, Vector3 principalAxis, out ColorRgb24 min,
+		public static void GetExtremePoints(Span<int> colors, Vector3 mean, Vector3 principalAxis, out ColorRgb24 min,
 			out ColorRgb24 max)
 		{
 
@@ -151,13 +152,20 @@ namespace BCnEncoder.Shared
 
 			for (int i = 0; i < colors.Length; i++)
 			{
-				var colorVec = new Vector3(colors[i].R / 255f, colors[i].G / 255f, colors[i].B / 255f);
+				var colorVec = GorgonColor.FromRGBA(colors[i]).ToVector3();
 
-				var v = colorVec - mean;
-				var d = Vector3.Dot(v, principalAxis);
-				if (d < minD) minD = d;
-				if (d > maxD) maxD = d;
-			}
+                Vector3 v = colorVec - mean;
+                float d = Vector3.Dot(v, principalAxis);
+				if (d < minD)
+                {
+                    minD = d;
+                }
+
+                if (d > maxD)
+                {
+                    maxD = d;
+                }
+            }
 
 			Vector3 minVec = mean + (principalAxis * minD);
 			Vector3 maxVec = mean + (principalAxis * maxD);
@@ -182,7 +190,7 @@ namespace BCnEncoder.Shared
 			max = new ColorRgb24((byte)maxR, (byte)maxG, (byte)maxB);
 		}
 
-		public static void GetMinMaxColor565(Span<Rgba32> colors, Vector3 mean, Vector3 principalAxis, 
+		public static void GetMinMaxColor565(Span<GorgonColor> colors, Vector3 mean, Vector3 principalAxis, 
 			out ColorRgb565 min, out ColorRgb565 max)
 		{
 
@@ -191,13 +199,20 @@ namespace BCnEncoder.Shared
 
 			for (int i = 0; i < colors.Length; i++)
 			{
-				var colorVec = new Vector3(colors[i].R / 255f, colors[i].G / 255f, colors[i].B / 255f);
+				var colorVec = (Vector3)colors[i];
 
-				var v = colorVec - mean;
-				var d = Vector3.Dot(v, principalAxis);
-				if (d < minD) minD = d;
-				if (d > maxD) maxD = d;
-			}
+                Vector3 v = colorVec - mean;
+                float d = Vector3.Dot(v, principalAxis);
+				if (d < minD)
+                {
+                    minD = d;
+                }
+
+                if (d > maxD)
+                {
+                    maxD = d;
+                }
+            }
 
 			//Inset
 			minD *= 15 / 16f;
@@ -223,20 +238,20 @@ namespace BCnEncoder.Shared
 			maxB = (maxB <= 255) ? maxB : 255;
 
 			// Optimal round
-			minR = (minR & c565_5_mask) | (minR >> 5);
-			minG = (minG & c565_6_mask) | (minG >> 6);
-			minB = (minB & c565_5_mask) | (minB >> 5);
+			minR = (minR & C565_5_mask) | (minR >> 5);
+			minG = (minG & C565_6_mask) | (minG >> 6);
+			minB = (minB & C565_5_mask) | (minB >> 5);
 
-			maxR = (maxR & c565_5_mask) | (maxR >> 5);
-			maxG = (maxG & c565_6_mask) | (maxG >> 6);
-			maxB = (maxB & c565_5_mask) | (maxB >> 5);
+			maxR = (maxR & C565_5_mask) | (maxR >> 5);
+			maxG = (maxG & C565_6_mask) | (maxG >> 6);
+			maxB = (maxB & C565_5_mask) | (maxB >> 5);
 
 			min = new ColorRgb565((byte)minR, (byte)minG, (byte)minB);
 			max = new ColorRgb565((byte)maxR, (byte)maxG, (byte)maxB);
 
 		}
 
-		public static void GetExtremePointsWithAlpha(Span<Rgba32> colors, Vector4 mean, Vector4 principalAxis, out Vector4 min,
+		public static void GetExtremePointsWithAlpha(Span<GorgonColor> colors, Vector4 mean, Vector4 principalAxis, out Vector4 min,
 			out Vector4 max)
 		{
 
@@ -244,27 +259,33 @@ namespace BCnEncoder.Shared
 			float maxD = 0;
 
 			for (int i = 0; i < colors.Length; i++)
-			{
-				var colorVec = new Vector4(colors[i].R / 255f, colors[i].G / 255f, colors[i].B / 255f, colors[i].A / 255f);
+			{				
+				Vector4 colorVec = colors[i];
+				Vector4 v = colorVec - mean;
+                float d = Vector4.Dot(v, principalAxis);
+				if (d < minD)
+                {
+                    minD = d;
+                }
 
-				var v = colorVec - mean;
-				var d = Vector4.Dot(v, principalAxis);
-				if (d < minD) minD = d;
-				if (d > maxD) maxD = d;
-			}
+                if (d > maxD)
+                {
+                    maxD = d;
+                }
+            }
 
 			min = mean + (principalAxis * minD);
 			max = mean + (principalAxis * maxD);
 		}
 
-		public static void GetOptimizedEndpoints565(Span<Rgba32> colors, Vector3 mean, Vector3 principalAxis, out ColorRgb565 min, out ColorRgb565 max,
+		public static void GetOptimizedEndpoints565(Span<int> colors, Vector3 mean, Vector3 principalAxis, out ColorRgb565 min, out ColorRgb565 max,
 			float rWeight = 0.3f, float gWeight = 0.6f, float bWeight = 0.1f)
 		{
 			int length = colors.Length;
-			Vector3[] vectorColors = new Vector3[length];
+			var vectorColors = new Vector3[length];
 			for (int i = 0; i < colors.Length; i++)
 			{
-				vectorColors[i] = new Vector3(colors[i].R / 255f, colors[i].G / 255f, colors[i].B / 255f);
+				vectorColors[i] = GorgonColor.FromRGBA(colors[i]).ToVector3();
 			}
 
 			float minD = 0;
@@ -272,13 +293,37 @@ namespace BCnEncoder.Shared
 
 			Vector3 Clamp565(Vector3 vec)
 			{
-				if (vec.X < 0) vec.X = 0;
-				if (vec.X > 31) vec.X = 31;
-				if (vec.Y < 0) vec.Y = 0;
-				if (vec.Y > 63) vec.Y = 63;
-				if (vec.Z < 0) vec.Z = 0;
-				if (vec.Z > 31) vec.Z = 31;
-				return new Vector3(MathF.Round(vec.X), MathF.Round(vec.Y), MathF.Round(vec.Z));
+				if (vec.X < 0)
+                {
+                    vec.X = 0;
+                }
+
+                if (vec.X > 31)
+                {
+                    vec.X = 31;
+                }
+
+                if (vec.Y < 0)
+                {
+                    vec.Y = 0;
+                }
+
+                if (vec.Y > 63)
+                {
+                    vec.Y = 63;
+                }
+
+                if (vec.Z < 0)
+                {
+                    vec.Z = 0;
+                }
+
+                if (vec.Z > 31)
+                {
+                    vec.Z = 31;
+                }
+
+                return new Vector3((float)Math.Round(vec.X), (float)Math.Round(vec.Y), (float)Math.Round(vec.Z));
 			}
 
 			float Distance(Vector3 v, Vector3 p)
@@ -289,33 +334,30 @@ namespace BCnEncoder.Shared
 				;
 			}
 
-			float selectClosestDistance(Vector3 selector, Vector3 f0, Vector3 f1, Vector3 f2, Vector3 f3)
+			float SelectClosestDistance(Vector3 selector, Vector3 f0, Vector3 f1, Vector3 f2, Vector3 f3)
 			{
 				float d0 = Distance(selector, f0);
 				float d1 = Distance(selector, f1);
 				float d2 = Distance(selector, f2);
 				float d3 = Distance(selector, f3);
 
-				if (d0 < d1 && d0 < d2 && d0 < d3) return d0;
-				if (d1 < d0 && d1 < d2 && d1 < d3) return d1;
-				if (d2 < d0 && d2 < d1 && d2 < d3) return d2;
-				else return d3;
-			}
+                return d0 < d1 && d0 < d2 && d0 < d3 ? d0 : d1 < d0 && d1 < d2 && d1 < d3 ? d1 : d2 < d0 && d2 < d1 && d2 < d3 ? d2 : d3;
+            }
 
-			Vector3 endPoint0;
+            Vector3 endPoint0;
 			Vector3 endPoint1;
 
-			double calculateError()
+			double CalculateError()
 			{
 				double cumulativeError = 0;
-				Vector3 ep0 = new Vector3(endPoint0.X / 31, endPoint0.Y / 63, endPoint0.Z / 31);
-				Vector3 ep1 = new Vector3(endPoint1.X / 31, endPoint1.Y / 63, endPoint1.Z / 31);
+				var ep0 = new Vector3(endPoint0.X / 31, endPoint0.Y / 63, endPoint0.Z / 31);
+				var ep1 = new Vector3(endPoint1.X / 31, endPoint1.Y / 63, endPoint1.Z / 31);
 				Vector3 ep2 = ep0 + ((ep1 - ep0) * 1 / 3f);
 				Vector3 ep3 = ep0 + ((ep1 - ep0) * 2 / 3f);
 
 				for (int i = 0; i < length; i++)
 				{
-					double distance = selectClosestDistance(vectorColors[i], ep0, ep1, ep2, ep3);
+					double distance = SelectClosestDistance(vectorColors[i], ep0, ep1, ep2, ep3);
 					cumulativeError += distance;
 				}
 				return cumulativeError;
@@ -325,19 +367,26 @@ namespace BCnEncoder.Shared
 			for (int i = 0; i < vectorColors.Length; i++)
 			{
 				float d = ProjectPointOnLine(vectorColors[i], mean, principalAxis);
-				if (d < minD) minD = d;
-				if (d > maxD) maxD = d;
-			}
+				if (d < minD)
+                {
+                    minD = d;
+                }
+
+                if (d > maxD)
+                {
+                    maxD = d;
+                }
+            }
 
 			endPoint0 = mean + (principalAxis * minD);
 			endPoint1 = mean + (principalAxis * maxD);
 
-			endPoint0 = new Vector3(MathF.Round(endPoint0.X * 31), MathF.Round(endPoint0.Y * 63), MathF.Round(endPoint0.Z * 31));
-			endPoint1 = new Vector3(MathF.Round(endPoint1.X * 31), MathF.Round(endPoint1.Y * 63), MathF.Round(endPoint1.Z * 31));
+			endPoint0 = new Vector3((float)Math.Round(endPoint0.X * 31), (float)Math.Round(endPoint0.Y * 63), (float)Math.Round(endPoint0.Z * 31));
+			endPoint1 = new Vector3((float)Math.Round(endPoint1.X * 31), (float)Math.Round(endPoint1.Y * 63), (float)Math.Round(endPoint1.Z * 31));
 			endPoint0 = Clamp565(endPoint0);
 			endPoint1 = Clamp565(endPoint1);
 
-			double best = calculateError();
+			double best = CalculateError();
 			int increment = 5;
 			bool foundBetter = true;
 			int rounds = 0;
@@ -347,10 +396,10 @@ namespace BCnEncoder.Shared
 				rounds++;
 				foundBetter = false;
 				{ // decrement ep0
-					var prev = endPoint0;
+                    Vector3 prev = endPoint0;
 					endPoint0 -= principalAxis * increment * 2;
 					endPoint0 = Clamp565(endPoint0);
-					double error = calculateError();
+					double error = CalculateError();
 					if (error < best)
 					{
 						foundBetter = true;
@@ -363,10 +412,10 @@ namespace BCnEncoder.Shared
 				}
 
 				{ // decrement ep1
-					var prev = endPoint1;
+                    Vector3 prev = endPoint1;
 					endPoint1 -= principalAxis * increment * 2;
 					endPoint1 = Clamp565(endPoint1);
-					double error = calculateError();
+					double error = CalculateError();
 					if (error < best)
 					{
 						foundBetter = true;
@@ -379,10 +428,10 @@ namespace BCnEncoder.Shared
 				}
 
 				{ // increment ep0
-					var prev = endPoint0;
+                    Vector3 prev = endPoint0;
 					endPoint0 += principalAxis * increment * 2;
 					endPoint0 = Clamp565(endPoint0);
-					double error = calculateError();
+					double error = CalculateError();
 					if (error < best)
 					{
 						foundBetter = true;
@@ -395,10 +444,10 @@ namespace BCnEncoder.Shared
 				}
 
 				{ // increment ep1
-					var prev = endPoint1;
+                    Vector3 prev = endPoint1;
 					endPoint1 += principalAxis * increment * 2;
 					endPoint1 = Clamp565(endPoint1);
-					double error = calculateError();
+					double error = CalculateError();
 					if (error < best)
 					{
 						foundBetter = true;
@@ -411,13 +460,13 @@ namespace BCnEncoder.Shared
 				}
 
 				{ // scaleUp 
-					var prev0 = endPoint0;
-					var prev1 = endPoint1;
+                    Vector3 prev0 = endPoint0;
+                    Vector3 prev1 = endPoint1;
 					endPoint0 -= principalAxis * increment * 2;
 					endPoint1 += principalAxis * increment * 2;
 					endPoint0 = Clamp565(endPoint0);
 					endPoint1 = Clamp565(endPoint1);
-					double error = calculateError();
+					double error = CalculateError();
 					if (error < best)
 					{
 						foundBetter = true;
@@ -431,13 +480,13 @@ namespace BCnEncoder.Shared
 				}
 
 				{ // scaleDown
-					var prev0 = endPoint0;
-					var prev1 = endPoint1;
+                    Vector3 prev0 = endPoint0;
+                    Vector3 prev1 = endPoint1;
 					endPoint0 += principalAxis * increment * 2;
 					endPoint1 -= principalAxis * increment * 2;
 					endPoint0 = Clamp565(endPoint0);
 					endPoint1 = Clamp565(endPoint1);
-					double error = calculateError();
+					double error = CalculateError();
 					if (error < best)
 					{
 						foundBetter = true;
@@ -455,7 +504,7 @@ namespace BCnEncoder.Shared
 				{ // decrement ep0 G
 					float prevY = endPoint0.Y;
 					endPoint0.Y -= increment;
-					double error = calculateError();
+					double error = CalculateError();
 					if (error < best)
 					{
 						foundBetter = true;
@@ -471,7 +520,7 @@ namespace BCnEncoder.Shared
 				{ // decrement ep1 G
 					float prevY = endPoint1.Y;
 					endPoint1.Y -= increment;
-					double error = calculateError();
+					double error = CalculateError();
 					if (error < best)
 					{
 						foundBetter = true;
@@ -492,7 +541,7 @@ namespace BCnEncoder.Shared
 				{ // increment ep1 G
 					float prevY = endPoint1.Y;
 					endPoint1.Y += increment;
-					double error = calculateError();
+					double error = CalculateError();
 					if (error < best)
 					{
 						foundBetter = true;
@@ -508,7 +557,7 @@ namespace BCnEncoder.Shared
 				{ // increment ep0 G
 					float prevY = endPoint0.Y;
 					endPoint0.Y += increment;
-					double error = calculateError();
+					double error = CalculateError();
 					if (error < best)
 					{
 						foundBetter = true;
@@ -527,7 +576,7 @@ namespace BCnEncoder.Shared
 				{ // decrement ep0 R
 					float prevX = endPoint0.X;
 					endPoint0.X -= increment;
-					double error = calculateError();
+					double error = CalculateError();
 					if (error < best)
 					{
 						foundBetter = true;
@@ -543,7 +592,7 @@ namespace BCnEncoder.Shared
 				{ // decrement ep1 R
 					float prevX = endPoint1.X;
 					endPoint1.X -= increment;
-					double error = calculateError();
+					double error = CalculateError();
 					if (error < best)
 					{
 						foundBetter = true;
@@ -564,7 +613,7 @@ namespace BCnEncoder.Shared
 				{ // increment ep1 R
 					float prevX = endPoint1.X;
 					endPoint1.X += increment;
-					double error = calculateError();
+					double error = CalculateError();
 					if (error < best)
 					{
 						foundBetter = true;
@@ -580,7 +629,7 @@ namespace BCnEncoder.Shared
 				{ // increment ep0 R
 					float prevX = endPoint0.X;
 					endPoint0.X += increment;
-					double error = calculateError();
+					double error = CalculateError();
 					if (error < best)
 					{
 						foundBetter = true;
@@ -599,7 +648,7 @@ namespace BCnEncoder.Shared
 				{ // decrement ep0 B
 					float prevZ = endPoint0.Z;
 					endPoint0.Z -= increment;
-					double error = calculateError();
+					double error = CalculateError();
 					if (error < best)
 					{
 						foundBetter = true;
@@ -615,7 +664,7 @@ namespace BCnEncoder.Shared
 				{ // decrement ep1 B
 					float prevZ = endPoint1.Z;
 					endPoint1.Z -= increment;
-					double error = calculateError();
+					double error = CalculateError();
 					if (error < best)
 					{
 						foundBetter = true;
@@ -636,7 +685,7 @@ namespace BCnEncoder.Shared
 				{ // increment ep1 B
 					float prevZ = endPoint1.Z;
 					endPoint1.Z += increment;
-					double error = calculateError();
+					double error = CalculateError();
 					if (error < best)
 					{
 						foundBetter = true;
@@ -652,7 +701,7 @@ namespace BCnEncoder.Shared
 				{ // increment ep0 B
 					float prevZ = endPoint0.Z;
 					endPoint0.Z += increment;
-					double error = calculateError();
+					double error = CalculateError();
 					if (error < best)
 					{
 						foundBetter = true;
@@ -675,21 +724,25 @@ namespace BCnEncoder.Shared
 				}
 			}
 
-			min = new ColorRgb565();
-			min.RawR = (int)endPoint0.X;
-			min.RawG = (int)endPoint0.Y;
-			min.RawB = (int)endPoint0.Z;
+            min = new ColorRgb565
+            {
+                RawR = (int)endPoint0.X,
+                RawG = (int)endPoint0.Y,
+                RawB = (int)endPoint0.Z
+            };
 
-			max = new ColorRgb565();
-			max.RawR = (int)endPoint1.X;
-			max.RawG = (int)endPoint1.Y;
-			max.RawB = (int)endPoint1.Z;
-		}
+            max = new ColorRgb565
+            {
+                RawR = (int)endPoint1.X,
+                RawG = (int)endPoint1.Y,
+                RawB = (int)endPoint1.Z
+            };
+        }
 
 		private static float ProjectPointOnLine(Vector3 point, Vector3 linePoint, Vector3 lineDir)
 		{
-			var v = point - linePoint;
-			var d = Vector3.Dot(v, lineDir);
+            Vector3 v = point - linePoint;
+            float d = Vector3.Dot(v, lineDir);
 			return d;
 		}
 	}

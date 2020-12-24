@@ -8,7 +8,7 @@ namespace BCnEncTests
 
 		[Fact]
 		public void Rgb565Test() {
-			ColorRgb565 color = new ColorRgb565(255,255,255);
+			var color = new ColorRgb565(255,255,255);
 
 			Assert.Equal(255, color.R);
 			Assert.Equal(255, color.G);
@@ -29,10 +29,11 @@ namespace BCnEncTests
 			Assert.Equal(0, color.G);
 			Assert.Equal(0, color.B);
 
-			color = new ColorRgb565(255,255,255);
-
-			color.B = 0;
-			Assert.Equal(255, color.R);
+            color = new ColorRgb565(255, 255, 255)
+            {
+                B = 0
+            };
+            Assert.Equal(255, color.R);
 			Assert.Equal(255, color.G);
 			Assert.Equal(0, color.B);
 

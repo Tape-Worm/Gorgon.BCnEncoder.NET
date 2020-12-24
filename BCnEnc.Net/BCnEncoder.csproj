@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
@@ -44,8 +44,44 @@ Supported formats are:
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.1" />
+    <Compile Remove="Decoder\RawDecoder.cs" />
+    <Compile Remove="Encoder\RawEncoders.cs" />
+    <Compile Remove="Shared\BinaryReaderWriterExtensions.cs" />
+    <Compile Remove="Shared\DdsFile.cs" />
+    <Compile Remove="Shared\GLFormat.cs" />
+    <Compile Remove="Shared\ImageQuality.cs" />
+    <Compile Remove="Shared\KtxFile.cs" />
+    <Compile Remove="Shared\MipMapper.cs" />
+    <Compile Remove="Shared\OutputFileFormat.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
+    <PackageReference Include="System.Memory" Version="4.5.4" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Gorgon.Core">
+      <HintPath>..\..\Gorgon\develop\Gorgon\Gorgon.Core\bin\Debug\netstandard2.0\Gorgon.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

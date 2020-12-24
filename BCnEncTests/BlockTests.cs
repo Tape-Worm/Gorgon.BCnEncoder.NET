@@ -12,9 +12,9 @@ namespace BCnEncTests
 		[Fact]
 		public void CreateBlocksExact()
 		{
-			using Image<Rgba32> testImage = new Image<Rgba32>(16, 16);
+			using var testImage = new Image<Rgba32>(16, 16);
 
-			var blocks = ImageToBlocks.ImageTo4X4(testImage.Frames[0], out var blocksWidth, out var blocksHeight);
+            RawBlock4X4Rgba32[] blocks = ImageToBlocks.ImageTo4X4(testImage.Frames[0], out int blocksWidth, out int blocksHeight);
 
 			Assert.Equal(16, blocks.Length);
 			Assert.Equal(4, blocksWidth);
@@ -24,9 +24,9 @@ namespace BCnEncTests
 		[Fact]
 		public void CreateBlocksPadding()
 		{
-			using Image<Rgba32> testImage = new Image<Rgba32>(11, 15);
+			using var testImage = new Image<Rgba32>(11, 15);
 
-			var blocks = ImageToBlocks.ImageTo4X4(testImage.Frames[0], out var blocksWidth, out var blocksHeight);
+            RawBlock4X4Rgba32[] blocks = ImageToBlocks.ImageTo4X4(testImage.Frames[0], out int blocksWidth, out int blocksHeight);
 
 			Assert.Equal(12, blocks.Length);
 			Assert.Equal(3, blocksWidth);
@@ -36,16 +36,16 @@ namespace BCnEncTests
 		[Fact]
 		public void PaddingColor()
 		{
-			using Image<Rgba32> testImage = new Image<Rgba32>(13, 13);
+			using var testImage = new Image<Rgba32>(13, 13);
 
-			if (!testImage.TryGetSinglePixelSpan(out var pixels)) {
+			if (!testImage.TryGetSinglePixelSpan(out Span<Rgba32> pixels)) {
 				throw new Exception("Cannot get pixel span.");
 			}
 			for (int i = 0; i < pixels.Length; i++) {
 				pixels[i] = new Rgba32(0, 125, 125);
 			}
 
-			var blocks = ImageToBlocks.ImageTo4X4(testImage.Frames[0], out var blocksWidth, out var blocksHeight);
+            RawBlock4X4Rgba32[] blocks = ImageToBlocks.ImageTo4X4(testImage.Frames[0], out int blocksWidth, out int blocksHeight);
 
 			Assert.Equal(16, blocks.Length);
 			Assert.Equal(4, blocksWidth);
@@ -53,7 +53,7 @@ namespace BCnEncTests
 
 			for (int x = 0; x < blocksWidth; x++) {
 				for (int y = 0; y < blocksHeight; y++) {
-					foreach (var color in blocks[x + y * blocksWidth].AsSpan) {
+					foreach (Rgba32 color in blocks[x + y * blocksWidth].AsSpan) {
 						Assert.Equal(new Rgba32(0, 125, 125), color);
 					}
 				}
@@ -63,10 +63,10 @@ namespace BCnEncTests
 		[Fact]
 		public void BlocksToImage()
 		{
-			Random r = new Random(0);
-			using Image<Rgba32> testImage = new Image<Rgba32>(16, 16);
+			var r = new Random(0);
+			using var testImage = new Image<Rgba32>(16, 16);
 
-			if (!testImage.TryGetSinglePixelSpan(out var pixels)) {
+			if (!testImage.TryGetSinglePixelSpan(out Span<Rgba32> pixels)) {
 				throw new Exception("Cannot get pixel span.");
 			}
 			for (int i = 0; i < pixels.Length; i++) {
@@ -77,15 +77,15 @@ namespace BCnEncTests
 					(byte)r.Next(255));
 			}
 
-			var blocks = ImageToBlocks.ImageTo4X4(testImage.Frames[0], out var blocksWidth, out var blocksHeight);
+            RawBlock4X4Rgba32[] blocks = ImageToBlocks.ImageTo4X4(testImage.Frames[0], out int blocksWidth, out int blocksHeight);
 
 			Assert.Equal(16, blocks.Length);
 			Assert.Equal(4, blocksWidth);
 			Assert.Equal(4, blocksHeight);
 
-			using var output = ImageToBlocks.ImageFromRawBlocks(blocks, blocksWidth, blocksHeight);
+			using Image<Rgba32> output = ImageToBlocks.ImageFromRawBlocks(blocks, blocksWidth, blocksHeight);
 			
-			if (!output.TryGetSinglePixelSpan(out var pixels2)) {
+			if (!output.TryGetSinglePixelSpan(out Span<Rgba32> pixels2)) {
 				throw new Exception("Cannot get pixel span.");
 			}
 
@@ -98,12 +98,12 @@ namespace BCnEncTests
 		[Fact]
 		public void BlockError()
 		{
-			using Image<Rgba32> testImage = new Image<Rgba32>(16, 16);
+			using var testImage = new Image<Rgba32>(16, 16);
 
-			var blocks = ImageToBlocks.ImageTo4X4(testImage.Frames[0], out var blocksWidth, out var blocksHeight);
+            RawBlock4X4Rgba32[] blocks = ImageToBlocks.ImageTo4X4(testImage.Frames[0], out int blocksWidth, out int blocksHeight);
 
-			var block1 = blocks[2 + 2 * blocksWidth];
-			var block2 = blocks[2 + 2 * blocksWidth];
+            RawBlock4X4Rgba32 block1 = blocks[2 + 2 * blocksWidth];
+            RawBlock4X4Rgba32 block2 = blocks[2 + 2 * blocksWidth];
 
 			Assert.Equal(0, block1.CalculateError(block2));
 

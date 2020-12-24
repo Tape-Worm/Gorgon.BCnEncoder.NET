@@ -1,15 +1,13 @@
 ﻿using System;
 using BCnEncoder.Shared;
-using SixLabors.ImageSharp.PixelFormats;
+using Gorgon.Graphics;
+using Gorgon.Native;
 
 namespace BCnEncoder.Encoder
 {
-	internal interface IBcBlockEncoder
+    internal interface IBcBlockEncoder
 	{
-		byte[] Encode(RawBlock4X4Rgba32[] blocks, int blockWidth, int blockHeight, CompressionQuality quality, bool parallel = true);
-		GlInternalFormat GetInternalFormat();
-		GLFormat GetBaseInternalFormat();
-		DXGI_FORMAT GetDxgiFormat();
+		GorgonNativeBuffer<byte> Encode(RawBlock4X4Rgba32[] blocks, int blockCount, CompressionQuality quality, bool parallel = true);
 	}
 
 

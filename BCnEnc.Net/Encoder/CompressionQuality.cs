@@ -1,5 +1,8 @@
 ﻿namespace BCnEncoder.Encoder
 {
+	/// <summary>
+	/// 
+	/// </summary>
 	public enum CompressionQuality
 	{
 		/// <summary>
