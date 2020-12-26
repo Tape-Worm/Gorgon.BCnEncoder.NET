@@ -44,6 +44,10 @@ Supported formats are:
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Gorgon\Gorgon.Core\Gorgon.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Decoder\RawDecoder.cs" />
     <Compile Remove="Encoder\RawEncoders.cs" />
     <Compile Remove="Shared\BinaryReaderWriterExtensions.cs" />
@@ -61,12 +65,6 @@ Supported formats are:
     <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
     <PackageReference Include="System.Memory" Version="4.5.4" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Gorgon.Core">
-      <HintPath>..\..\..\Gorgon\develop\Gorgon\Gorgon.Core\bin\Release\netstandard2.0\Gorgon.Core.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>
