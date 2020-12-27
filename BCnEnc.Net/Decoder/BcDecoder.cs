@@ -70,7 +70,7 @@ namespace BCnEncoder.Decoder
 
 					output[x + y * pixelWidth] =
 						blocks[blockIndexX, blockIndexY]
-							[blockInternalIndexX, blockInternalIndexY];
+							[blockInternalIndexX, blockInternalIndexY].ToRGBA();
 				}
 			}
 
