@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using DX = SharpDX;
 using BCnEncoder.Shared;
 using Gorgon.Graphics;
 using Gorgon.Native;
@@ -76,7 +77,7 @@ namespace BCnEncoder.Encoder
 			{
                 Span<GorgonColor> pixels = rawBlock.AsSpan;
 
-				PcaVectors.Create(pixels, out System.Numerics.Vector3 mean, out System.Numerics.Vector3 principalAxis);
+				PcaVectors.Create(pixels, out DX.Vector3 mean, out DX.Vector3 principalAxis);
 				PcaVectors.GetMinMaxColor565(pixels, mean, principalAxis, out ColorRgb565 min, out ColorRgb565 max);
 				
 				ColorRgb565 c0 = max;
@@ -96,7 +97,7 @@ namespace BCnEncoder.Encoder
 			{
                 Span<GorgonColor> pixels = rawBlock.AsSpan;
 
-				PcaVectors.Create(pixels, out System.Numerics.Vector3 mean, out System.Numerics.Vector3 pa);
+				PcaVectors.Create(pixels, out DX.Vector3 mean, out DX.Vector3 pa);
 				PcaVectors.GetMinMaxColor565(pixels, mean, pa, out ColorRgb565 min, out ColorRgb565 max);
 
                 ColorRgb565 c0 = max;
@@ -136,7 +137,7 @@ namespace BCnEncoder.Encoder
 			{
                 Span<GorgonColor> pixels = rawBlock.AsSpan;
 
-				PcaVectors.Create(pixels, out System.Numerics.Vector3 mean, out System.Numerics.Vector3 pa);
+				PcaVectors.Create(pixels, out DX.Vector3 mean, out DX.Vector3 pa);
 				PcaVectors.GetMinMaxColor565(pixels, mean, pa, out ColorRgb565 min, out ColorRgb565 max);
 
                 ColorRgb565 c0 = max;
