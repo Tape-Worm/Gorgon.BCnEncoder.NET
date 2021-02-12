@@ -32,9 +32,15 @@ Supported formats are:
     <PackageTags>BCn BC BC1 BC2 BC3 BC4 BC5 BC7 BPTC RGTC S3TC DXT1 DXT3 DXT5 ktx dds texture compression encoding decoding decompression image gpu</PackageTags>
     <PackageProjectUrl>https://github.com/Nominom/BCnEncoder.NET</PackageProjectUrl>
     <PackageReleaseNotes>Upgraded ImageSharp dependency from 1.0.0 beta 7 to version 1.0.1</PackageReleaseNotes>
+    <Configurations>Debug;Release;BuildLocal</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>1701;1702;1591</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='BuildLocal|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <NoWarn>1701;1702;1591</NoWarn>
   </PropertyGroup>
@@ -43,10 +49,15 @@ Supported formats are:
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(Configuration)'=='Release' or '$(Configuration)'=='Debug'">
     <ProjectReference Include="..\..\..\Gorgon\Gorgon.Core\Gorgon.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(Configuration)'=='BuildLocal'">
+    <!--<ProjectReference Include="..\..\..\Gorgon\develop\Gorgon\Gorgon.Core\Gorgon.Core.csproj" />-->
+    <ProjectReference Include="D:\Code\GitHubRepos\Gorgon\develop\Gorgon\Gorgon.Core\Gorgon.Core.csproj" />
+  </ItemGroup>
+  
   <ItemGroup>
     <Compile Remove="Decoder\RawDecoder.cs" />
     <Compile Remove="Encoder\RawEncoders.cs" />

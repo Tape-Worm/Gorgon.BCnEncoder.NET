@@ -7,10 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BCnEncoder", "BCnEnc.Net\BC
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		BuildLocal|Any CPU = BuildLocal|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{92C54AF8-D727-4060-8118-2C809D1FF9E0}.BuildLocal|Any CPU.ActiveCfg = BuildLocal|Any CPU
+		{92C54AF8-D727-4060-8118-2C809D1FF9E0}.BuildLocal|Any CPU.Build.0 = BuildLocal|Any CPU
 		{92C54AF8-D727-4060-8118-2C809D1FF9E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{92C54AF8-D727-4060-8118-2C809D1FF9E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92C54AF8-D727-4060-8118-2C809D1FF9E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
