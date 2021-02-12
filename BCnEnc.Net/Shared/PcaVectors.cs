@@ -150,7 +150,7 @@ namespace BCnEncoder.Shared
 			{
 				var colorVec = GorgonColor.FromRGBA(colors[i]).ToVector3();
 
-				Vector3 v = Vector3.Subtract(colorVec, mean);
+				var v = Vector3.Subtract(colorVec, mean);
                 float d = Vector3.Dot(v, principalAxis);
 				if (d < minD)
                 {
@@ -199,7 +199,7 @@ namespace BCnEncoder.Shared
 			{
 				var colorVec = colors[i].ToVector3();
 
-				Vector3 v = Vector3.Subtract(colorVec, mean);
+				var v = Vector3.Subtract(colorVec, mean);
 				float d = Vector3.Dot(v, principalAxis);
 				if (d < minD)
                 {
@@ -259,7 +259,7 @@ namespace BCnEncoder.Shared
 
 			for (int i = 0; i < colors.Length; i++)
 			{				
-				Vector4 colorVec = colors[i].ToVector4();
+				var colorVec = colors[i].ToVector4();
 				var v = Vector4.Subtract(colorVec, mean);
 				float d = Vector4.Dot(v, principalAxis);
 				if (d < minD)
