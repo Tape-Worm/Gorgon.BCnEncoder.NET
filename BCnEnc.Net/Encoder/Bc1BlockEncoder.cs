@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using DX = SharpDX;
+using System.Numerics;
 using BCnEncoder.Shared;
 using Gorgon.Graphics;
 
@@ -103,7 +103,7 @@ namespace BCnEncoder.Encoder
 			{
                 Span<GorgonColor> pixels = rawBlock.AsSpan;
 
-				PcaVectors.Create(pixels, out DX.Vector3 mean, out DX.Vector3 pa);
+				PcaVectors.Create(pixels, out Vector3 mean, out Vector3 pa);
 				PcaVectors.GetMinMaxColor565(pixels, mean, pa, out ColorRgb565 min, out ColorRgb565 max);
 
                 ColorRgb565 c0 = max;
@@ -156,7 +156,7 @@ namespace BCnEncoder.Encoder
 			{
                 Span<GorgonColor> pixels = rawBlock.AsSpan;
 
-				PcaVectors.Create(pixels, out DX.Vector3 mean, out DX.Vector3 pa);
+				PcaVectors.Create(pixels, out Vector3 mean, out Vector3 pa);
 				PcaVectors.GetMinMaxColor565(pixels, mean, pa, out ColorRgb565 min, out ColorRgb565 max);
 
                 ColorRgb565 c0 = max;
@@ -315,7 +315,7 @@ namespace BCnEncoder.Encoder
 
 				bool hasAlpha = rawBlock.HasTransparentPixels();
 
-				PcaVectors.Create(pixels, out DX.Vector3 mean, out DX.Vector3 pa);
+				PcaVectors.Create(pixels, out Vector3 mean, out Vector3 pa);
 				PcaVectors.GetMinMaxColor565(pixels, mean, pa, out ColorRgb565 min, out ColorRgb565 max);
 
                 ColorRgb565 c0 = max;
@@ -378,7 +378,7 @@ namespace BCnEncoder.Encoder
 
 				bool hasAlpha = rawBlock.HasTransparentPixels();
 
-				PcaVectors.Create(pixels, out DX.Vector3 mean, out DX.Vector3 pa);
+				PcaVectors.Create(pixels, out Vector3 mean, out Vector3 pa);
 				PcaVectors.GetMinMaxColor565(pixels, mean, pa, out ColorRgb565 min, out ColorRgb565 max);
 
                 ColorRgb565 c0 = max;

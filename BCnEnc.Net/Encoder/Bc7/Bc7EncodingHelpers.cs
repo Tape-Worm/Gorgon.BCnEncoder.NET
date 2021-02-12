@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using BCnEncoder.Shared;
-using DX = SharpDX;
+using System.Numerics;
 using Gorgon.Graphics;
 
 namespace BCnEncoder.Encoder.Bc7
@@ -680,8 +680,8 @@ namespace BCnEncoder.Encoder.Bc7
 		{
 
 			Span<GorgonColor> originalPixels = block.AsSpan;
-			PcaVectors.CreateWithAlpha(originalPixels, out DX.Vector4 mean, out DX.Vector4 pa);
-			PcaVectors.GetExtremePointsWithAlpha(block.AsSpan, mean, pa, out DX.Vector4 min, out DX.Vector4 max);
+			PcaVectors.CreateWithAlpha(originalPixels, out Vector4 mean, out Vector4 pa);
+			PcaVectors.GetExtremePointsWithAlpha(block.AsSpan, mean, pa, out Vector4 min, out Vector4 max);
 
 			ep0 = new ColorRgba32((byte)(min.X * 255), (byte)(min.Y * 255), (byte)(min.Z * 255), (byte)(min.W * 255));
 			ep1 = new ColorRgba32((byte)(max.X * 255), (byte)(max.Y * 255), (byte)(max.Z * 255), (byte)(max.W * 255));
@@ -712,8 +712,8 @@ namespace BCnEncoder.Encoder.Bc7
 				}
 			}
 
-			PcaVectors.CreateWithAlpha(subsetColors, out DX.Vector4 mean, out DX.Vector4 pa);
-			PcaVectors.GetExtremePointsWithAlpha(block.AsSpan, mean, pa, out DX.Vector4 min, out DX.Vector4 max);
+			PcaVectors.CreateWithAlpha(subsetColors, out Vector4 mean, out Vector4 pa);
+			PcaVectors.GetExtremePointsWithAlpha(block.AsSpan, mean, pa, out Vector4 min, out Vector4 max);
 
 			ep0 = new ColorRgba32((byte)(min.X * 255), (byte)(min.Y * 255), (byte)(min.Z * 255), (byte)(min.W * 255));
 			ep1 = new ColorRgba32((byte)(max.X * 255), (byte)(max.Y * 255), (byte)(max.Z * 255), (byte)(max.W * 255));
