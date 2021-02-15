@@ -431,7 +431,6 @@ namespace BCnEncoder.Shared
 			}
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private int GetRawEndPointCount()
 		{
 			switch (Type)
@@ -596,8 +595,7 @@ namespace BCnEncoder.Shared
 					throw new InvalidDataException();
 			}
 		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+				
 		private void ExtractPBitArray(Span<byte> pBitArray)
 		{
 			switch (Type)
@@ -632,8 +630,7 @@ namespace BCnEncoder.Shared
 					break;
 			}
 		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+				
 		private int GetPBitCount()
 		{
 			switch (Type)
@@ -718,8 +715,7 @@ namespace BCnEncoder.Shared
 				}
 			}
 		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+				
 		private int GetPartitionIndex(int numSubsets, int partitionSetId, int i)
 		{
 			switch (numSubsets)
@@ -808,8 +804,7 @@ namespace BCnEncoder.Shared
 					throw new ArgumentOutOfRangeException(nameof(type), type, null);
 			}
 		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+				
 		private int GetAlphaIndex(Bc7BlockType type, int numSubsets, int partitionIndex, int bitCount, int index)
 		{
 			if (bitCount == 0)
@@ -822,8 +817,7 @@ namespace BCnEncoder.Shared
 			int indexBegin = GetIndexBegin(type, bitCount, true);
 			return (int)ByteHelper.ExtractFrom128(lowBits, highBits, indexBegin + indexOffset, indexBitCount);
 		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+				
 		private int GetColorIndex(Bc7BlockType type, int numSubsets, int partitionIndex, int bitCount, int index)
 		{
 			int indexOffset = GetIndexOffset(numSubsets, partitionIndex, bitCount, index);
@@ -868,8 +862,7 @@ namespace BCnEncoder.Shared
 		/// 01 – swap A and R
 		/// 10 – swap A and G
 		/// 11 - swap A and B
-		/// </summary>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		/// </summary>		
 		private static ColorRgba32 SwapChannels(ColorRgba32 source, int rotation)
 		{
 			switch (rotation)
