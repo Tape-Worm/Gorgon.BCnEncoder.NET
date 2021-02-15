@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Buffers;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using BCnEncoder.Shared;
 using Gorgon.Graphics;
-using Gorgon.Native;
 
 namespace BCnEncoder.Encoder
 {
-	internal class Bc5BlockEncoder : BcBlockEncoder<Bc5Block>
+    internal class Bc5BlockEncoder : BcBlockEncoder<Bc5Block>
 	{
 		public Bc5BlockEncoder()
 			: base(4)

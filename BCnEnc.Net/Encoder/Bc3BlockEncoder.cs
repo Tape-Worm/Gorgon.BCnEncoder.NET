@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using SharpDX;
 using BCnEncoder.Shared;
 using Gorgon.Graphics;
-using Gorgon.Native;
 
 namespace BCnEncoder.Encoder
 {
-	internal class Bc3BlockEncoder : BcBlockEncoder<Bc3Block>
+    internal class Bc3BlockEncoder : BcBlockEncoder<Bc3Block>
 	{
 		public Bc3BlockEncoder()
 			: base(4)

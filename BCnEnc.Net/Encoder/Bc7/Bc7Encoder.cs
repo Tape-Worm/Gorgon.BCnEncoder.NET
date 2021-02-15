@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using BCnEncoder.Shared;
-using Gorgon.Graphics;
-using Gorgon.Native;
 
 namespace BCnEncoder.Encoder.Bc7
 {
-	internal class Bc7Encoder : BcBlockEncoder<Bc7Block>
+    internal class Bc7Encoder : BcBlockEncoder<Bc7Block>
 	{
 		private static ClusterIndices4X4 CreateClusterIndexBlock(RawBlock4X4Rgba32 raw, out int outputNumClusters,
 			int numClusters = 3)

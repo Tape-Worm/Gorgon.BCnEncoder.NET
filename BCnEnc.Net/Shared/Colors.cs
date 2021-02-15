@@ -1,10 +1,9 @@
 ﻿using System;
-using SharpDX;
 using Gorgon.Graphics;
 
 namespace BCnEncoder.Shared
 {
-	internal struct ColorRgb565 : IEquatable<ColorRgb565>
+    internal struct ColorRgb565 : IEquatable<ColorRgb565>
 	{
         public bool Equals(ColorRgb565 other) => data == other.data;
 

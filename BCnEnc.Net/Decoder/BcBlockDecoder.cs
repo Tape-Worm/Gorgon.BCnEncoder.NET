@@ -1,13 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using BCnEncoder.Shared;
 using Gorgon.Native;
 
 namespace BCnEncoder.Decoder
 {
-	internal interface IBcBlockDecoder
+    internal interface IBcBlockDecoder
 	{
 		RawBlock4X4Rgba32[,] Decode(GorgonPtr<byte> data, int pixelWidth, int pixelHeight);
 	}

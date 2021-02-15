@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Text;
 using BCnEncoder.Properties;
 using BCnEncoder.Shared;
 using Gorgon.Graphics;
@@ -9,10 +7,10 @@ using Gorgon.Native;
 
 namespace BCnEncoder.Decoder
 {
-	/// <summary>
-	/// Decodes compressed files into Rgba format.
-	/// </summary>
-	public class BcDecoder
+    /// <summary>
+    /// Decodes compressed files into Rgba format.
+    /// </summary>
+    public class BcDecoder
 	{
 		/// <summary>
 		/// If true, when encoding to a format that only includes a red channel,

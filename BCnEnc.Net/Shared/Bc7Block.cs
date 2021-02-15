@@ -2,13 +2,12 @@
 using System.Buffers;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using Gorgon.Graphics;
 
 namespace BCnEncoder.Shared
 {
-	internal enum Bc7BlockType : uint
+    internal enum Bc7BlockType : uint
 	{
 		Type0,
 		Type1,

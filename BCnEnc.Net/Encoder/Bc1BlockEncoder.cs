@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using SharpDX;
 using BCnEncoder.Shared;
 using Gorgon.Graphics;
@@ -32,13 +29,13 @@ namespace BCnEncoder.Encoder
 			}
 		}
 
-        #region Encoding private stuff
+		#region Encoding private stuff
 
-        private static Bc1Block TryColors(RawBlock4X4Rgba32 rawBlock, ColorRgb565 color0, ColorRgb565 color1, out float error, float rWeight = 0.3f, float gWeight = 0.6f, float bWeight = 0.1f)
+		private static Bc1Block TryColors(RawBlock4X4Rgba32 rawBlock, ColorRgb565 color0, ColorRgb565 color1, out float error, float rWeight = 0.3f, float gWeight = 0.6f, float bWeight = 0.1f)
 		{
 			var output = new Bc1Block();
 
-            Span<GorgonColor> pixels = rawBlock.AsSpan;
+			Span<GorgonColor> pixels = rawBlock.AsSpan;
 
 			output.color0 = color0;
 			output.color1 = color1;
@@ -62,7 +59,7 @@ namespace BCnEncoder.Encoder
 			error = 0;
 			for (int i = 0; i < 16; i++)
 			{
-                GorgonColor color = pixels[i];
+				GorgonColor color = pixels[i];
 				output[i] = ColorChooser.ChooseClosestColor4(colors, color, rWeight, gWeight, bWeight, out float e);
 				error += e;
 			}
@@ -82,7 +79,7 @@ namespace BCnEncoder.Encoder
 			{
 				Bc1Block output;
 
-                Span<GorgonColor> pixels = rawBlock.AsSpan;
+				Span<GorgonColor> pixels = rawBlock.AsSpan;
 
 				RgbBoundingBox.Create565(pixels, out ColorRgb565 min, out ColorRgb565 max);
 
@@ -101,17 +98,17 @@ namespace BCnEncoder.Encoder
 
 			internal static Bc1Block EncodeBlock(RawBlock4X4Rgba32 rawBlock)
 			{
-                Span<GorgonColor> pixels = rawBlock.AsSpan;
+				Span<GorgonColor> pixels = rawBlock.AsSpan;
 
 				PcaVectors.Create(pixels, out Vector3 mean, out Vector3 pa);
 				PcaVectors.GetMinMaxColor565(pixels, mean, pa, out ColorRgb565 min, out ColorRgb565 max);
 
-                ColorRgb565 c0 = max;
-                ColorRgb565 c1 = min;
+				ColorRgb565 c0 = max;
+				ColorRgb565 c1 = min;
 
 				if (c0.data < c1.data)
 				{
-                    ColorRgb565 c = c0;
+					ColorRgb565 c = c0;
 					c0 = c1;
 					c1 = c;
 				}
@@ -123,12 +120,12 @@ namespace BCnEncoder.Encoder
 					
 					if (newC0.data < newC1.data)
 					{
-                        ColorRgb565 c = newC0;
+						ColorRgb565 c = newC0;
 						newC0 = newC1;
 						newC1 = c;
 					}
 
-                    Bc1Block block = TryColors(rawBlock, newC0, newC1, out float error);
+					Bc1Block block = TryColors(rawBlock, newC0, newC1, out float error);
 					
 					if (error < bestError)
 					{
@@ -154,17 +151,17 @@ namespace BCnEncoder.Encoder
 
 			internal static Bc1Block EncodeBlock(RawBlock4X4Rgba32 rawBlock)
 			{
-                Span<GorgonColor> pixels = rawBlock.AsSpan;
+				Span<GorgonColor> pixels = rawBlock.AsSpan;
 
 				PcaVectors.Create(pixels, out Vector3 mean, out Vector3 pa);
 				PcaVectors.GetMinMaxColor565(pixels, mean, pa, out ColorRgb565 min, out ColorRgb565 max);
 
-                ColorRgb565 c0 = max;
-                ColorRgb565 c1 = min;
+				ColorRgb565 c0 = max;
+				ColorRgb565 c1 = min;
 
 				if (c0.data < c1.data)
 				{
-                    ColorRgb565 c = c0;
+					ColorRgb565 c = c0;
 					c0 = c1;
 					c1 = c;
 				}
@@ -178,12 +175,12 @@ namespace BCnEncoder.Encoder
 					
 					if (newC0.data < newC1.data)
 					{
-                        ColorRgb565 c = newC0;
+						ColorRgb565 c = newC0;
 						newC0 = newC1;
 						newC1 = c;
 					}
 
-                    Bc1Block block = TryColors(rawBlock, newC0, newC1, out float error);
+					Bc1Block block = TryColors(rawBlock, newC0, newC1, out float error);
 
 					lastChanged++;
 
@@ -232,11 +229,11 @@ namespace BCnEncoder.Encoder
 			}
 		}
 
-        private static Bc1Block TryColors(RawBlock4X4Rgba32 rawBlock, ColorRgb565 color0, ColorRgb565 color1, out float error, float rWeight = 0.3f, float gWeight = 0.6f, float bWeight = 0.1f)
+		private static Bc1Block TryColors(RawBlock4X4Rgba32 rawBlock, ColorRgb565 color0, ColorRgb565 color1, out float error, float rWeight = 0.3f, float gWeight = 0.6f, float bWeight = 0.1f)
 		{
 			var output = new Bc1Block();
 
-            Span<GorgonColor> pixels = rawBlock.AsSpan;
+			Span<GorgonColor> pixels = rawBlock.AsSpan;
 
 			output.color0 = color0;
 			output.color1 = color1;
@@ -262,7 +259,7 @@ namespace BCnEncoder.Encoder
 			error = 0;
 			for (int i = 0; i < 16; i++)
 			{
-                GorgonColor color = pixels[i];
+				GorgonColor color = pixels[i];
 				output[i] = ColorChooser.ChooseClosestColor4AlphaCutoff(colors, color, rWeight, gWeight, bWeight,
 					128, hasAlpha, out float e);
 				error += e;
@@ -281,7 +278,7 @@ namespace BCnEncoder.Encoder
 			{
 				Bc1Block output;
 
-                Span<GorgonColor> pixels = rawBlock.AsSpan;
+				Span<GorgonColor> pixels = rawBlock.AsSpan;
 
 				bool hasAlpha = rawBlock.HasTransparentPixels();
 
@@ -292,7 +289,7 @@ namespace BCnEncoder.Encoder
 
 				if (hasAlpha && c0.data > c1.data)
 				{
-                    ColorRgb565 c = c0;
+					ColorRgb565 c = c0;
 					c0 = c1;
 					c1 = c;
 				}
@@ -311,23 +308,23 @@ namespace BCnEncoder.Encoder
 
 			internal static Bc1Block EncodeBlock(RawBlock4X4Rgba32 rawBlock)
 			{
-                Span<GorgonColor> pixels = rawBlock.AsSpan;
+				Span<GorgonColor> pixels = rawBlock.AsSpan;
 
 				bool hasAlpha = rawBlock.HasTransparentPixels();
 
 				PcaVectors.Create(pixels, out Vector3 mean, out Vector3 pa);
 				PcaVectors.GetMinMaxColor565(pixels, mean, pa, out ColorRgb565 min, out ColorRgb565 max);
 
-                ColorRgb565 c0 = max;
-                ColorRgb565 c1 = min;
+				ColorRgb565 c0 = max;
+				ColorRgb565 c1 = min;
 
 				if (!hasAlpha && c0.data < c1.data)
 				{
-                    ColorRgb565 c = c0;
+					ColorRgb565 c = c0;
 					c0 = c1;
 					c1 = c;
 				}else if (hasAlpha && c1.data < c0.data) {
-                    ColorRgb565 c = c0;
+					ColorRgb565 c = c0;
 					c0 = c1;
 					c1 = c;
 				}
@@ -339,16 +336,16 @@ namespace BCnEncoder.Encoder
 					
 					if (!hasAlpha && newC0.data < newC1.data)
 					{
-                        ColorRgb565 c = newC0;
+						ColorRgb565 c = newC0;
 						newC0 = newC1;
 						newC1 = c;
 					}else if (hasAlpha && newC1.data < newC0.data) {
-                        ColorRgb565 c = newC0;
+						ColorRgb565 c = newC0;
 						newC0 = newC1;
 						newC1 = c;
 					}
 
-                    Bc1Block block = TryColors(rawBlock, newC0, newC1, out float error);
+					Bc1Block block = TryColors(rawBlock, newC0, newC1, out float error);
 					
 					if (error < bestError)
 					{
@@ -374,23 +371,23 @@ namespace BCnEncoder.Encoder
 
 			internal static Bc1Block EncodeBlock(RawBlock4X4Rgba32 rawBlock)
 			{
-                Span<GorgonColor> pixels = rawBlock.AsSpan;
+				Span<GorgonColor> pixels = rawBlock.AsSpan;
 
 				bool hasAlpha = rawBlock.HasTransparentPixels();
 
 				PcaVectors.Create(pixels, out Vector3 mean, out Vector3 pa);
 				PcaVectors.GetMinMaxColor565(pixels, mean, pa, out ColorRgb565 min, out ColorRgb565 max);
 
-                ColorRgb565 c0 = max;
-                ColorRgb565 c1 = min;
+				ColorRgb565 c0 = max;
+				ColorRgb565 c1 = min;
 
 				if (!hasAlpha && c0.data < c1.data)
 				{
-                    ColorRgb565 c = c0;
+					ColorRgb565 c = c0;
 					c0 = c1;
 					c1 = c;
 				}else if (hasAlpha && c1.data < c0.data) {
-                    ColorRgb565 c = c0;
+					ColorRgb565 c = c0;
 					c0 = c1;
 					c1 = c;
 				}
@@ -403,16 +400,16 @@ namespace BCnEncoder.Encoder
 					
 					if (!hasAlpha && newC0.data < newC1.data)
 					{
-                        ColorRgb565 c = newC0;
+						ColorRgb565 c = newC0;
 						newC0 = newC1;
 						newC1 = c;
 					}else if (hasAlpha && newC1.data < newC0.data) {
-                        ColorRgb565 c = newC0;
+						ColorRgb565 c = newC0;
 						newC0 = newC1;
 						newC1 = c;
 					}
 
-                    Bc1Block block = TryColors(rawBlock, newC0, newC1, out float error);
+					Bc1Block block = TryColors(rawBlock, newC0, newC1, out float error);
 
 					lastChanged++;
 

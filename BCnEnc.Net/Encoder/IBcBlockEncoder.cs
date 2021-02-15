@@ -1,6 +1,4 @@
-﻿using System;
-using BCnEncoder.Shared;
-using Gorgon.Graphics;
+﻿using BCnEncoder.Shared;
 using Gorgon.Native;
 
 namespace BCnEncoder.Encoder

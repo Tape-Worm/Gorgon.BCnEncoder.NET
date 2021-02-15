@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Buffers;
-using System.Collections.Generic;
-using System.Diagnostics;
 using BCnEncoder.Encoder.Bc7;
 using BCnEncoder.Properties;
 using BCnEncoder.Shared;
@@ -11,10 +9,10 @@ using Gorgon.Native;
 
 namespace BCnEncoder.Encoder
 {
-	/// <summary>
-	/// Handles all encoding of images into compressed or uncompressed formats. 
-	/// </summary>
-	public class BcEncoder
+    /// <summary>
+    /// Handles all encoding of images into compressed or uncompressed formats. 
+    /// </summary>
+    public class BcEncoder
 	{
 		/// <summary>
 		/// If true, when encoding to a format that only includes a red channel,
