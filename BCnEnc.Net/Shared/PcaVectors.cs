@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Numerics;
+using SharpDX;
 using Gorgon.Graphics;
 
 namespace BCnEncoder.Shared
@@ -45,7 +45,7 @@ namespace BCnEncoder.Shared
 				);
 		}
 
-		internal static void CalculateCovariance(Span<Vector4> values, out Vector4 mean, out Matrix4x4 result) {
+		internal static void CalculateCovariance(Span<Vector4> values, out Vector4 mean, out Matrix result) {
 			CalculateMean(values, out mean);
 			for (int i = 0; i < values.Length; i++)
 			{
@@ -72,7 +72,7 @@ namespace BCnEncoder.Shared
 				result.M44 += values[i].W * values[i].W;
 			}
 
-			result = Matrix4x4.Multiply(result, 1f / (values.Length - 1));
+			result = Matrix.Multiply(result, 1f / (values.Length - 1));
 			
 			result.M21 = result.M12;
 			result.M31 = result.M13;
@@ -88,7 +88,7 @@ namespace BCnEncoder.Shared
 		/// <param name="covarianceMatrix"></param>
 		/// <param name="result"></param>
 		/// <returns></returns>
-		internal static void CalculatePrincipalAxis(ref Matrix4x4 covarianceMatrix, out Vector4 result) {
+		internal static void CalculatePrincipalAxis(ref Matrix covarianceMatrix, out Vector4 result) {
 			result = Vector4.UnitY;
 
 			for (int i = 0; i < 30; i++) {
@@ -116,7 +116,7 @@ namespace BCnEncoder.Shared
 			ConvertToVector4(colors, vectors);
 
 
-            CalculateCovariance(vectors, out Vector4 v4Mean, out Matrix4x4 cov);
+            CalculateCovariance(vectors, out Vector4 v4Mean, out Matrix cov);
 			mean = new Vector3(v4Mean.X, v4Mean.Y, v4Mean.Z);
 
             CalculatePrincipalAxis(ref cov, out Vector4 pa);
@@ -135,7 +135,7 @@ namespace BCnEncoder.Shared
 			Span<Vector4> vectors = stackalloc Vector4[colors.Length];
 			ConvertToVector4(colors, vectors);
 
-            CalculateCovariance(vectors, out mean, out Matrix4x4 cov);
+            CalculateCovariance(vectors, out mean, out Matrix cov);
 			CalculatePrincipalAxis(ref cov, out principalAxis);
 		}
 

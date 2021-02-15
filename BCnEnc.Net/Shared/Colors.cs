@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Numerics;
+using SharpDX;
 using Gorgon.Graphics;
 
 namespace BCnEncoder.Shared

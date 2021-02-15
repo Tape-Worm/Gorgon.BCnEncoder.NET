@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using System.Numerics;
+using SharpDX;
 using BCnEncoder.Shared;
 using Gorgon.Graphics;
 using Gorgon.Native;

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using BCnEncoder.Shared;
-using System.Numerics;
+using SharpDX;
 using Gorgon.Graphics;
 
 namespace BCnEncoder.Encoder.Bc7
