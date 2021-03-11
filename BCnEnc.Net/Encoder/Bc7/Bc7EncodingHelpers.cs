@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using BCnEncoder.Shared;
-using SharpDX;
+using System.Numerics;
 using Gorgon.Graphics;
 
 namespace BCnEncoder.Encoder.Bc7
@@ -106,104 +106,61 @@ namespace BCnEncoder.Encoder.Bc7
 		private static readonly int[] _varPatternAAlpha = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 1, -1 };
 		private static readonly int[] _varPatternANoAlpha = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
 
-		public static bool TypeHasPBits(Bc7BlockType type)
-		{
-			switch (type)
-			{
-				case Bc7BlockType.Type0:
-				case Bc7BlockType.Type1:
-				case Bc7BlockType.Type3:
-				case Bc7BlockType.Type6:
-				case Bc7BlockType.Type7:
-					return true;
-			}
-			return false;
-		}
+        public static bool TypeHasPBits(Bc7BlockType type) => type switch
+        {
+            Bc7BlockType.Type0 or Bc7BlockType.Type1 or Bc7BlockType.Type3 or Bc7BlockType.Type6 or Bc7BlockType.Type7 => true,
+            _ => false,
+        };
 
-		public static bool TypeHasSharedPBits(Bc7BlockType type) => type == Bc7BlockType.Type1;
+        public static bool TypeHasSharedPBits(Bc7BlockType type) => type == Bc7BlockType.Type1;
 
-		/// <summary>
-		/// Includes PBit
-		/// </summary>
-		public static int GetColorComponentPrecisionWithPBit(Bc7BlockType type) {
-			switch (type)
-			{
-				case Bc7BlockType.Type0:
-				case Bc7BlockType.Type2:
-				case Bc7BlockType.Type4:
-					return 5;
-				case Bc7BlockType.Type1:
-				case Bc7BlockType.Type5:
-					return 7;
-				case Bc7BlockType.Type3:
-				case Bc7BlockType.Type6:
-					return 8;
-				case Bc7BlockType.Type7:
-					return 6;
-			}
-			return 0;
-		}
+        /// <summary>
+        /// Includes PBit
+        /// </summary>
+        public static int GetColorComponentPrecisionWithPBit(Bc7BlockType type) => type switch
+        {
+            Bc7BlockType.Type0 or Bc7BlockType.Type2 or Bc7BlockType.Type4 => 5,
+            Bc7BlockType.Type1 or Bc7BlockType.Type5 => 7,
+            Bc7BlockType.Type3 or Bc7BlockType.Type6 => 8,
+            Bc7BlockType.Type7 => 6,
+            _ => 0,
+        };
 
-		/// <summary>
-		/// Includes PBit
-		/// </summary>
-		public static int GetAlphaComponentPrecisionWithPBit(Bc7BlockType type) {
-			switch (type)
-			{
-				case Bc7BlockType.Type4:
-				case Bc7BlockType.Type7:
-					return 6;
-				case Bc7BlockType.Type5:
-				case Bc7BlockType.Type6:
-					return 8;
-			}
-			return 0;
-		}
+        /// <summary>
+        /// Includes PBit
+        /// </summary>
+        public static int GetAlphaComponentPrecisionWithPBit(Bc7BlockType type) => type switch
+        {
+            Bc7BlockType.Type4 or Bc7BlockType.Type7 => 6,
+            Bc7BlockType.Type5 or Bc7BlockType.Type6 => 8,
+            _ => 0,
+        };
 
-		/// <summary>
-		/// Does not include pBit
-		/// </summary>
-		public static int GetColorComponentPrecision(Bc7BlockType type)
-		{
-			switch (type)
-			{
-				case Bc7BlockType.Type0:
-					return 4;
-				case Bc7BlockType.Type1:
-					return 6;
-				case Bc7BlockType.Type2:
-				case Bc7BlockType.Type4:
-				case Bc7BlockType.Type7:
-					return 5;
-				case Bc7BlockType.Type3:
-				case Bc7BlockType.Type5:
-				case Bc7BlockType.Type6:
-					return 7;
-			}
+        /// <summary>
+        /// Does not include pBit
+        /// </summary>
+        public static int GetColorComponentPrecision(Bc7BlockType type) => type switch
+        {
+            Bc7BlockType.Type0 => 4,
+            Bc7BlockType.Type1 => 6,
+            Bc7BlockType.Type2 or Bc7BlockType.Type4 or Bc7BlockType.Type7 => 5,
+            Bc7BlockType.Type3 or Bc7BlockType.Type5 or Bc7BlockType.Type6 => 7,
+            _ => 0,
+        };
 
-			return 0;
-		}
+        /// <summary>
+        /// Does not include pBit
+        /// </summary>
+        public static int GetAlphaComponentPrecision(Bc7BlockType type) => type switch
+        {
+            Bc7BlockType.Type4 => 6,
+            Bc7BlockType.Type5 => 8,
+            Bc7BlockType.Type6 => 7,
+            Bc7BlockType.Type7 => 5,
+            _ => 0,
+        };
 
-		/// <summary>
-		/// Does not include pBit
-		/// </summary>
-		public static int GetAlphaComponentPrecision(Bc7BlockType type) {
-			switch (type)
-			{
-				case Bc7BlockType.Type4:
-					return 6;
-				case Bc7BlockType.Type5:
-					return 8;
-				case Bc7BlockType.Type6:
-					return 7;
-				case Bc7BlockType.Type7:
-					return 5;
-			}
-
-			return 0;
-		}
-
-		public static int GetColorIndexBitCount(Bc7BlockType type, int type4IdxMode = 0)
+        public static int GetColorIndexBitCount(Bc7BlockType type, int type4IdxMode = 0)
 		{
 			switch (type)
 			{
@@ -244,7 +201,7 @@ namespace BCnEncoder.Encoder.Bc7
 
 		public static void ExpandEndpoints(Bc7BlockType type, ColorRgba32[] endpoints, byte[] pBits)
 		{
-			if (type == Bc7BlockType.Type0 || type == Bc7BlockType.Type1 || type == Bc7BlockType.Type3 || type == Bc7BlockType.Type6 || type == Bc7BlockType.Type7)
+			if (type is Bc7BlockType.Type0 or Bc7BlockType.Type1 or Bc7BlockType.Type3 or Bc7BlockType.Type6 or Bc7BlockType.Type7)
 			{
 				for (int i = 0; i < endpoints.Length; i++)
 				{
@@ -287,7 +244,7 @@ namespace BCnEncoder.Encoder.Bc7
 
 			//If this mode does not explicitly define the alpha component
 			//set alpha equal to 255
-			if (type == Bc7BlockType.Type0 || type == Bc7BlockType.Type1 || type == Bc7BlockType.Type2 || type == Bc7BlockType.Type3)
+			if (type is Bc7BlockType.Type0 or Bc7BlockType.Type1 or Bc7BlockType.Type2 or Bc7BlockType.Type3)
 			{
 				for (int i = 0; i < endpoints.Length; i++)
 				{
@@ -299,7 +256,7 @@ namespace BCnEncoder.Encoder.Bc7
 
 		public static ColorRgba32 ExpandEndpoint(Bc7BlockType type, ColorRgba32 endpoint, byte pBit)
 		{
-			if (type == Bc7BlockType.Type0 || type == Bc7BlockType.Type1 || type == Bc7BlockType.Type3 || type == Bc7BlockType.Type6 || type == Bc7BlockType.Type7)
+			if (type is Bc7BlockType.Type0 or Bc7BlockType.Type1 or Bc7BlockType.Type3 or Bc7BlockType.Type6 or Bc7BlockType.Type7)
 			{
 				endpoint <<= 1;
 				endpoint |= pBit;
@@ -320,7 +277,7 @@ namespace BCnEncoder.Encoder.Bc7
 
 			//If this mode does not explicitly define the alpha component
 			//set alpha equal to 255
-			if (type == Bc7BlockType.Type0 || type == Bc7BlockType.Type1 || type == Bc7BlockType.Type2 || type == Bc7BlockType.Type3)
+			if (type is Bc7BlockType.Type0 or Bc7BlockType.Type1 or Bc7BlockType.Type2 or Bc7BlockType.Type3)
 			{
 				endpoint.a = 255;
 			}
@@ -763,8 +720,7 @@ namespace BCnEncoder.Encoder.Bc7
 		public static ColorRgba32 InterpolateColor(ColorRgba32 endPointStart, ColorRgba32 endPointEnd,
 			int colorIndex, int alphaIndex, int colorBitCount, int alphaBitCount)
 		{
-
-			byte InterpolateByte(byte e0, byte e1, int index, int indexPrecision)
+            static byte InterpolateByte(byte e0, byte e1, int index, int indexPrecision)
 			{
 				if (indexPrecision == 0)
 				{
@@ -775,16 +731,13 @@ namespace BCnEncoder.Encoder.Bc7
 				ReadOnlySpan<byte> aWeights3 = Bc7Block.ColorInterpolationWeights3;
 				ReadOnlySpan<byte> aWeights4 = Bc7Block.ColorInterpolationWeights4;
 
-				switch (indexPrecision)
-				{				
-					case 2:				
-						return (byte)(((64 - aWeights2[index]) * (e0) + aWeights2[index] * (e1) + 32) >> 6);
-					case 3:				
-						return (byte)(((64 - aWeights3[index]) * (e0) + aWeights3[index] * (e1) + 32) >> 6);
-					default:
-						return (byte)(((64 - aWeights4[index]) * (e0) + aWeights4[index] * (e1) + 32) >> 6);
-				}
-			}
+                return indexPrecision switch
+                {
+                    2 => (byte)(((64 - aWeights2[index]) * (e0) + aWeights2[index] * (e1) + 32) >> 6),
+                    3 => (byte)(((64 - aWeights3[index]) * (e0) + aWeights3[index] * (e1) + 32) >> 6),
+                    _ => (byte)(((64 - aWeights4[index]) * (e0) + aWeights4[index] * (e1) + 32) >> 6),
+                };
+            }
 
 			var result = new ColorRgba32(
 				InterpolateByte(endPointStart.r, endPointEnd.r, colorIndex, colorBitCount),
@@ -883,7 +836,7 @@ namespace BCnEncoder.Encoder.Bc7
 			int colorIndexPrecision = GetColorIndexBitCount(type, type4IdxMode);
 			int alphaIndexPrecision = GetAlphaIndexBitCount(type, type4IdxMode);
 
-			if (type == Bc7BlockType.Type4 || type == Bc7BlockType.Type5)
+			if (type is Bc7BlockType.Type4 or Bc7BlockType.Type5)
 			{ //separate indices for color and alpha
 				Span<ColorYCbCr> colors = stackalloc ColorYCbCr[1 << colorIndexPrecision];
 				Span<byte> alphas = stackalloc byte[1 << alphaIndexPrecision];
@@ -952,9 +905,9 @@ namespace BCnEncoder.Encoder.Bc7
 			int colorIndexPrecision = GetColorIndexBitCount(type);
 			int alphaIndexPrecision = GetAlphaIndexBitCount(type);
 
-			if (type == Bc7BlockType.Type4 || type == Bc7BlockType.Type5)
+			if (type is Bc7BlockType.Type4 or Bc7BlockType.Type5)
 			{ //separate indices for color and alpha
-				throw new ArgumentException();
+				throw new ArgumentException(null, nameof(type));
 			}
 			else
 			{
@@ -1023,7 +976,7 @@ namespace BCnEncoder.Encoder.Bc7
 					}
 					break;
 				default:
-					throw new ArgumentException();
+					throw new ArgumentException(null, nameof(type));
 			}
 		}
 

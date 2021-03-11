@@ -1,5 +1,5 @@
 ﻿using System;
-using SharpDX;
+using System.Numerics;
 using BCnEncoder.Shared;
 using Gorgon.Graphics;
 
@@ -13,25 +13,17 @@ namespace BCnEncoder.Encoder
 		{
 		}
 
-		protected override Bc1Block EncodeBlock(RawBlock4X4Rgba32 block, CompressionQuality quality)
-		{
-			switch (quality)
-			{
-				case CompressionQuality.Fast:
-					return Bc1BlockEncoderFast.EncodeBlock(block);
-				case CompressionQuality.Balanced:
-					return Bc1BlockEncoderBalanced.EncodeBlock(block);
-				case CompressionQuality.BestQuality:
-					return Bc1BlockEncoderSlow.EncodeBlock(block);
+        protected override Bc1Block EncodeBlock(RawBlock4X4Rgba32 block, CompressionQuality quality) => quality switch
+        {
+            CompressionQuality.Fast => Bc1BlockEncoderFast.EncodeBlock(block),
+            CompressionQuality.Balanced => Bc1BlockEncoderBalanced.EncodeBlock(block),
+            CompressionQuality.BestQuality => Bc1BlockEncoderSlow.EncodeBlock(block),
+            _ => throw new ArgumentOutOfRangeException(nameof(quality), quality, null),
+        };
 
-				default:
-					throw new ArgumentOutOfRangeException(nameof(quality), quality, null);
-			}
-		}
+        #region Encoding private stuff
 
-		#region Encoding private stuff
-
-		private static Bc1Block TryColors(RawBlock4X4Rgba32 rawBlock, ColorRgb565 color0, ColorRgb565 color1, out float error, float rWeight = 0.3f, float gWeight = 0.6f, float bWeight = 0.1f)
+        private static Bc1Block TryColors(RawBlock4X4Rgba32 rawBlock, ColorRgb565 color0, ColorRgb565 color1, out float error, float rWeight = 0.3f, float gWeight = 0.6f, float bWeight = 0.1f)
 		{
 			var output = new Bc1Block();
 
@@ -213,23 +205,15 @@ namespace BCnEncoder.Encoder
 		{
 		}
 
-		protected override  Bc1Block EncodeBlock(RawBlock4X4Rgba32 block, CompressionQuality quality)
-		{
-			switch (quality)
-			{
-				case CompressionQuality.Fast:
-					return Bc1AlphaBlockEncoderFast.EncodeBlock(block);
-				case CompressionQuality.Balanced:
-					return Bc1AlphaBlockEncoderBalanced.EncodeBlock(block);
-				case CompressionQuality.BestQuality:
-					return Bc1AlphaBlockEncoderSlow.EncodeBlock(block);
+        protected override Bc1Block EncodeBlock(RawBlock4X4Rgba32 block, CompressionQuality quality) => quality switch
+        {
+            CompressionQuality.Fast => Bc1AlphaBlockEncoderFast.EncodeBlock(block),
+            CompressionQuality.Balanced => Bc1AlphaBlockEncoderBalanced.EncodeBlock(block),
+            CompressionQuality.BestQuality => Bc1AlphaBlockEncoderSlow.EncodeBlock(block),
+            _ => throw new ArgumentOutOfRangeException(nameof(quality), quality, null),
+        };
 
-				default:
-					throw new ArgumentOutOfRangeException(nameof(quality), quality, null);
-			}
-		}
-
-		private static Bc1Block TryColors(RawBlock4X4Rgba32 rawBlock, ColorRgb565 color0, ColorRgb565 color1, out float error, float rWeight = 0.3f, float gWeight = 0.6f, float bWeight = 0.1f)
+        private static Bc1Block TryColors(RawBlock4X4Rgba32 rawBlock, ColorRgb565 color0, ColorRgb565 color1, out float error, float rWeight = 0.3f, float gWeight = 0.6f, float bWeight = 0.1f)
 		{
 			var output = new Bc1Block();
 

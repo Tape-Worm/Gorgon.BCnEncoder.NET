@@ -110,7 +110,7 @@ namespace BCnEncoder.Encoder
 			return output;
 		}
 
-		public BufferFormat GetDxgiFormat() => BufferFormat.BC5_UNorm;
+		public static BufferFormat GetDxgiFormat() => BufferFormat.BC5_UNorm;
 
 		#region Encoding private stuff
 
@@ -186,7 +186,7 @@ namespace BCnEncoder.Encoder
 			bool hasExtremeValues = false;
 			for (int i = 0; i < pixels.Length; i++)
 			{
-				if (pixels[i] < 255 && pixels[i] > 0)
+				if (pixels[i] is < 255 and > 0)
 				{
 					if (pixels[i] < min)
 					{

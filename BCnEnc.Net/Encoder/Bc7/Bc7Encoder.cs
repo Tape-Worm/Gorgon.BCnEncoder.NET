@@ -31,22 +31,15 @@ namespace BCnEncoder.Encoder.Bc7
 			return indexBlock;
 		}
 
-		protected override Bc7Block EncodeBlock(RawBlock4X4Rgba32 rawBlock, CompressionQuality quality)
-		{
-			switch (quality)
-			{
-				case CompressionQuality.Fast:
-					return Bc7EncoderFast.EncodeBlock(rawBlock);
-				case CompressionQuality.Balanced:
-					return Bc7EncoderBalanced.EncodeBlock(rawBlock);
-				case CompressionQuality.BestQuality:
-					return Bc7EncoderBestQuality.EncodeBlock(rawBlock);
-				default:
-					throw new ArgumentOutOfRangeException(nameof(quality), quality, null);
-			}
-		}
+        protected override Bc7Block EncodeBlock(RawBlock4X4Rgba32 rawBlock, CompressionQuality quality) => quality switch
+        {
+            CompressionQuality.Fast => Bc7EncoderFast.EncodeBlock(rawBlock),
+            CompressionQuality.Balanced => Bc7EncoderBalanced.EncodeBlock(rawBlock),
+            CompressionQuality.BestQuality => Bc7EncoderBestQuality.EncodeBlock(rawBlock),
+            _ => throw new ArgumentOutOfRangeException(nameof(quality), quality, null),
+        };
 
-		private static class Bc7EncoderFast
+        private static class Bc7EncoderFast
 		{
 			private const float ErrorThreshsold = 0.005f;
 			private const int MaxTries = 5;

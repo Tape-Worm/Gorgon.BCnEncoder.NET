@@ -123,7 +123,7 @@ namespace BCnEncoder.Shared
 			B = b;
 		}
 
-        public ColorRgb24 ToColorRgb24() => new ColorRgb24(R, G, B);
+        public ColorRgb24 ToColorRgb24() => new(R, G, B);
 
         public override string ToString() => $"r : {R} g : {G} b : {B}";
     }
@@ -148,7 +148,7 @@ namespace BCnEncoder.Shared
         /// <summary>
         /// Component-wise left shift
         /// </summary>
-        public static ColorRgba32 operator <<(ColorRgba32 left, int right) => new ColorRgba32(
+        public static ColorRgba32 operator <<(ColorRgba32 left, int right) => new(
                 ByteHelper.ClampToByte((left.r << right)),
                 ByteHelper.ClampToByte((left.g << right)),
                 ByteHelper.ClampToByte((left.b << right)),
@@ -158,7 +158,7 @@ namespace BCnEncoder.Shared
         /// <summary>
         /// Component-wise bitwise OR operation
         /// </summary>
-        public static ColorRgba32 operator |(ColorRgba32 left, int right) => new ColorRgba32(
+        public static ColorRgba32 operator |(ColorRgba32 left, int right) => new(
                 ByteHelper.ClampToByte((left.r | right)),
                 ByteHelper.ClampToByte((left.g | right)),
                 ByteHelper.ClampToByte((left.b | right)),
@@ -167,7 +167,7 @@ namespace BCnEncoder.Shared
 
         public override string ToString() => $"r : {r} g : {g} b : {b} a : {a}";
 
-		public GorgonColor ToGorgonColor() => new GorgonColor(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f);
+		public GorgonColor ToGorgonColor() => new(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f);
     }
 
 	internal struct ColorRgb24 : IEquatable<ColorRgb24>
@@ -192,12 +192,12 @@ namespace BCnEncoder.Shared
 
         public override int GetHashCode() => HashCode.Combine(r, g, b);
 
-        public static ColorRgb24 operator +(ColorRgb24 left, ColorRgb24 right) => new ColorRgb24(
+        public static ColorRgb24 operator +(ColorRgb24 left, ColorRgb24 right) => new(
                 ByteHelper.ClampToByte(left.r + right.r),
                 ByteHelper.ClampToByte(left.g + right.g),
                 ByteHelper.ClampToByte(left.b + right.b));
 
-        public static ColorRgb24 operator *(ColorRgb24 left, double right) => new ColorRgb24(
+        public static ColorRgb24 operator *(ColorRgb24 left, double right) => new(
                 ByteHelper.ClampToByte((int)(left.r * right)),
                 ByteHelper.ClampToByte((int)(left.g * right)),
                 ByteHelper.ClampToByte((int)(left.b * right))
@@ -205,7 +205,7 @@ namespace BCnEncoder.Shared
 
         public override string ToString() => $"r : {r} g : {g} b : {b}";
 
-		public GorgonColor ToGorgonColor() => new GorgonColor(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
+		public GorgonColor ToGorgonColor() => new(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
 	}
 
 	internal struct ColorYCbCr

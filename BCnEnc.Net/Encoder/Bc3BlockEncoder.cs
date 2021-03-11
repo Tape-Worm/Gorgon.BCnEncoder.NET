@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using SharpDX;
+using System.Numerics;
 using BCnEncoder.Shared;
 using Gorgon.Graphics;
 
@@ -13,25 +13,17 @@ namespace BCnEncoder.Encoder
 		{
 		}
 
-		protected override Bc3Block EncodeBlock(RawBlock4X4Rgba32 block, CompressionQuality quality)
-		{
-			switch (quality)
-			{
-				case CompressionQuality.Fast:
-					return Bc3BlockEncoderFast.EncodeBlock(block);
-				case CompressionQuality.Balanced:
-					return Bc3BlockEncoderBalanced.EncodeBlock(block);
-				case CompressionQuality.BestQuality:
-					return Bc3BlockEncoderSlow.EncodeBlock(block);
+        protected override Bc3Block EncodeBlock(RawBlock4X4Rgba32 block, CompressionQuality quality) => quality switch
+        {
+            CompressionQuality.Fast => Bc3BlockEncoderFast.EncodeBlock(block),
+            CompressionQuality.Balanced => Bc3BlockEncoderBalanced.EncodeBlock(block),
+            CompressionQuality.BestQuality => Bc3BlockEncoderSlow.EncodeBlock(block),
+            _ => throw new ArgumentOutOfRangeException(nameof(quality), quality, null),
+        };
 
-				default:
-					throw new ArgumentOutOfRangeException(nameof(quality), quality, null);
-			}
-		}
+        #region Encoding private stuff
 
-		#region Encoding private stuff
-
-		private static Bc3Block TryColors(RawBlock4X4Rgba32 rawBlock, ColorRgb565 color0, ColorRgb565 color1, out float error, float rWeight = 0.3f, float gWeight = 0.6f, float bWeight = 0.1f)
+        private static Bc3Block TryColors(RawBlock4X4Rgba32 rawBlock, ColorRgb565 color0, ColorRgb565 color1, out float error, float rWeight = 0.3f, float gWeight = 0.6f, float bWeight = 0.1f)
 		{
 			var output = new Bc3Block();
 
@@ -73,7 +65,7 @@ namespace BCnEncoder.Encoder
 			for (int i = 0; i < pixels.Length; i++)
 			{
 				int alpha = (int)(pixels[i].Alpha * 255.0f);
-				if (alpha < 255 && alpha > 0)
+				if (alpha is < 255 and > 0)
 				{
 					if (alpha < minAlpha)
                     {

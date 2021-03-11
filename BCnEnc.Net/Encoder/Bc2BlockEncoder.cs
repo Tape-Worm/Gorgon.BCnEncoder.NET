@@ -1,5 +1,5 @@
 ﻿using System;
-using SharpDX;
+using System.Numerics;
 using BCnEncoder.Shared;
 using Gorgon.Graphics;
 
@@ -12,21 +12,13 @@ namespace BCnEncoder.Encoder
 		{
 		}
 
-		protected override Bc2Block EncodeBlock(RawBlock4X4Rgba32 block, CompressionQuality quality)
-		{
-			switch (quality)
-			{
-				case CompressionQuality.Fast:
-					return Bc2BlockEncoderFast.EncodeBlock(block);
-				case CompressionQuality.Balanced:
-					return Bc2BlockEncoderBalanced.EncodeBlock(block);
-				case CompressionQuality.BestQuality:
-					return Bc2BlockEncoderSlow.EncodeBlock(block);
-
-				default:
-					throw new ArgumentOutOfRangeException(nameof(quality), quality, null);
-			}
-		}
+        protected override Bc2Block EncodeBlock(RawBlock4X4Rgba32 block, CompressionQuality quality) => quality switch
+        {
+            CompressionQuality.Fast => Bc2BlockEncoderFast.EncodeBlock(block),
+            CompressionQuality.Balanced => Bc2BlockEncoderBalanced.EncodeBlock(block),
+            CompressionQuality.BestQuality => Bc2BlockEncoderSlow.EncodeBlock(block),
+            _ => throw new ArgumentOutOfRangeException(nameof(quality), quality, null),
+        };
 
         #region Encoding private stuff
 

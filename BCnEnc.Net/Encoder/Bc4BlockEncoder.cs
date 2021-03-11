@@ -36,19 +36,14 @@ namespace BCnEncoder.Encoder
 						colors[i] = (byte)r;
 					}
 				}
-				switch (quality)
-				{
-					case CompressionQuality.Fast:
-						return FindRedValues(output, colors, 3);
-					case CompressionQuality.Balanced:
-						return FindRedValues(output, colors, 4);
-					case CompressionQuality.BestQuality:
-						return FindRedValues(output, colors, 8);
-
-					default:
-						throw new ArgumentOutOfRangeException(nameof(quality), quality, null);
-				}
-			}
+                return quality switch
+                {
+                    CompressionQuality.Fast => FindRedValues(output, colors, 3),
+                    CompressionQuality.Balanced => FindRedValues(output, colors, 4),
+                    CompressionQuality.BestQuality => FindRedValues(output, colors, 8),
+                    _ => throw new ArgumentOutOfRangeException(nameof(quality), quality, null),
+                };
+            }
 			finally
 			{
 				ArrayPool<byte>.Shared.Return(colorsArray, true);
@@ -117,7 +112,7 @@ namespace BCnEncoder.Encoder
 			bool hasExtremeValues = false;
 			for (int i = 0; i < pixels.Length; i++)
 			{
-				if (pixels[i] < 255 && pixels[i] > 0)
+				if (pixels[i] is < 255 and > 0)
 				{
 					if (pixels[i] < min)
 					{

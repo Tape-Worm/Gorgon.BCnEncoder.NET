@@ -52,7 +52,7 @@ namespace BCnEncoder.Decoder
 			}
 		}
 
-		private GorgonNativeBuffer<byte> ImageFromRawBlocks(RawBlock4X4Rgba32[,] blocks, int pixelWidth, int pixelHeight)
+		private static GorgonNativeBuffer<byte> ImageFromRawBlocks(RawBlock4X4Rgba32[,] blocks, int pixelWidth, int pixelHeight)
 		{
 			var result = new GorgonNativeBuffer<byte>(pixelWidth * 4 * pixelHeight);
 			GorgonPtr<int> output = ((GorgonPtr<byte>)result).To<int>();

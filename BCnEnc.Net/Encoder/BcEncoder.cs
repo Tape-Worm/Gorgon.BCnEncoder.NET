@@ -24,14 +24,9 @@ namespace BCnEncoder.Encoder
 			set;
 		} = false;
 
-		private void ImageTo4X4(Span<RawBlock4X4Rgba32> output, GorgonPtr<int> image, BufferFormat sourceFormat, int imageWidth, int imageHeight, int blocksWidth, int blocksHeight)
+		private static void ImageTo4X4(Span<RawBlock4X4Rgba32> output, GorgonPtr<int> image, BufferFormat sourceFormat, int imageWidth, int imageHeight, int blocksWidth, int blocksHeight)
 		{
-			if ((sourceFormat != BufferFormat.R8G8B8A8_UNorm)
-				&& (sourceFormat != BufferFormat.R8G8B8A8_UNorm_SRgb)
-				&& (sourceFormat != BufferFormat.B8G8R8A8_UNorm)
-				&& (sourceFormat != BufferFormat.B8G8R8A8_UNorm_SRgb)
-				&& (sourceFormat != BufferFormat.B8G8R8X8_UNorm)
-				&& (sourceFormat != BufferFormat.B8G8R8X8_UNorm_SRgb))
+			if (sourceFormat is not BufferFormat.R8G8B8A8_UNorm and not BufferFormat.R8G8B8A8_UNorm_SRgb and not BufferFormat.B8G8R8A8_UNorm and not BufferFormat.B8G8R8A8_UNorm_SRgb and not BufferFormat.B8G8R8X8_UNorm and not BufferFormat.B8G8R8X8_UNorm_SRgb)
 			{
 				throw new NotSupportedException(string.Format(Resources.BCENC_ERR_SOURCE_FORMAT_NOT_SUPPORTED, sourceFormat));
 			}
@@ -170,7 +165,7 @@ namespace BCnEncoder.Encoder
 					blocks[i] = new RawBlock4X4Rgba32();
 				}
 
-				ImageTo4X4(new Span<RawBlock4X4Rgba32>(blocks, 0, blockCount), inputImage.To<int>(), sourceFormat, width, height, blocksWidth, blocksHeight);
+                ImageTo4X4(new Span<RawBlock4X4Rgba32>(blocks, 0, blockCount), inputImage.To<int>(), sourceFormat, width, height, blocksWidth, blocksHeight);
 
 				return compressedEncoder.Encode(blocks, blockCount, quality, useMultipleThreads);
 			}

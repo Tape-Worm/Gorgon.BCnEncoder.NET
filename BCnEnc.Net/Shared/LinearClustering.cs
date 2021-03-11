@@ -20,7 +20,7 @@ namespace BCnEncoder.Shared
 			public float y;
 
 
-            public static LabXy operator +(LabXy left, LabXy right) => new LabXy()
+            public static LabXy operator +(LabXy left, LabXy right) => new()
             {
                 l = left.l + right.l,
                 a = left.a + right.a,
@@ -29,7 +29,7 @@ namespace BCnEncoder.Shared
                 y = left.y + right.y,
             };
 
-            public static LabXy operator /(LabXy left, int right) => new LabXy()
+            public static LabXy operator /(LabXy left, int right) => new()
             {
                 l = left.l / right,
                 a = left.a / right,
@@ -84,7 +84,7 @@ namespace BCnEncoder.Shared
 				return dLab + m / s * dXy;
 			}
 
-            public static ClusterCenter operator +(ClusterCenter left, LabXy right) => new ClusterCenter()
+            public static ClusterCenter operator +(ClusterCenter left, LabXy right) => new()
             {
                 l = left.l + right.l,
                 a = left.a + right.a,
@@ -94,7 +94,7 @@ namespace BCnEncoder.Shared
                 count = left.count + 1
             };
 
-            public static ClusterCenter operator /(ClusterCenter left, int right) => new ClusterCenter()
+            public static ClusterCenter operator /(ClusterCenter left, int right) => new()
             {
                 l = left.l / right,
                 a = left.a / right,
