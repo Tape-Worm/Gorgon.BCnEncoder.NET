@@ -1,5 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net48;net5.0</TargetFrameworks>
     <LangVersion>9</LangVersion>
@@ -8,7 +7,6 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-
     <PackageLicenseExpression>MIT OR Unlicense</PackageLicenseExpression>
     <Copyright />
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
@@ -33,34 +31,32 @@ Supported formats are:
     <PackageProjectUrl>https://github.com/Nominom/BCnEncoder.NET</PackageProjectUrl>
     <PackageReleaseNotes>Upgraded ImageSharp dependency from 1.0.0 beta 7 to version 1.0.1</PackageReleaseNotes>
     <Configurations>Debug;Release;BuildLocal</Configurations>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <NoWarn>1701;1702;1591</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='BuildLocal|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <NoWarn>1701;1702;1591</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
-
   <ItemGroup Condition="'$(Configuration)'=='Release' or '$(Configuration)'=='Debug'">
     <ProjectReference Include="..\..\..\Gorgon\Gorgon.Core\Gorgon.Core.csproj" />
   </ItemGroup>
-
   <ItemGroup Condition="'$(Configuration)'=='BuildLocal'">
     <!--<ProjectReference Include="..\..\..\Gorgon\develop\Gorgon\Gorgon.Core\Gorgon.Core.csproj" />-->
     <ProjectReference Include="D:\Code\GitHubRepos\Gorgon\develop\Gorgon\Gorgon.Core\Gorgon.Core.csproj" />
   </ItemGroup>
-  
   <ItemGroup>
     <Compile Remove="Decoder\RawDecoder.cs" />
     <Compile Remove="Encoder\RawEncoders.cs" />
@@ -72,14 +68,12 @@ Supported formats are:
     <Compile Remove="Shared\MipMapper.cs" />
     <Compile Remove="Shared\OutputFileFormat.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
     <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
     <PackageReference Include="System.Memory" Version="4.5.4" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -87,12 +81,10 @@ Supported formats are:
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-
 </Project>
