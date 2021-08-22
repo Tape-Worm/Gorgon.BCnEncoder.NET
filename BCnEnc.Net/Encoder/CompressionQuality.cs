@@ -1,9 +1,9 @@
 ﻿namespace BCnEncoder.Encoder
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public enum CompressionQuality
+    /// <summary>
+    /// 
+    /// </summary>
+    public enum CompressionQuality
 	{
 		/// <summary>
 		/// Fast, but low quality. Especially bad with gradients.

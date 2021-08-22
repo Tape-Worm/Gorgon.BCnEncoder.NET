@@ -1,11 +1,19 @@
 ﻿using System;
 using System.Numerics;
+
+/* Unmerged change from project 'BCnEncoder (net5.0)'
+Before:
 using DX = SharpDX;
+using Gorgon.Graphics;
+After:
+using Gorgon.Graphics;
+using DX = SharpDX;
+*/
 using Gorgon.Graphics;
 
 namespace BCnEncoder.Shared
 {
-	internal static class PcaVectors
+    internal static class PcaVectors
 	{
 		private const int C565_5_mask = 0xF8;
 		private const int C565_6_mask = 0xFC;

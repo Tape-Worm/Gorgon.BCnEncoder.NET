@@ -4,7 +4,7 @@ using BCnEncoder.Shared;
 
 namespace BCnEncoder.Encoder.Bc7
 {
-	internal static class Bc7Mode4Encoder
+    internal static class Bc7Mode4Encoder
 	{
 
 		private static ReadOnlySpan<int> PartitionTable => new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };

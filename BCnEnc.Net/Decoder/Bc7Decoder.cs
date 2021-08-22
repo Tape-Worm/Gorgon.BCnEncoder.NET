@@ -6,7 +6,7 @@ using Gorgon.Native;
 
 namespace BCnEncoder.Decoder
 {
-	internal class Bc7Decoder : IBcBlockDecoder
+    internal class Bc7Decoder : IBcBlockDecoder
 	{
 		public RawBlock4X4Rgba32[,] Decode(GorgonPtr<byte> data, int pixelWidth, int pixelHeight) {
 			int blockWidth = (int)Math.Ceiling(pixelWidth / 4.0);

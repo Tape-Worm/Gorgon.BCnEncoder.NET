@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using BCnEncoder.Shared;
-using System.Numerics;
 using Gorgon.Graphics;
 
 namespace BCnEncoder.Encoder.Bc7
 {
-	[StructLayout(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Sequential)]
 	internal class ClusterIndices4X4
 	{
 		private readonly int[] _indices = new int[16];

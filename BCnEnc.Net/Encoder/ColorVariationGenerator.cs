@@ -3,7 +3,7 @@ using BCnEncoder.Shared;
 
 namespace BCnEncoder.Encoder
 {
-	internal static class ColorVariationGenerator
+    internal static class ColorVariationGenerator
 	{
 
 		private static readonly int[] _varPatternEp0R = new int[] { 1, 1, 0, 0, -1, 0, 0, -1, 1, -1, 1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };

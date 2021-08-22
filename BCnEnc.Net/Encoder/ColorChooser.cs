@@ -4,7 +4,7 @@ using Gorgon.Graphics;
 
 namespace BCnEncoder.Encoder
 {
-	internal static class ColorChooser
+    internal static class ColorChooser
 	{
 		public static int ChooseClosestColor4(ReadOnlySpan<ColorRgb24> colors, GorgonColor color, float rWeight, float gWeight, float bWeight, out float error)
 		{

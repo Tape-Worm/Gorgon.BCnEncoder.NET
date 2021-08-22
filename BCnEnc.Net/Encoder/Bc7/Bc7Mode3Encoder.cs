@@ -4,7 +4,7 @@ using BCnEncoder.Shared;
 
 namespace BCnEncoder.Encoder.Bc7
 {
-	internal static class Bc7Mode3Encoder
+    internal static class Bc7Mode3Encoder
 	{
 
 		public static Bc7Block EncodeBlock(RawBlock4X4Rgba32 block, int startingVariation, int bestPartition)

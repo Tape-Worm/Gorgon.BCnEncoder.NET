@@ -6,7 +6,7 @@ using Gorgon.Graphics;
 
 namespace BCnEncoder.Encoder
 {
-	internal class Bc1BlockEncoder : BcBlockEncoder<Bc1Block>
+    internal class Bc1BlockEncoder : BcBlockEncoder<Bc1Block>
 	{
 		public Bc1BlockEncoder()
 			: base(4)

@@ -4,7 +4,7 @@ using Gorgon.Graphics;
 
 namespace BCnEncoder.Shared
 {
-	[StructLayout(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Sequential)]
 	internal unsafe struct Bc1Block
 	{
 		public ColorRgb565 color0;

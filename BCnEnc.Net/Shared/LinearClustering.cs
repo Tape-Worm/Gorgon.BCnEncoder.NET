@@ -5,10 +5,10 @@ using Gorgon.Graphics;
 
 namespace BCnEncoder.Shared
 {
-	/// <summary>
-	/// Simple Linear Iterative Clustering.
-	/// </summary>
-	internal static class LinearClustering
+    /// <summary>
+    /// Simple Linear Iterative Clustering.
+    /// </summary>
+    internal static class LinearClustering
 	{
 
 		private struct LabXy

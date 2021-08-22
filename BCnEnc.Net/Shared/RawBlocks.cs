@@ -4,7 +4,7 @@ using Gorgon.Graphics;
 namespace BCnEncoder.Shared
 {
 
-	internal class RawBlock4X4Rgba32
+    internal class RawBlock4X4Rgba32
 	{
 		private readonly GorgonColor[] _p = new GorgonColor[16];
 

@@ -3,12 +3,12 @@ using Gorgon.Graphics;
 
 namespace BCnEncoder.Shared
 {
-	/// <summary>
-	/// Calculate the bounding box of rgb values as described in
-	/// "Real-Time DXT Compression by J.M.P. van Waveren, 2006, Id Software, Inc." and
-	/// "Real-Time YCoCg-DXT Compression J.M.P. van Waveren,  Ignacio Castaño id Software, Inc. NVIDIA Corp."
-	/// </summary>
-	internal static class RgbBoundingBox
+    /// <summary>
+    /// Calculate the bounding box of rgb values as described in
+    /// "Real-Time DXT Compression by J.M.P. van Waveren, 2006, Id Software, Inc." and
+    /// "Real-Time YCoCg-DXT Compression J.M.P. van Waveren,  Ignacio Castaño id Software, Inc. NVIDIA Corp."
+    /// </summary>
+    internal static class RgbBoundingBox
 	{
 
 		public static void Create565(ReadOnlySpan<GorgonColor> colors, out ColorRgb565 min, out ColorRgb565 max)
