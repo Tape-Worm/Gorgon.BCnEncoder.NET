@@ -87,4 +87,10 @@ Supported formats are:
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\Code\GitHubRepos\Gorgon\develop\Dependencies\BCnEncoder.NET\BCnEnc.Net\.editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\Code\GitHubRepos\Gorgon\develop\Dependencies\BCnEncoder.NET\BCnEnc.Net\.editorconfig" />
+  </ItemGroup>
 </Project>

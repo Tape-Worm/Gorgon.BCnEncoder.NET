@@ -313,7 +313,7 @@ namespace BCnEncoder.Shared
                 return 0;
             }
         }
-                
+
         private int AlphaIndexBitCount
         {
             get
@@ -485,7 +485,7 @@ namespace BCnEncoder.Shared
                     throw new InvalidDataException();
             }
         }
-                
+
         private void ExtractPBitArray(Span<byte> pBitArray)
         {
             switch (Type)
@@ -644,12 +644,12 @@ namespace BCnEncoder.Shared
             }
 
             switch (numSubsets)
-            {				
+            {
                 case 2 when index == Subsets2AnchorIndices[partitionIndex]:
                 case 3 when (index == Subsets3AnchorIndices2[partitionIndex]) || (index == Subsets3AnchorIndices3[partitionIndex]):
                     return bitCount - 1;
                 default:
-                    return bitCount;					
+                    return bitCount;
             }
         }
 
@@ -679,7 +679,7 @@ namespace BCnEncoder.Shared
             int indexBegin = GetIndexBegin(type, bitCount, true);
             return (int)ByteHelper.ExtractFrom128(lowBits, highBits, indexBegin + indexOffset, indexBitCount);
         }
-                
+
         private int GetColorIndex(Bc7BlockType type, int numSubsets, int partitionIndex, int bitCount, int index)
         {
             int indexOffset = GetIndexOffset(numSubsets, partitionIndex, bitCount, index);
