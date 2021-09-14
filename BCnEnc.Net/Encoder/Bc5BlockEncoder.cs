@@ -63,50 +63,58 @@ namespace BCnEncoder.Encoder
             byte[] redsArray = ArrayPool<byte>.Shared.Rent(16);
             byte[] greensArray = ArrayPool<byte>.Shared.Rent(16);
 
-            var reds = new Span<byte>(redsArray, 0, 16);
-            var greens = new Span<byte>(greensArray, 0, 16);
-
-            Span<GorgonColor> pixels = block.AsSpan;
-            for (int i = 0; i < 16; i++)
+            try
             {
-                (int R, int G, int _, int _) = pixels[i].GetIntegerComponents();
-                reds[i] = (byte)R;
-                greens[i] = (byte)G;
-            }
+                var reds = new Span<byte>(redsArray, 0, 16);
+                var greens = new Span<byte>(greensArray, 0, 16);
 
-            int variations = 0;
-            int ErrorThreshsold = 0;
-            switch (quality)
+                Span<GorgonColor> pixels = block.AsSpan;
+                for (int i = 0; i < 16; i++)
+                {
+                    (int R, int G, int _, int _) = pixels[i].GetIntegerComponents();
+                    reds[i] = (byte)R;
+                    greens[i] = (byte)G;
+                }
+
+                int variations = 0;
+                int ErrorThreshsold = 0;
+                switch (quality)
+                {
+                    case CompressionQuality.Fast:
+                        variations = 3;
+                        ErrorThreshsold = 5;
+                        break;
+                    case CompressionQuality.Balanced:
+                        variations = 5;
+                        ErrorThreshsold = 1;
+                        break;
+                    case CompressionQuality.BestQuality:
+                        variations = 8;
+                        ErrorThreshsold = 0;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(quality), quality, null);
+                }
+
+                output = FindValues(output, reds, variations, ErrorThreshsold,
+                    RedIndexSetter,
+                    RedCol0Setter,
+                    RedCol1Setter,
+                    RedCol0Getter,
+                    RedCol1Getter
+                );
+                output = FindValues(output, greens, variations, ErrorThreshsold,
+                    GreenIndexSetter,
+                    GreenCol0Setter,
+                    GreenCol1Setter,
+                    GreenCol0Getter,
+                    GreenCol1Getter);
+            }
+            finally
             {
-                case CompressionQuality.Fast:
-                    variations = 3;
-                    ErrorThreshsold = 5;
-                    break;
-                case CompressionQuality.Balanced:
-                    variations = 5;
-                    ErrorThreshsold = 1;
-                    break;
-                case CompressionQuality.BestQuality:
-                    variations = 8;
-                    ErrorThreshsold = 0;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(quality), quality, null);
+                ArrayPool<byte>.Shared.Return(redsArray);
+                ArrayPool<byte>.Shared.Return(greensArray);
             }
-
-            output = FindValues(output, reds, variations, ErrorThreshsold,
-                RedIndexSetter,
-                RedCol0Setter,
-                RedCol1Setter,
-                RedCol0Getter,
-                RedCol1Getter
-            );
-            output = FindValues(output, greens, variations, ErrorThreshsold,
-                GreenIndexSetter,
-                GreenCol0Setter,
-                GreenCol1Setter,
-                GreenCol0Getter,
-                GreenCol1Getter);
             return output;
         }
 

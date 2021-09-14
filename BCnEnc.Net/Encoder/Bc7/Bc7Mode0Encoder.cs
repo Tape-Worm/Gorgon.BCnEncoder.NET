@@ -91,7 +91,7 @@ namespace BCnEncoder.Encoder.Bc7
             }
             finally
             {
-                ArrayPool<(byte, byte, byte)>.Shared.Return(endPoints);
+                ArrayPool<(byte, byte, byte)>.Shared.Return(endPoints, true);
                 ArrayPool<ColorRgba32>.Shared.Return(colors, true);
                 ArrayPool<byte>.Shared.Return(indicesArray, true);
                 ArrayPool<byte>.Shared.Return(pBitsArray, true);

@@ -197,6 +197,7 @@ namespace BCnEncoder.Shared
             {
                 ArrayPool<ClusterCenter>.Shared.Return(clusterCenterArray, true);
                 ArrayPool<ClusterCenter>.Shared.Return(previousCenters, true);
+                ArrayPool<LabXy>.Shared.Return(labXysArray, true);
             }
 
             return clusterIndices;
