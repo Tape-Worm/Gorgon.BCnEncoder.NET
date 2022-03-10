@@ -72,11 +72,7 @@ namespace BCnEncoder.Encoder.Bc7
                         }
                         if ((alphaIndices[0] & (idxMode == 0 ? 0b100 : 0b10)) > 0) //If anchor index most significant bit is 1, switch endpoints
                         {
-                            byte a = scaledEp0.a;
-
-                            scaledEp0.a = scaledEp1.a;
-                            scaledEp1.a = a;
-
+                            (scaledEp1.a, scaledEp0.a) = (scaledEp0.a, scaledEp1.a);
                             needsRedo = true;
                         }
 

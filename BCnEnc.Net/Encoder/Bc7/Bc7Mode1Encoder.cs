@@ -49,10 +49,7 @@ namespace BCnEncoder.Encoder.Bc7
 
                     if ((indices[anchorIndices[subset]] & 0b100) > 0) //If anchor index most significant bit is 1, switch endpoints
                     {
-                        ColorRgba32 c = scaledEp0;
-
-                        scaledEp0 = scaledEp1;
-                        scaledEp1 = c;
+                        (scaledEp1, scaledEp0) = (scaledEp0, scaledEp1);
 
                         //redo indices
                         ep0 = Bc7EncodingHelpers.ExpandEndpoint(type, scaledEp0, pBit);

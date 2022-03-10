@@ -101,9 +101,7 @@ namespace BCnEncoder.Encoder
 
                 if (c0.data < c1.data)
                 {
-                    ColorRgb565 c = c0;
-                    c0 = c1;
-                    c1 = c;
+                    (c1, c0) = (c0, c1);
                 }
 
                 Bc1Block best = TryColors(rawBlock, c0, c1, out float bestError);
@@ -114,9 +112,7 @@ namespace BCnEncoder.Encoder
 
                     if (newC0.data < newC1.data)
                     {
-                        ColorRgb565 c = newC0;
-                        newC0 = newC1;
-                        newC1 = c;
+                        (newC1, newC0) = (newC0, newC1);
                     }
 
                     Bc1Block block = TryColors(rawBlock, newC0, newC1, out float error);
@@ -156,9 +152,7 @@ namespace BCnEncoder.Encoder
 
                 if (c0.data < c1.data)
                 {
-                    ColorRgb565 c = c0;
-                    c0 = c1;
-                    c1 = c;
+                    (c1, c0) = (c0, c1);
                 }
 
                 Bc1Block best = TryColors(rawBlock, c0, c1, out float bestError);
@@ -171,9 +165,7 @@ namespace BCnEncoder.Encoder
 
                     if (newC0.data < newC1.data)
                     {
-                        ColorRgb565 c = newC0;
-                        newC0 = newC1;
-                        newC1 = c;
+                        (newC1, newC0) = (newC0, newC1);
                     }
 
                     Bc1Block block = TryColors(rawBlock, newC0, newC1, out float error);
@@ -278,9 +270,7 @@ namespace BCnEncoder.Encoder
 
                 if (hasAlpha && c0.data > c1.data)
                 {
-                    ColorRgb565 c = c0;
-                    c0 = c1;
-                    c1 = c;
+                    (c1, c0) = (c0, c1);
                 }
 
                 output = TryColors(rawBlock, c0, c1, out float _);
@@ -309,15 +299,11 @@ namespace BCnEncoder.Encoder
 
                 if (!hasAlpha && c0.data < c1.data)
                 {
-                    ColorRgb565 c = c0;
-                    c0 = c1;
-                    c1 = c;
+                    (c1, c0) = (c0, c1);
                 }
                 else if (hasAlpha && c1.data < c0.data)
                 {
-                    ColorRgb565 c = c0;
-                    c0 = c1;
-                    c1 = c;
+                    (c1, c0) = (c0, c1);
                 }
 
                 Bc1Block best = TryColors(rawBlock, c0, c1, out float bestError);
@@ -328,15 +314,11 @@ namespace BCnEncoder.Encoder
 
                     if (!hasAlpha && newC0.data < newC1.data)
                     {
-                        ColorRgb565 c = newC0;
-                        newC0 = newC1;
-                        newC1 = c;
+                        (newC1, newC0) = (newC0, newC1);
                     }
                     else if (hasAlpha && newC1.data < newC0.data)
                     {
-                        ColorRgb565 c = newC0;
-                        newC0 = newC1;
-                        newC1 = c;
+                        (newC1, newC0) = (newC0, newC1);
                     }
 
                     Bc1Block block = TryColors(rawBlock, newC0, newC1, out float error);
@@ -378,15 +360,11 @@ namespace BCnEncoder.Encoder
 
                 if (!hasAlpha && c0.data < c1.data)
                 {
-                    ColorRgb565 c = c0;
-                    c0 = c1;
-                    c1 = c;
+                    (c1, c0) = (c0, c1);
                 }
                 else if (hasAlpha && c1.data < c0.data)
                 {
-                    ColorRgb565 c = c0;
-                    c0 = c1;
-                    c1 = c;
+                    (c1, c0) = (c0, c1);
                 }
 
                 Bc1Block best = TryColors(rawBlock, c0, c1, out float bestError);
@@ -398,15 +376,11 @@ namespace BCnEncoder.Encoder
 
                     if (!hasAlpha && newC0.data < newC1.data)
                     {
-                        ColorRgb565 c = newC0;
-                        newC0 = newC1;
-                        newC1 = c;
+                        (newC1, newC0) = (newC0, newC1);
                     }
                     else if (hasAlpha && newC1.data < newC0.data)
                     {
-                        ColorRgb565 c = newC0;
-                        newC0 = newC1;
-                        newC1 = c;
+                        (newC1, newC0) = (newC0, newC1);
                     }
 
                     Bc1Block block = TryColors(rawBlock, newC0, newC1, out float error);
