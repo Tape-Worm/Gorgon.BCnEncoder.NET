@@ -80,13 +80,7 @@ public class BcDecoder
     /// </summary>
     public GorgonNativeBuffer<byte> Decode(GorgonPtr<byte> encodedData, int imageWidth, int imageHeight, bool has1BitAlpha, BufferFormat compressedFormat)
     {
-        IBcBlockDecoder decoder = GetDecoder(compressedFormat, has1BitAlpha);
-
-        if (decoder == null)
-        {
-            throw new NotSupportedException(string.Format(Resources.BCENC_ERR_FORMAT_NOT_SUPPORTED, compressedFormat));
-        }
-
+        IBcBlockDecoder decoder = GetDecoder(compressedFormat, has1BitAlpha) ?? throw new NotSupportedException(string.Format(Resources.BCENC_ERR_FORMAT_NOT_SUPPORTED, compressedFormat));
         int blocksWidth = (int)(imageWidth / 4.0f).FastCeiling();
         int blocksHeight = (int)(imageHeight / 4.0f).FastCeiling();
 
