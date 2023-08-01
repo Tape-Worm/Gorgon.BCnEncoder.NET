@@ -52,9 +52,6 @@ Supported formats are:
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
-  <ItemGroup Condition="'$(Configuration)'=='Release' or '$(Configuration)'=='Debug'">
-    <ProjectReference Include="..\..\..\Gorgon\Gorgon.Core\Gorgon.Core.csproj" />
-  </ItemGroup>
   <ItemGroup Condition="'$(Configuration)'=='BuildLocal'">
     <!--<ProjectReference Include="..\..\..\Gorgon\develop\Gorgon\Gorgon.Core\Gorgon.Core.csproj" />-->
     <ProjectReference Include="D:\Code\GitHubRepos\Gorgon\develop\Gorgon\Gorgon.Core\Gorgon.Core.csproj" />
@@ -93,5 +90,8 @@ Supported formats are:
   </ItemGroup>
   <ItemGroup>
     <None Include="D:\Code\GitHubRepos\Gorgon\develop\Dependencies\BCnEncoder.NET\BCnEnc.Net\.editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Gorgon\Gorgon.Core\Gorgon.Core.csproj" />
   </ItemGroup>
 </Project>
