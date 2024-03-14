@@ -13,13 +13,13 @@ using Xunit.Abstractions;
 
 namespace BCnEncTests
 {
-	public static class TestHelper
-	{
-		public static float DecodeCheckPSNR(string filename, Image<Rgba32> original) {
-			using FileStream fs = File.OpenRead(filename);
-			var ktx = KtxFile.Load(fs);
-			var decoder = new BcDecoder();
-			using Image<Rgba32> img = decoder.Decode(ktx);
+    public static class TestHelper
+    {
+        public static float DecodeCheckPSNR(string filename, Image<Rgba32> original) {
+            using FileStream fs = File.OpenRead(filename);
+            var ktx = KtxFile.Load(fs);
+            var decoder = new BcDecoder();
+            using Image<Rgba32> img = decoder.Decode(ktx);
 
             return !original.TryGetSinglePixelSpan(out Span<Rgba32> pixels)
                 ?             throw new Exception("Cannot get pixel span.")
@@ -29,24 +29,24 @@ namespace BCnEncTests
         }
 
         public static void ExecuteEncodingTest(Image<Rgba32> image, CompressionFormat format, CompressionQuality quality, string filename, ITestOutputHelper output) {
-			var encoder = new BcEncoder();
-			encoder.OutputOptions.quality = quality;
-			encoder.OutputOptions.generateMipMaps = true;
-			encoder.OutputOptions.format = format;
+            var encoder = new BcEncoder();
+            encoder.OutputOptions.quality = quality;
+            encoder.OutputOptions.generateMipMaps = true;
+            encoder.OutputOptions.format = format;
 
-			using FileStream fs = File.OpenWrite(filename);
-			encoder.Encode(image, fs);
-			fs.Close();
+            using FileStream fs = File.OpenWrite(filename);
+            encoder.Encode(image, fs);
+            fs.Close();
             float psnr = TestHelper.DecodeCheckPSNR(filename, image);
-			output.WriteLine("RGBA PSNR: " + psnr + "db");
-			if(quality == CompressionQuality.Fast)
-			{
-				Assert.True(psnr > 25);
-			}
-			else
-			{
-				Assert.True(psnr > 30);
-			}
-		}
-	}
+            output.WriteLine("RGBA PSNR: " + psnr + "db");
+            if(quality == CompressionQuality.Fast)
+            {
+                Assert.True(psnr > 25);
+            }
+            else
+            {
+                Assert.True(psnr > 30);
+            }
+        }
+    }
 }
