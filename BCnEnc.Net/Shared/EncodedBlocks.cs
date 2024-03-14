@@ -35,17 +35,17 @@ internal unsafe struct Bc1Block
         useAlpha = useAlpha && HasAlphaOrBlack;
 
         Span<ColorRgb24> colors = HasAlphaOrBlack ?
-            stackalloc ColorRgb24[] {
+            [
             color0,
             color1,
             color0 * (1.0 / 2.0) + color1 * (1.0 / 2.0),
             new ColorRgb24(0, 0, 0)
-        } : stackalloc ColorRgb24[] {
+        ] : [
             color0,
             color1,
             color0 * (2.0 / 3.0) + color1 * (1.0 / 3.0),
             color0 * (1.0 / 3.0) + color1 * (2.0 / 3.0)
-        };
+        ];
 
         for (int i = 0; i < pixels.Length; i++)
         {
@@ -109,12 +109,12 @@ internal unsafe struct Bc2Block
         var color0 = this.color0.ToColorRgb24();
         var color1 = this.color1.ToColorRgb24();
 
-        Span<ColorRgb24> colors = stackalloc ColorRgb24[] {
+        Span<ColorRgb24> colors = [
             color0,
             color1,
             color0 * (2.0 / 3.0) + color1 * (1.0 / 3.0),
             color0 * (1.0 / 3.0) + color1 * (2.0 / 3.0)
-        };
+        ];
 
         for (int i = 0; i < pixels.Length; i++)
         {
@@ -190,14 +190,14 @@ internal unsafe struct Bc3Block
 
         byte a0 = Alpha0;
         byte a1 = Alpha1;
-        Span<ColorRgb24> colors = stackalloc ColorRgb24[] {
+        Span<ColorRgb24> colors = [
             color0,
             color1,
             color0 * (2.0 / 3.0) + color1 * (1.0 / 3.0),
             color0 * (1.0 / 3.0) + color1 * (2.0 / 3.0)
-        };
+        ];
 
-        Span<byte> alphas = a0 > a1 ? stackalloc byte[] {
+        Span<byte> alphas = a0 > a1 ? [
             a0,
             a1,
             (byte)(6 / 7.0 * a0 + 1 / 7.0 * a1),
@@ -206,7 +206,7 @@ internal unsafe struct Bc3Block
             (byte)(3 / 7.0 * a0 + 4 / 7.0 * a1),
             (byte)(2 / 7.0 * a0 + 5 / 7.0 * a1),
             (byte)(1 / 7.0 * a0 + 6 / 7.0 * a1),
-        } : stackalloc byte[] {
+        ] : [
             a0,
             a1,
             (byte)(4 / 5.0 * a0 + 1 / 5.0 * a1),
@@ -215,7 +215,7 @@ internal unsafe struct Bc3Block
             (byte)(1 / 5.0 * a0 + 4 / 5.0 * a1),
             0,
             255
-        };
+        ];
 
         for (int i = 0; i < pixels.Length; i++)
         {
@@ -275,7 +275,7 @@ internal unsafe struct Bc4Block
         byte r0 = Red0;
         byte r1 = Red1;
 
-        Span<byte> reds = r0 > r1 ? stackalloc byte[] {
+        Span<byte> reds = r0 > r1 ? [
             r0,
             r1,
             (byte)(6 / 7.0 * r0 + 1 / 7.0 * r1),
@@ -284,7 +284,7 @@ internal unsafe struct Bc4Block
             (byte)(3 / 7.0 * r0 + 4 / 7.0 * r1),
             (byte)(2 / 7.0 * r0 + 5 / 7.0 * r1),
             (byte)(1 / 7.0 * r0 + 6 / 7.0 * r1),
-        } : stackalloc byte[] {
+        ] : [
             r0,
             r1,
             (byte)(4 / 5.0 * r0 + 1 / 5.0 * r1),
@@ -293,9 +293,9 @@ internal unsafe struct Bc4Block
             (byte)(1 / 5.0 * r0 + 4 / 5.0 * r1),
             0,
             255
-        };
+        ];
 
-        float red = 0.0f;
+        float red;
 
         for (int i = 0; i < pixels.Length; i++)
         {
@@ -393,7 +393,7 @@ internal unsafe struct Bc5Block
         byte r0 = Red0;
         byte r1 = Red1;
 
-        Span<byte> reds = r0 > r1 ? stackalloc byte[] {
+        Span<byte> reds = r0 > r1 ? [
             r0,
             r1,
             (byte)(6 / 7.0 * r0 + 1 / 7.0 * r1),
@@ -402,7 +402,7 @@ internal unsafe struct Bc5Block
             (byte)(3 / 7.0 * r0 + 4 / 7.0 * r1),
             (byte)(2 / 7.0 * r0 + 5 / 7.0 * r1),
             (byte)(1 / 7.0 * r0 + 6 / 7.0 * r1),
-        } : stackalloc byte[] {
+        ] : [
             r0,
             r1,
             (byte)(4 / 5.0 * r0 + 1 / 5.0 * r1),
@@ -411,12 +411,12 @@ internal unsafe struct Bc5Block
             (byte)(1 / 5.0 * r0 + 4 / 5.0 * r1),
             0,
             255
-        };
+        ];
 
         byte g0 = Green0;
         byte g1 = Green1;
 
-        Span<byte> greens = g0 > g1 ? stackalloc byte[] {
+        Span<byte> greens = g0 > g1 ? [
             g0,
             g1,
             (byte)(6 / 7.0 * g0 + 1 / 7.0 * g1),
@@ -425,7 +425,7 @@ internal unsafe struct Bc5Block
             (byte)(3 / 7.0 * g0 + 4 / 7.0 * g1),
             (byte)(2 / 7.0 * g0 + 5 / 7.0 * g1),
             (byte)(1 / 7.0 * g0 + 6 / 7.0 * g1),
-        } : stackalloc byte[] {
+        ] : [
             g0,
             g1,
             (byte)(4 / 5.0 * g0 + 1 / 5.0 * g1),
@@ -434,7 +434,7 @@ internal unsafe struct Bc5Block
             (byte)(1 / 5.0 * g0 + 4 / 5.0 * g1),
             0,
             255
-        };
+        ];
 
         for (int i = 0; i < pixels.Length; i++)
         {

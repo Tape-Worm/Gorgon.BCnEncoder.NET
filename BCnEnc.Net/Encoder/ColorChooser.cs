@@ -8,9 +8,9 @@ internal static class ColorChooser
 {
     public static int ChooseClosestColor4(ReadOnlySpan<ColorRgb24> colors, GorgonColor color, float rWeight, float gWeight, float bWeight, out float error)
     {
-        (int R, int G, int B, int A) = color.GetIntegerComponents();
+        (int R, int G, int B, int _) = color.GetIntegerComponents();
 
-        ReadOnlySpan<float> d = stackalloc float[4] {
+        ReadOnlySpan<float> d = [
             Math.Abs(colors[0].r - R) * rWeight
             + Math.Abs(colors[0].g - G) * gWeight
             + Math.Abs(colors[0].b - B) * bWeight,
@@ -23,7 +23,7 @@ internal static class ColorChooser
             Math.Abs(colors[3].r - R) * rWeight
             + Math.Abs(colors[3].g - G) * gWeight
             + Math.Abs(colors[3].b - B) * bWeight,
-        };
+        ];
 
         int b0 = d[0] > d[3] ? 1 : 0;
         int b1 = d[1] > d[2] ? 1 : 0;
@@ -51,7 +51,7 @@ internal static class ColorChooser
             return 3;
         }
 
-        ReadOnlySpan<float> d = stackalloc float[4] {
+        ReadOnlySpan<float> d = [
             Math.Abs(colors[0].r - R) * rWeight
             + Math.Abs(colors[0].g - G) * gWeight
             + Math.Abs(colors[0].b - B) * bWeight,
@@ -66,7 +66,7 @@ internal static class ColorChooser
             Math.Abs(colors[3].r - R) * rWeight
             + Math.Abs(colors[3].g - G) * gWeight
             + Math.Abs(colors[3].b - B) * bWeight,
-        };
+        ];
 
         int b0 = d[0] > d[2] ? 1 : 0;
         int b1 = d[1] > d[3] ? 1 : 0;

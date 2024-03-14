@@ -6,13 +6,10 @@ using Gorgon.Graphics;
 
 namespace BCnEncoder.Encoder;
 
-internal class Bc4BlockEncoder : BcBlockEncoder<Bc4Block>
+internal class Bc4BlockEncoder(bool luminanceAsRed) : BcBlockEncoder<Bc4Block>(4)
 {
 
-    private readonly bool _luminanceAsRed;
-
-    public Bc4BlockEncoder(bool luminanceAsRed)
-        : base(4) => _luminanceAsRed = luminanceAsRed;
+    private readonly bool _luminanceAsRed = luminanceAsRed;
 
     protected override Bc4Block EncodeBlock(RawBlock4X4Rgba32 block, CompressionQuality quality)
     {
@@ -51,13 +48,14 @@ internal class Bc4BlockEncoder : BcBlockEncoder<Bc4Block>
     }
 
     #region Encoding private stuff
-    private static int SelectIndices(ref Bc4Block block, Span<byte> pixels, int bestError)
+    private static int SelectIndices(ref Bc4Block block, Span<byte> pixels)
     {
+        int bestError;
         int cumulativeError = 0;
         byte c0 = block.Red0;
         byte c1 = block.Red1;
         Span<byte> colors = c0 > c1
-            ? stackalloc byte[] {
+            ? [
             c0,
             c1,
             (byte)(6 / 7.0 * c0 + 1 / 7.0 * c1),
@@ -66,8 +64,8 @@ internal class Bc4BlockEncoder : BcBlockEncoder<Bc4Block>
             (byte)(3 / 7.0 * c0 + 4 / 7.0 * c1),
             (byte)(2 / 7.0 * c0 + 5 / 7.0 * c1),
             (byte)(1 / 7.0 * c0 + 6 / 7.0 * c1),
-        }
-            : stackalloc byte[] {
+        ]
+            : [
             c0,
             c1,
             (byte)(4 / 5.0 * c0 + 1 / 5.0 * c1),
@@ -76,7 +74,7 @@ internal class Bc4BlockEncoder : BcBlockEncoder<Bc4Block>
             (byte)(1 / 5.0 * c0 + 4 / 5.0 * c1),
             0,
             255
-        };
+        ];
         for (int i = 0; i < pixels.Length; i++)
         {
             byte bestIndex = 0;
@@ -135,7 +133,7 @@ internal class Bc4BlockEncoder : BcBlockEncoder<Bc4Block>
         {
             colorBlock.Red0 = 0;
             colorBlock.Red1 = 255;
-            int error = SelectIndices(ref colorBlock, pixels, 0);
+            int error = SelectIndices(ref colorBlock, pixels);
             Debug.Assert(0 == error, $"There should not be an error value here: {error}");
             return colorBlock;
         }
@@ -143,7 +141,7 @@ internal class Bc4BlockEncoder : BcBlockEncoder<Bc4Block>
         Bc4Block best = colorBlock;
         best.Red0 = max;
         best.Red1 = min;
-        bestError = SelectIndices(ref best, pixels, 0);
+        bestError = SelectIndices(ref best, pixels);
         if (bestError == 0)
         {
             return best;
@@ -157,7 +155,7 @@ internal class Bc4BlockEncoder : BcBlockEncoder<Bc4Block>
                 Bc4Block block = colorBlock;
                 block.Red0 = hasExtremeValues ? c1 : c0;
                 block.Red1 = hasExtremeValues ? c0 : c1;
-                int error = SelectIndices(ref block, pixels, bestError);
+                int error = SelectIndices(ref block, pixels);
                 if (error < bestError)
                 {
                     best = block;
@@ -172,7 +170,7 @@ internal class Bc4BlockEncoder : BcBlockEncoder<Bc4Block>
                 Bc4Block block = colorBlock;
                 block.Red0 = hasExtremeValues ? c1 : c0;
                 block.Red1 = hasExtremeValues ? c0 : c1;
-                int error = SelectIndices(ref block, pixels, bestError);
+                int error = SelectIndices(ref block, pixels);
                 if (error < bestError)
                 {
                     best = block;
@@ -187,7 +185,7 @@ internal class Bc4BlockEncoder : BcBlockEncoder<Bc4Block>
                 Bc4Block block = colorBlock;
                 block.Red0 = hasExtremeValues ? c1 : c0;
                 block.Red1 = hasExtremeValues ? c0 : c1;
-                int error = SelectIndices(ref block, pixels, bestError);
+                int error = SelectIndices(ref block, pixels);
                 if (error < bestError)
                 {
                     best = block;
@@ -202,7 +200,7 @@ internal class Bc4BlockEncoder : BcBlockEncoder<Bc4Block>
                 Bc4Block block = colorBlock;
                 block.Red0 = hasExtremeValues ? c1 : c0;
                 block.Red1 = hasExtremeValues ? c0 : c1;
-                int error = SelectIndices(ref block, pixels, bestError);
+                int error = SelectIndices(ref block, pixels);
                 if (error < bestError)
                 {
                     best = block;
@@ -217,7 +215,7 @@ internal class Bc4BlockEncoder : BcBlockEncoder<Bc4Block>
                 Bc4Block block = colorBlock;
                 block.Red0 = hasExtremeValues ? c1 : c0;
                 block.Red1 = hasExtremeValues ? c0 : c1;
-                int error = SelectIndices(ref block, pixels, bestError);
+                int error = SelectIndices(ref block, pixels);
                 if (error < bestError)
                 {
                     best = block;
@@ -232,7 +230,7 @@ internal class Bc4BlockEncoder : BcBlockEncoder<Bc4Block>
                 Bc4Block block = colorBlock;
                 block.Red0 = hasExtremeValues ? c1 : c0;
                 block.Red1 = hasExtremeValues ? c0 : c1;
-                int error = SelectIndices(ref block, pixels, bestError);
+                int error = SelectIndices(ref block, pixels);
                 if (error < bestError)
                 {
                     best = block;

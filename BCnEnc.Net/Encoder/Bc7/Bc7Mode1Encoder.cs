@@ -21,10 +21,10 @@ internal static class Bc7Mode1Encoder
         byte[] indicesArray = ArrayPool<byte>.Shared.Rent(16);
         var indices = new Span<byte>(indicesArray, 0, 16);
 
-        int[] anchorIndices = new int[] {
+        int[] anchorIndices = [
             0,
             Bc7Block.Subsets2AnchorIndices[bestPartition]
-        };
+        ];
 
         try
         {

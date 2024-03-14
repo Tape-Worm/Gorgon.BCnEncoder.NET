@@ -137,16 +137,9 @@ internal struct ColorRgb565 : IEquatable<ColorRgb565>
     public override string ToString() => $"r : {R} g : {G} b : {B}";
 }
 
-internal struct ColorRgba32 : IEquatable<ColorRgba32>
+internal struct ColorRgba32(byte r, byte g, byte b, byte a) : IEquatable<ColorRgba32>
 {
-    public byte r, g, b, a;
-    public ColorRgba32(byte r, byte g, byte b, byte a)
-    {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a;
-    }
+    public byte r = r, g = g, b = b, a = a;
 
     public bool Equals(ColorRgba32 other) => r == other.r && g == other.g && b == other.b && a == other.a;
 

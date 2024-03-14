@@ -123,10 +123,9 @@ internal class Bc3Decoder : IBcBlockDecoder
     }
 }
 
-internal class Bc4Decoder : IBcBlockDecoder
+internal class Bc4Decoder(bool redAsLuminance) : IBcBlockDecoder
 {
-    private readonly bool _redAsLuminance;
-    public Bc4Decoder(bool redAsLuminance) => _redAsLuminance = redAsLuminance;
+    private readonly bool _redAsLuminance = redAsLuminance;
 
     public RawBlock4X4Rgba32[,] Decode(GorgonPtr<byte> data, int pixelWidth, int pixelHeight)
     {

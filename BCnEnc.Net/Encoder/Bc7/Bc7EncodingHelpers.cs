@@ -94,17 +94,17 @@ internal class ClusterIndices4X4
 
 internal static class Bc7EncodingHelpers
 {
-    private static readonly int[] _varPatternRAlpha = new int[] { 1, -1, 1, 0, 0, -1, 0, 0, 0, 0 };
-    private static readonly int[] _varPatternRNoAlpha = new int[] { 1, -1, 1, 0, 0, -1, 0, 0 };
+    private static readonly int[] _varPatternRAlpha = [1, -1, 1, 0, 0, -1, 0, 0, 0, 0];
+    private static readonly int[] _varPatternRNoAlpha = [1, -1, 1, 0, 0, -1, 0, 0];
 
-    private static readonly int[] _varPatternGAlpha = new int[] { 1, -1, 0, 1, 0, 0, -1, 0, 0, 0 };
-    private static readonly int[] _varPatternGNoAlpha = new int[] { 1, -1, 0, 1, 0, 0, -1, 0 };
+    private static readonly int[] _varPatternGAlpha = [1, -1, 0, 1, 0, 0, -1, 0, 0, 0];
+    private static readonly int[] _varPatternGNoAlpha = [1, -1, 0, 1, 0, 0, -1, 0];
 
-    private static readonly int[] _varPatternBAlpha = new int[] { 1, -1, 0, 0, 1, 0, 0, -1, 0, 0 };
-    private static readonly int[] _varPatternBNoAlpha = new int[] { 1, -1, 0, 0, 1, 0, 0, -1 };
+    private static readonly int[] _varPatternBAlpha = [1, -1, 0, 0, 1, 0, 0, -1, 0, 0];
+    private static readonly int[] _varPatternBNoAlpha = [1, -1, 0, 0, 1, 0, 0, -1];
 
-    private static readonly int[] _varPatternAAlpha = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 1, -1 };
-    private static readonly int[] _varPatternANoAlpha = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+    private static readonly int[] _varPatternAAlpha = [0, 0, 0, 0, 0, 0, 0, 0, 1, -1];
+    private static readonly int[] _varPatternANoAlpha = [0, 0, 0, 0, 0, 0, 0, 0];
 
     public static bool TypeHasPBits(Bc7BlockType type) => type switch
     {
@@ -433,7 +433,7 @@ internal static class Bc7EncodingHelpers
             return error;
         }
 
-        output = output.OrderBy(CalculatePartitionError).ToArray();
+        output = [.. output.OrderBy(CalculatePartitionError)];
 
         return output;
     }
@@ -626,7 +626,7 @@ internal static class Bc7EncodingHelpers
             return error;
         }
 
-        output = output.OrderBy(CalculatePartitionError).ToArray();
+        output = [.. output.OrderBy(CalculatePartitionError)];
 
         return output;
     }

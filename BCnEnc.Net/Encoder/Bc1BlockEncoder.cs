@@ -41,12 +41,12 @@ internal class Bc1BlockEncoder : BcBlockEncoder<Bc1Block>
             c1,
             c0 * (1.0 / 2.0) + c1 * (1.0 / 2.0),
             new ColorRgb24(0, 0, 0)
-        } : stackalloc ColorRgb24[] {
+        } : [
             c0,
             c1,
             c0 * (2.0 / 3.0) + c1 * (1.0 / 3.0),
             c0 * (1.0 / 3.0) + c1 * (2.0 / 3.0)
-        };
+        ];
 
         error = 0;
         for (int i = 0; i < 16; i++)
@@ -230,12 +230,12 @@ internal class Bc1AlphaBlockEncoder
             c1,
             c0 * (1.0 / 2.0) + c1 * (1.0 / 2.0),
             new ColorRgb24(0, 0, 0)
-        } : stackalloc ColorRgb24[] {
+        } : [
             c0,
             c1,
             c0 * (2.0 / 3.0) + c1 * (1.0 / 3.0),
             c0 * (1.0 / 3.0) + c1 * (2.0 / 3.0)
-        };
+        ];
 
         error = 0;
         for (int i = 0; i < 16; i++)

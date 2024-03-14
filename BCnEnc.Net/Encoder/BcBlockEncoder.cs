@@ -7,11 +7,11 @@ using Gorgon.Native;
 
 namespace BCnEncoder.Encoder;
 
-internal abstract class BcBlockEncoder<T>
+internal abstract class BcBlockEncoder<T>(int maxThreads)
     : IBcBlockEncoder
     where T : unmanaged
 {
-    private readonly int _maxThreads;
+    private readonly int _maxThreads = maxThreads.Max(1).Min((Environment.ProcessorCount / 2).Max(1));
 
     public GorgonNativeBuffer<byte> Encode(RawBlock4X4Rgba32[] blocks, int blockCount, CompressionQuality quality, bool parallel = true)
     {
@@ -36,6 +36,4 @@ internal abstract class BcBlockEncoder<T>
     }
 
     protected abstract T EncodeBlock(RawBlock4X4Rgba32 block, CompressionQuality quality);
-
-    protected BcBlockEncoder(int maxThreads) => _maxThreads = maxThreads.Max(1).Min((Environment.ProcessorCount / 2).Max(1));
 }

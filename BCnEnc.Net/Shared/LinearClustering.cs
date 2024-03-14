@@ -39,24 +39,14 @@ internal static class LinearClustering
         };
     }
 
-    private struct ClusterCenter
+    private struct ClusterCenter(LinearClustering.LabXy labxy)
     {
-        public float l;
-        public float a;
-        public float b;
-        public float x;
-        public float y;
-        public int count;
-
-        public ClusterCenter(LabXy labxy)
-        {
-            l = labxy.l;
-            a = labxy.a;
-            b = labxy.b;
-            x = labxy.x;
-            y = labxy.y;
-            count = 0;
-        }
+        public float l = labxy.l;
+        public float a = labxy.a;
+        public float b = labxy.b;
+        public float x = labxy.x;
+        public float y = labxy.y;
+        public int count = 0;
 
         public float Distance(LabXy other, float m, float s)
         {
@@ -331,8 +321,8 @@ internal static class LinearClustering
 
     private static int[] EnforceConnectivity(int[] oldLabels, int width, int height, int clusters)
     {
-        ReadOnlySpan<int> neighborX = new[] { -1, 0, 1, 0 };
-        ReadOnlySpan<int> neighborY = new[] { 0, -1, 0, 1 };
+        ReadOnlySpan<int> neighborX = [-1, 0, 1, 0];
+        ReadOnlySpan<int> neighborY = [0, -1, 0, 1];
 
         int sSquared = (width * height) / clusters;
 

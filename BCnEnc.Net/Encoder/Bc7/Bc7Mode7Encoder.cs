@@ -22,10 +22,10 @@ internal static class Bc7Mode7Encoder
 
         ReadOnlySpan<int> partitionTable = Bc7Block.Subsets2PartitionTable[bestPartition];
 
-        int[] anchorIndices = new int[] {
+        int[] anchorIndices = [
                 0,
                 Bc7Block.Subsets2AnchorIndices[bestPartition]
-            };
+            ];
 
         try
         {

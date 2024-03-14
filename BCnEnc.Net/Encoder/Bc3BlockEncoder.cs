@@ -35,12 +35,12 @@ internal class Bc3BlockEncoder : BcBlockEncoder<Bc3Block>
         var c0 = color0.ToColorRgb24();
         var c1 = color1.ToColorRgb24();
 
-        ReadOnlySpan<ColorRgb24> colors = stackalloc ColorRgb24[] {
+        ReadOnlySpan<ColorRgb24> colors = [
             c0,
             c1,
             c0 * (2.0 / 3.0) + c1 * (1.0 / 3.0),
             c0 * (1.0 / 3.0) + c1 * (2.0 / 3.0)
-        };
+        ];
 
         error = 0;
         for (int i = 0; i < 16; i++)
@@ -55,7 +55,7 @@ internal class Bc3BlockEncoder : BcBlockEncoder<Bc3Block>
 
     private static Bc3Block FindAlphaValues(Bc3Block colorBlock, RawBlock4X4Rgba32 rawBlock, int variations)
     {
-        int bestError = 0;
+        int bestError;
         Span<GorgonColor> pixels = rawBlock.AsSpan;
 
         //Find min and max alpha
@@ -89,7 +89,7 @@ internal class Bc3BlockEncoder : BcBlockEncoder<Bc3Block>
             int cumulativeError = 0;
             byte a0 = block.Alpha0;
             byte a1 = block.Alpha1;
-            Span<byte> alphas = a0 > a1 ? stackalloc byte[] {
+            Span<byte> alphas = a0 > a1 ? [
                 a0,
                 a1,
                 (byte)(6 / 7.0 * a0 + 1 / 7.0 * a1),
@@ -98,7 +98,7 @@ internal class Bc3BlockEncoder : BcBlockEncoder<Bc3Block>
                 (byte)(3 / 7.0 * a0 + 4 / 7.0 * a1),
                 (byte)(2 / 7.0 * a0 + 5 / 7.0 * a1),
                 (byte)(1 / 7.0 * a0 + 6 / 7.0 * a1),
-            } : stackalloc byte[] {
+            ] : [
                 a0,
                 a1,
                 (byte)(4 / 5.0 * a0 + 1 / 5.0 * a1),
@@ -107,7 +107,7 @@ internal class Bc3BlockEncoder : BcBlockEncoder<Bc3Block>
                 (byte)(1 / 5.0 * a0 + 4 / 5.0 * a1),
                 0,
                 255
-            };
+            ];
 
             for (int i = 0; i < aPixels.Length; i++)
             {

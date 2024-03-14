@@ -34,12 +34,12 @@ internal class Bc2BlockEncoder : BcBlockEncoder<Bc2Block>
         var c0 = color0.ToColorRgb24();
         var c1 = color1.ToColorRgb24();
 
-        ReadOnlySpan<ColorRgb24> colors = stackalloc ColorRgb24[] {
+        ReadOnlySpan<ColorRgb24> colors = [
             c0,
             c1,
             c0 * (2.0 / 3.0) + c1 * (1.0 / 3.0),
             c0 * (1.0 / 3.0) + c1 * (2.0 / 3.0)
-        };
+        ];
 
         error = 0;
         for (int i = 0; i < 16; i++)

@@ -122,18 +122,19 @@ internal class Bc5BlockEncoder : BcBlockEncoder<Bc5Block>
 
     #region Encoding private stuff
 
-    private static int SelectIndices(ref Bc5Block block, Span<byte> pixels, int bestError,
+    private static int SelectIndices(ref Bc5Block block, Span<byte> pixels, 
         Func<Bc5Block, int, byte, Bc5Block> indexSetter,
         Func<Bc5Block, byte> col0Getter,
         Func<Bc5Block, byte> col1Getter)
     {
+        int bestError;
         int cumulativeError = 0;
         //var c0 = block.Red0;
         //var c1 = block.Red1;
         byte c0 = col0Getter(block);
         byte c1 = col1Getter(block);
         Span<byte> colors = c0 > c1
-            ? stackalloc byte[] {
+            ? [
             c0,
             c1,
             (byte)(6 / 7.0 * c0 + 1 / 7.0 * c1),
@@ -142,8 +143,8 @@ internal class Bc5BlockEncoder : BcBlockEncoder<Bc5Block>
             (byte)(3 / 7.0 * c0 + 4 / 7.0 * c1),
             (byte)(2 / 7.0 * c0 + 5 / 7.0 * c1),
             (byte)(1 / 7.0 * c0 + 6 / 7.0 * c1),
-        }
-            : stackalloc byte[] {
+        ]
+            : [
             c0,
             c1,
             (byte)(4 / 5.0 * c0 + 1 / 5.0 * c1),
@@ -152,7 +153,7 @@ internal class Bc5BlockEncoder : BcBlockEncoder<Bc5Block>
             (byte)(1 / 5.0 * c0 + 4 / 5.0 * c1),
             0,
             255
-        };
+        ];
         for (int i = 0; i < pixels.Length; i++)
         {
             byte bestIndex = 0;
@@ -221,7 +222,7 @@ internal class Bc5BlockEncoder : BcBlockEncoder<Bc5Block>
             //colorBlock.Red1 = 255;
             colorBlock = col0Setter(colorBlock, 0);
             colorBlock = col1Setter(colorBlock, 255);
-            int error = SelectIndices(ref colorBlock, pixels, 0, indexSetter, col0Getter, col1Getter);
+            int error = SelectIndices(ref colorBlock, pixels, indexSetter, col0Getter, col1Getter);
             Debug.Assert(0 == error);
             return colorBlock;
         }
@@ -231,7 +232,7 @@ internal class Bc5BlockEncoder : BcBlockEncoder<Bc5Block>
         //best.Red1 = min;
         best = col0Setter(best, max);
         best = col1Setter(best, min);
-        bestError = SelectIndices(ref colorBlock, pixels, 0, indexSetter, col0Getter, col1Getter);
+        bestError = SelectIndices(ref colorBlock, pixels, indexSetter, col0Getter, col1Getter);
         if (bestError == 0)
         {
             return best;
@@ -247,7 +248,7 @@ internal class Bc5BlockEncoder : BcBlockEncoder<Bc5Block>
                 //block.Red1 = hasExtremeValues ? c0 : c1;
                 block = col0Setter(block, hasExtremeValues ? c1 : c0);
                 block = col1Setter(block, hasExtremeValues ? c0 : c1);
-                int error = SelectIndices(ref colorBlock, pixels, bestError, indexSetter, col0Getter, col1Getter);
+                int error = SelectIndices(ref colorBlock, pixels, indexSetter, col0Getter, col1Getter);
                 if (error < bestError)
                 {
                     best = block;
@@ -264,7 +265,7 @@ internal class Bc5BlockEncoder : BcBlockEncoder<Bc5Block>
                 //block.Red1 = hasExtremeValues ? c0 : c1;
                 block = col0Setter(block, hasExtremeValues ? c1 : c0);
                 block = col1Setter(block, hasExtremeValues ? c0 : c1);
-                int error = SelectIndices(ref colorBlock, pixels, bestError, indexSetter, col0Getter, col1Getter);
+                int error = SelectIndices(ref colorBlock, pixels, indexSetter, col0Getter, col1Getter);
                 if (error < bestError)
                 {
                     best = block;
@@ -281,7 +282,7 @@ internal class Bc5BlockEncoder : BcBlockEncoder<Bc5Block>
                 //block.Red1 = hasExtremeValues ? c0 : c1;
                 block = col0Setter(block, hasExtremeValues ? c1 : c0);
                 block = col1Setter(block, hasExtremeValues ? c0 : c1);
-                int error = SelectIndices(ref colorBlock, pixels, bestError, indexSetter, col0Getter, col1Getter);
+                int error = SelectIndices(ref colorBlock, pixels, indexSetter, col0Getter, col1Getter);
                 if (error < bestError)
                 {
                     best = block;
@@ -298,7 +299,7 @@ internal class Bc5BlockEncoder : BcBlockEncoder<Bc5Block>
                 //block.Red1 = hasExtremeValues ? c0 : c1;
                 block = col0Setter(block, hasExtremeValues ? c1 : c0);
                 block = col1Setter(block, hasExtremeValues ? c0 : c1);
-                int error = SelectIndices(ref colorBlock, pixels, bestError, indexSetter, col0Getter, col1Getter);
+                int error = SelectIndices(ref colorBlock, pixels, indexSetter, col0Getter, col1Getter);
                 if (error < bestError)
                 {
                     best = block;
@@ -315,7 +316,7 @@ internal class Bc5BlockEncoder : BcBlockEncoder<Bc5Block>
                 //block.Red1 = hasExtremeValues ? c0 : c1;
                 block = col0Setter(block, hasExtremeValues ? c1 : c0);
                 block = col1Setter(block, hasExtremeValues ? c0 : c1);
-                int error = SelectIndices(ref colorBlock, pixels, bestError, indexSetter, col0Getter, col1Getter);
+                int error = SelectIndices(ref colorBlock, pixels, indexSetter, col0Getter, col1Getter);
                 if (error < bestError)
                 {
                     best = block;
@@ -332,7 +333,7 @@ internal class Bc5BlockEncoder : BcBlockEncoder<Bc5Block>
                 //block.Red1 = hasExtremeValues ? c0 : c1;
                 block = col0Setter(block, hasExtremeValues ? c1 : c0);
                 block = col1Setter(block, hasExtremeValues ? c0 : c1);
-                int error = SelectIndices(ref colorBlock, pixels, bestError, indexSetter, col0Getter, col1Getter);
+                int error = SelectIndices(ref colorBlock, pixels, indexSetter, col0Getter, col1Getter);
                 if (error < bestError)
                 {
                     best = block;

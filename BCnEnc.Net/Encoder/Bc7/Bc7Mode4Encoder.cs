@@ -7,7 +7,7 @@ namespace BCnEncoder.Encoder.Bc7;
 internal static class Bc7Mode4Encoder
 {
 
-    private static ReadOnlySpan<int> PartitionTable => new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    private static ReadOnlySpan<int> PartitionTable => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     const int Subset = 0;
 
     public static Bc7Block EncodeBlock(RawBlock4X4Rgba32 block, int startingVariation)
