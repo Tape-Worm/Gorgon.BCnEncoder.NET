@@ -8,7 +8,7 @@ using Gorgon.Native;
 namespace BCnEncoder.Decoder;
 
 /// <summary>
-/// Decodes compressed files into Rgba format.
+/// Decodes compressed files into Rgba format
 /// </summary>
 public class BcDecoder
 {

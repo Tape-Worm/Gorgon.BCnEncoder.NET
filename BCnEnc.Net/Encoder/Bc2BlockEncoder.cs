@@ -20,8 +20,6 @@ internal class Bc2BlockEncoder : BcBlockEncoder<Bc2Block>
         _ => throw new ArgumentOutOfRangeException(nameof(quality), quality, null),
     };
 
-    #region Encoding private stuff
-
     private static Bc2Block TryColors(RawBlock4X4Rgba32 rawBlock, ColorRgb565 color0, ColorRgb565 color1, out float error, float rWeight = 0.3f, float gWeight = 0.6f, float bWeight = 0.1f)
     {
         var output = new Bc2Block();
@@ -53,10 +51,6 @@ internal class Bc2BlockEncoder : BcBlockEncoder<Bc2Block>
         return output;
     }
 
-
-    #endregion
-
-    #region Encoders
 
     private static class Bc2BlockEncoderFast
     {
@@ -175,5 +169,5 @@ internal class Bc2BlockEncoder : BcBlockEncoder<Bc2Block>
         }
     }
 
-    #endregion
+
 }

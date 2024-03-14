@@ -537,7 +537,6 @@ internal static class PcaVectors
                 }
             }
 
-            #region G
             if (endPoint0.Y - increment >= 0)
             { // decrement ep0 G
                 float prevY = endPoint0.Y;
@@ -607,9 +606,6 @@ internal static class PcaVectors
                 }
             }
 
-            #endregion
-
-            #region R
             if (endPoint0.X - increment >= 0)
             { // decrement ep0 R
                 float prevX = endPoint0.X;
@@ -678,10 +674,7 @@ internal static class PcaVectors
                     endPoint0.X = prevX;
                 }
             }
-            #endregion
-
-            #region B
-
+        
             if (endPoint0.Z - increment >= 0)
             { // decrement ep0 B
                 float prevZ = endPoint0.Z;
@@ -751,7 +744,7 @@ internal static class PcaVectors
                 }
             }
 
-            #endregion
+        
 
             Clamp565(ref endPoint0);
             Clamp565(ref endPoint1);

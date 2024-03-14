@@ -21,8 +21,6 @@ internal class Bc3BlockEncoder : BcBlockEncoder<Bc3Block>
         _ => throw new ArgumentOutOfRangeException(nameof(quality), quality, null),
     };
 
-    #region Encoding private stuff
-
     private static Bc3Block TryColors(RawBlock4X4Rgba32 rawBlock, ColorRgb565 color0, ColorRgb565 color1, out float error, float rWeight = 0.3f, float gWeight = 0.6f, float bWeight = 0.1f)
     {
         var output = new Bc3Block();
@@ -242,11 +240,6 @@ internal class Bc3BlockEncoder : BcBlockEncoder<Bc3Block>
         return best;
     }
 
-
-    #endregion
-
-    #region Encoders
-
     private static class Bc3BlockEncoderFast
     {
 
@@ -370,5 +363,5 @@ internal class Bc3BlockEncoder : BcBlockEncoder<Bc3Block>
             return best;
         }
     }
-    #endregion
+
 }

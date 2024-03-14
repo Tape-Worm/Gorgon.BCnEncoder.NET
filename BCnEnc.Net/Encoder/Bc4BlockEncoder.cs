@@ -47,7 +47,6 @@ internal class Bc4BlockEncoder(bool luminanceAsRed) : BcBlockEncoder<Bc4Block>(4
         }
     }
 
-    #region Encoding private stuff
     private static int SelectIndices(ref Bc4Block block, Span<byte> pixels)
     {
         int bestError;
@@ -250,5 +249,5 @@ internal class Bc4BlockEncoder(bool luminanceAsRed) : BcBlockEncoder<Bc4Block>(4
     }
 
 
-    #endregion
+
 }
