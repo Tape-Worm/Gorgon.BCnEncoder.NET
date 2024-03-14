@@ -35,7 +35,7 @@ Supported formats are:
     </AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <NeutralLanguage>en</NeutralLanguage>
-    <LangVersion>10.0</LangVersion>
+
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
