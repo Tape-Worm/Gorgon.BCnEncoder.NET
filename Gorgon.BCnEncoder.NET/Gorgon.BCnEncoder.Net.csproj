@@ -1,0 +1,99 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net48;net6.0</TargetFrameworks>
+    
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <PackageLicenseExpression>MIT OR Unlicense</PackageLicenseExpression>
+    <Copyright />
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Version>1.2.3</Version>
+    <Authors>Nominom</Authors>
+    <Company />
+    <Product>BCnEncoder.Net</Product>
+    <Description>BCnEncoder.NET is a library for compressing rgba images to different block-compressed formats. Both ktx and dds output formats are supported. It has no native dependencies and is .NET Standard 2.1 compatible.
+
+Supported formats are:
+    Raw unsigned byte R, RG, RGB and RGBA formats
+    BC1 (S3TC DXT1)
+    BC2 (S3TC DXT3)
+    BC3 (S3TC DXT5)
+    BC4 (RGTC1)
+    BC5 (RGTC2)
+    BC7 (BPTC)</Description>
+    <PackageId>BCnEncoder.Net</PackageId>
+    <RepositoryUrl>https://github.com/Nominom/BCnEncoder.NET</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>BCn BC BC1 BC2 BC3 BC4 BC5 BC7 BPTC RGTC S3TC DXT1 DXT3 DXT5 ktx dds texture compression encoding decoding decompression image gpu</PackageTags>
+    <PackageProjectUrl>https://github.com/Nominom/BCnEncoder.NET</PackageProjectUrl>
+    <PackageReleaseNotes>Upgraded ImageSharp dependency from 1.0.0 beta 7 to version 1.0.1</PackageReleaseNotes>
+    <Configurations>Debug;Release;BuildLocal</Configurations>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+    <NeutralLanguage>en</NeutralLanguage>
+    <LangVersion>10.0</LangVersion>
+    <RootNamespace>Gorgon.BCnEncoder</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>1701;1702;1591</NoWarn>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='BuildLocal|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>1701;1702;1591</NoWarn>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(Configuration)'=='Release' or '$(Configuration)'=='Debug'">
+    <ProjectReference Include="..\..\..\Gorgon\Gorgon.Core\Gorgon.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)'=='BuildLocal'">
+    <!--<ProjectReference Include="..\..\..\Gorgon\develop\Gorgon\Gorgon.Core\Gorgon.Core.csproj" />-->
+    <ProjectReference Include="D:\Code\GitHubRepos\Gorgon\develop\Gorgon\Gorgon.Core\Gorgon.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Decoder\RawDecoder.cs" />
+    <Compile Remove="Encoder\RawEncoders.cs" />
+    <Compile Remove="Shared\BinaryReaderWriterExtensions.cs" />
+    <Compile Remove="Shared\DdsFile.cs" />
+    <Compile Remove="Shared\GLFormat.cs" />
+    <Compile Remove="Shared\ImageQuality.cs" />
+    <Compile Remove="Shared\KtxFile.cs" />
+    <Compile Remove="Shared\MipMapper.cs" />
+    <Compile Remove="Shared\OutputFileFormat.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.*" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\Code\GitHubRepos\Gorgon\develop\Dependencies\BCnEncoder.NET\BCnEnc.Net\.editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\Code\GitHubRepos\Gorgon\develop\Dependencies\BCnEncoder.NET\BCnEnc.Net\.editorconfig" />
+  </ItemGroup>
+</Project>
