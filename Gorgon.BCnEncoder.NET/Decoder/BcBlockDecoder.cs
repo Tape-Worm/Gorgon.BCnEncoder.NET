@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.CompilerServices;
 using Gorgon.BCnEncoder.Shared;
 using Gorgon.Native;
