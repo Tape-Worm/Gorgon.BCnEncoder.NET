@@ -66,9 +66,9 @@ public class BcDecoder
                 int blockInternalIndexX = x % 4;
                 int blockInternalIndexY = y % 4;
 
-                output[x + y * pixelWidth] =
+                output[x + y * pixelWidth] = GorgonColor.ToABGR(
                     blocks[blockIndexX, blockIndexY]
-                        [blockInternalIndexX, blockInternalIndexY].ToABGR();
+                        [blockInternalIndexX, blockInternalIndexY]);
             }
         }
 

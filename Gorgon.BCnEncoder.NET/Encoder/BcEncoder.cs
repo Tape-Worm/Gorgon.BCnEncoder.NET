@@ -36,7 +36,7 @@ public class BcEncoder
             for (int x = 0; x < imageWidth; x++)
             {
                 int pixels = image[x + y * imageWidth];
-                GorgonColor color = GorgonColor.Black;
+                GorgonColor color = GorgonColors.Black;
 
                 switch (sourceFormat)
                 {
@@ -48,7 +48,7 @@ public class BcEncoder
                     case BufferFormat.B8G8R8A8_UNorm_SRgb:
                     case BufferFormat.B8G8R8X8_UNorm:
                     case BufferFormat.B8G8R8X8_UNorm_SRgb:
-                        color = new GorgonColor(pixels);
+                        color = GorgonColor.FromARGB(pixels);
                         break;
                 }
 

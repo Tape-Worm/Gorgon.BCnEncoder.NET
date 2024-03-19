@@ -53,7 +53,7 @@ internal unsafe struct Bc1Block
             ColorRgb24 color = colors[colorIndex];
             if (useAlpha && colorIndex == 3)
             {
-                pixels[i] = GorgonColor.Black;
+                pixels[i] = GorgonColors.Black;
             }
             else
             {

@@ -165,7 +165,7 @@ internal static class PcaVectors
 
         for (int i = 0; i < colors.Length; i++)
         {
-            var colorVec = GorgonColor.FromRGBA(colors[i]).ToVector3();
+            var colorVec = GorgonColor.ToVector3(GorgonColor.FromRGBA(colors[i]));
 
             var v = Vector3.Subtract(colorVec, mean);
             float d = Vector3.Dot(v, principalAxis);
@@ -214,7 +214,7 @@ internal static class PcaVectors
 
         for (int i = 0; i < colors.Length; i++)
         {
-            var colorVec = colors[i].ToVector3();
+            var colorVec = GorgonColor.ToVector3(colors[i]);
 
             var v = Vector3.Subtract(colorVec, mean);
             float d = Vector3.Dot(v, principalAxis);
@@ -276,7 +276,7 @@ internal static class PcaVectors
 
         for (int i = 0; i < colors.Length; i++)
         {
-            var colorVec = colors[i].ToVector4();
+            var colorVec = GorgonColor.FromVector4(colors[i]);
             var v = Vector4.Subtract(colorVec, mean);
             float d = Vector4.Dot(v, principalAxis);
             if (d < minD)
@@ -303,7 +303,7 @@ internal static class PcaVectors
         var vectorColors = new Vector3[length];
         for (int i = 0; i < colors.Length; i++)
         {
-            vectorColors[i] = GorgonColor.FromRGBA(colors[i]).ToVector3();
+            vectorColors[i] = GorgonColor.ToVector3(GorgonColor.FromRGBA(colors[i]));
         }
 
         float minD = 0;

@@ -26,7 +26,7 @@ internal class Bc4BlockEncoder(bool luminanceAsRed) : BcBlockEncoder<Bc4Block>(4
                 int r = (int)(pixels[i].Red * 255.0f);
                 if (_luminanceAsRed)
                 {
-                    colors[i] = (byte)(new ColorYCbCr(GorgonColor.FromRGBA(pixels[i])).y * 255);
+                    colors[i] = (byte)(new ColorYCbCr(pixels[i]).y * 255);
                 }
                 else
                 {
