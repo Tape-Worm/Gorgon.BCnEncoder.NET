@@ -39,7 +39,7 @@ internal static class LinearClustering
         };
     }
 
-    private struct ClusterCenter(LinearClustering.LabXy labxy)
+    private struct ClusterCenter(LabXy labxy)
     {
         public float l = labxy.l;
         public float a = labxy.a;
