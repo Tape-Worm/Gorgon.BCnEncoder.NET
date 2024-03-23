@@ -674,7 +674,7 @@ internal static class PcaVectors
                     endPoint0.X = prevX;
                 }
             }
-        
+
             if (endPoint0.Z - increment >= 0)
             { // decrement ep0 B
                 float prevZ = endPoint0.Z;
@@ -744,7 +744,7 @@ internal static class PcaVectors
                 }
             }
 
-        
+
 
             Clamp565(ref endPoint0);
             Clamp565(ref endPoint1);

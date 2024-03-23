@@ -120,7 +120,7 @@ internal class Bc5BlockEncoder : BcBlockEncoder<Bc5Block>
 
     public static BufferFormat GetDxgiFormat() => BufferFormat.BC5_UNorm;
 
-    private static int SelectIndices(ref Bc5Block block, Span<byte> pixels, 
+    private static int SelectIndices(ref Bc5Block block, Span<byte> pixels,
         Func<Bc5Block, int, byte, Bc5Block> indexSetter,
         Func<Bc5Block, byte> col0Getter,
         Func<Bc5Block, byte> col1Getter)
