@@ -1151,5 +1151,4 @@ internal static class Bc7EncodingHelpers
 
         return rotated;
     }
-
 }

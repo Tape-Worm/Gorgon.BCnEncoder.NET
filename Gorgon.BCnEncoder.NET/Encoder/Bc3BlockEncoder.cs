@@ -363,5 +363,4 @@ internal class Bc3BlockEncoder : BcBlockEncoder<Bc3Block>
             return best;
         }
     }
-
 }

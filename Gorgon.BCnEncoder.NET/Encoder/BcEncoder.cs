@@ -174,5 +174,4 @@ public class BcEncoder
             ArrayPool<RawBlock4X4Rgba32>.Shared.Return(blocks, true);
         }
     }
-
 }
