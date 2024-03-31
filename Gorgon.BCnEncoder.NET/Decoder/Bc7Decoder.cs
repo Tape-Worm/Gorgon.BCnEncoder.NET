@@ -17,7 +17,7 @@ internal class Bc7Decoder : IBcBlockDecoder
             throw new InvalidDataException();
         }
 
-        GorgonPtr<Bc7Block> encodedBlocks = data.To<Bc7Block>();
+        GorgonPtr<Bc7Block> encodedBlocks = GorgonPtr<byte>.To<Bc7Block>(data);
 
         var output = new RawBlock4X4Rgba32[blockWidth, blockHeight];
 

@@ -16,7 +16,7 @@ internal abstract class BcBlockEncoder<T>(int maxThreads)
     public GorgonNativeBuffer<byte> Encode(RawBlock4X4Rgba32[] blocks, int blockCount, CompressionQuality quality, bool parallel = true)
     {
         var result = new GorgonNativeBuffer<byte>(blockCount * Unsafe.SizeOf<T>());
-        GorgonPtr<T> outputBlocks = ((GorgonPtr<byte>)result).To<T>();
+        GorgonPtr<T> outputBlocks = GorgonPtr<byte>.To<T>((GorgonPtr<byte>)result);
 
         void EncodeData(int index) => outputBlocks[index] = EncodeBlock(blocks[index], quality);
 

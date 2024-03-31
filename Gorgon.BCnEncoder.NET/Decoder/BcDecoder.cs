@@ -55,7 +55,7 @@ public class BcDecoder
     private static GorgonNativeBuffer<byte> ImageFromRawBlocks(RawBlock4X4Rgba32[,] blocks, int pixelWidth, int pixelHeight)
     {
         var result = new GorgonNativeBuffer<byte>(pixelWidth * 4 * pixelHeight);
-        GorgonPtr<int> output = ((GorgonPtr<byte>)result).To<int>();
+        GorgonPtr<int> output = GorgonPtr<byte>.To<int>((GorgonPtr<byte>)result);
 
         for (int y = 0; y < pixelHeight; y++)
         {

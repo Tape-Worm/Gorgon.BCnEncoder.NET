@@ -22,7 +22,7 @@ internal class Bc1NoAlphaDecoder : IBcBlockDecoder
             throw new InvalidDataException();
         }
 
-        GorgonPtr<Bc1Block> encodedBlocks = data.To<Bc1Block>();
+        GorgonPtr<Bc1Block> encodedBlocks = GorgonPtr<byte>.To<Bc1Block>(data);
 
         var output = new RawBlock4X4Rgba32[blockWidth, blockHeight];
 
@@ -50,7 +50,7 @@ internal class Bc1ADecoder : IBcBlockDecoder
             throw new InvalidDataException();
         }
 
-        GorgonPtr<Bc1Block> encodedBlocks = data.To<Bc1Block>();
+        GorgonPtr<Bc1Block> encodedBlocks = GorgonPtr<byte>.To<Bc1Block>(data);
 
         var output = new RawBlock4X4Rgba32[blockWidth, blockHeight];
 
@@ -78,7 +78,7 @@ internal class Bc2Decoder : IBcBlockDecoder
             throw new InvalidDataException();
         }
 
-        GorgonPtr<Bc2Block> encodedBlocks = data.To<Bc2Block>();
+        GorgonPtr<Bc2Block> encodedBlocks = GorgonPtr<byte>.To<Bc2Block>(data);
 
         var output = new RawBlock4X4Rgba32[blockWidth, blockHeight];
 
@@ -106,7 +106,7 @@ internal class Bc3Decoder : IBcBlockDecoder
             throw new InvalidDataException();
         }
 
-        GorgonPtr<Bc3Block> encodedBlocks = data.To<Bc3Block>();
+        GorgonPtr<Bc3Block> encodedBlocks = GorgonPtr<byte>.To<Bc3Block>(data);
 
         var output = new RawBlock4X4Rgba32[blockWidth, blockHeight];
 
@@ -136,7 +136,7 @@ internal class Bc4Decoder(bool redAsLuminance) : IBcBlockDecoder
             throw new InvalidDataException();
         }
 
-        GorgonPtr<Bc4Block> encodedBlocks = data.To<Bc4Block>();
+        GorgonPtr<Bc4Block> encodedBlocks = GorgonPtr<byte>.To<Bc4Block>(data);
 
         var output = new RawBlock4X4Rgba32[blockWidth, blockHeight];
 
@@ -164,7 +164,7 @@ internal class Bc5Decoder : IBcBlockDecoder
             throw new InvalidDataException();
         }
 
-        GorgonPtr<Bc5Block> encodedBlocks = data.To<Bc5Block>();
+        GorgonPtr<Bc5Block> encodedBlocks = GorgonPtr<byte>.To<Bc5Block>(data);
 
         var output = new RawBlock4X4Rgba32[blockWidth, blockHeight];
 

@@ -165,7 +165,7 @@ public class BcEncoder
                 blocks[i] = new RawBlock4X4Rgba32();
             }
 
-            ImageTo4X4(new Span<RawBlock4X4Rgba32>(blocks, 0, blockCount), inputImage.To<int>(), sourceFormat, width, height, blocksWidth, blocksHeight);
+            ImageTo4X4(new Span<RawBlock4X4Rgba32>(blocks, 0, blockCount), GorgonPtr<byte>.To<int>(inputImage), sourceFormat, width, height, blocksWidth, blocksHeight);
 
             return compressedEncoder.Encode(blocks, blockCount, quality, useMultipleThreads);
         }
