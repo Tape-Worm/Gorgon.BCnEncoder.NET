@@ -248,6 +248,4 @@ internal class Bc4BlockEncoder(bool luminanceAsRed) : BcBlockEncoder<Bc4Block>(4
         return best;
     }
 
-
-
 }

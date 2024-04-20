@@ -211,8 +211,6 @@ internal class Bc5BlockEncoder : BcBlockEncoder<Bc5Block>
             }
         }
 
-
-
         //everything is either fully black or fully red
         if (hasExtremeValues && min == 255 && max == 0)
         {
@@ -349,7 +347,5 @@ internal class Bc5BlockEncoder : BcBlockEncoder<Bc5Block>
 
         return best;
     }
-
-
 
 }

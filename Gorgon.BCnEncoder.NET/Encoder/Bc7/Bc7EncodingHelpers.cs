@@ -198,7 +198,6 @@ internal static class Bc7EncodingHelpers
         return 0;
     }
 
-
     public static void ExpandEndpoints(Bc7BlockType type, ColorRgba32[] endpoints, byte[] pBits)
     {
         if (type is Bc7BlockType.Type0 or Bc7BlockType.Type1 or Bc7BlockType.Type3 or Bc7BlockType.Type6 or Bc7BlockType.Type7)
@@ -253,7 +252,6 @@ internal static class Bc7EncodingHelpers
         }
     }
 
-
     public static ColorRgba32 ExpandEndpoint(Bc7BlockType type, ColorRgba32 endpoint, byte pBit)
     {
         if (type is Bc7BlockType.Type0 or Bc7BlockType.Type1 or Bc7BlockType.Type3 or Bc7BlockType.Type6 or Bc7BlockType.Type7)
@@ -290,7 +288,6 @@ internal static class Bc7EncodingHelpers
         bool first = true;
         bestError = 999;
         int bestPartition = 0;
-
 
         int CalculatePartitionError(int partitionIndex)
         {
@@ -376,7 +373,6 @@ internal static class Bc7EncodingHelpers
     {
         int[] output = Enumerable.Range(0, 64).ToArray();
 
-
         int CalculatePartitionError(int partitionIndex)
         {
             int error = 0;
@@ -443,8 +439,6 @@ internal static class Bc7EncodingHelpers
         bool first = true;
         bestError = 999;
         int bestPartition = 0;
-
-
 
         int CalculatePartitionError(int partitionIndex)
         {
@@ -630,7 +624,6 @@ internal static class Bc7EncodingHelpers
 
         return output;
     }
-
 
     public static void GetInitialUnscaledEndpoints(RawBlock4X4Rgba32 block, out ColorRgba32 ep0,
         out ColorRgba32 ep1)
@@ -829,7 +822,6 @@ internal static class Bc7EncodingHelpers
         return bestIndex;
     }
 
-
     private static float TrySubsetEndpoints(Bc7BlockType type, RawBlock4X4Rgba32 raw, ColorRgba32 ep0, ColorRgba32 ep1,
         ReadOnlySpan<int> partitionTable, int subsetIndex, int type4IdxMode)
     {
@@ -1004,7 +996,6 @@ internal static class Bc7EncodingHelpers
         ReadOnlySpan<int> varPatternA = variateAlpha
             ? _varPatternAAlpha
             : _varPatternANoAlpha;
-
 
         while (variation > 0)
         {

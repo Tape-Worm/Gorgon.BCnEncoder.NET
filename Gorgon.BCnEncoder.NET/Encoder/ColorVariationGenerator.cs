@@ -31,7 +31,6 @@ internal static class ColorVariationGenerator
         return (newEp0, newEp1);
     }
 
-
     public static List<ColorRgb565> GenerateVariationsSidewaysMax(int variations, ColorYCbCr min, ColorYCbCr max)
     {
         var colors = new List<ColorRgb565>

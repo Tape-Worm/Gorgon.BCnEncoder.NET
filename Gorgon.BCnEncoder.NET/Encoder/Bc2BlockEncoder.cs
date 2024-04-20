@@ -51,7 +51,6 @@ internal class Bc2BlockEncoder : BcBlockEncoder<Bc2Block>
         return output;
     }
 
-
     private static class Bc2BlockEncoderFast
     {
 
@@ -117,7 +116,6 @@ internal class Bc2BlockEncoder : BcBlockEncoder<Bc2Block>
         private const int MaxTries = 9999;
         private const float ErrorThreshsold = 0.01f;
 
-
         internal static Bc2Block EncodeBlock(RawBlock4X4Rgba32 rawBlock)
         {
             Span<GorgonColor> pixels = rawBlock.AsSpan;
@@ -168,6 +166,5 @@ internal class Bc2BlockEncoder : BcBlockEncoder<Bc2Block>
             return best;
         }
     }
-
 
 }

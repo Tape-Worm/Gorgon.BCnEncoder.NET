@@ -239,7 +239,6 @@ internal class Bc7Encoder : BcBlockEncoder<Bc7Block>
             int[] best2SubsetPartitions = Bc7EncodingHelpers.Rank2SubsetPartitions(indexBlock2, clusters2);
             int[] best3SubsetPartitions = Bc7EncodingHelpers.Rank3SubsetPartitions(indexBlock3, clusters3);
 
-
             float bestError = 99999;
             var best = new Bc7Block();
             int tries = 0;

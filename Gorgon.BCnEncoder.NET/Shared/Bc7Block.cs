@@ -29,7 +29,6 @@ internal struct Bc7Block
     public static ReadOnlySpan<byte> ColorInterpolationWeights3 => [0, 9, 18, 27, 37, 46, 55, 64];
     public static ReadOnlySpan<byte> ColorInterpolationWeights4 => [0, 4, 9, 13, 17, 21, 26, 30, 34, 38, 43, 47, 51, 55, 60, 64];
 
-
     public static readonly int[][] Subsets2PartitionTable = [
         [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1],
         [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1],
@@ -733,7 +732,6 @@ internal struct Bc7Block
         _ => source,
     };
 
-
     public RawBlock4X4Rgba32 Decode()
     {
         var output = new RawBlock4X4Rgba32();
@@ -1139,7 +1137,6 @@ internal struct Bc7Block
                 0, alphaBitCount, i);
             int indexBitCount = GetIndexBitCount(NumSubsets,
                 0, alphaBitCount, i);
-
 
             (lowBits, highBits) = ByteHelper.StoreTo128(lowBits, highBits,
                 alphaIndexBegin + indexOffset, indexBitCount, alphaIndices[i]);

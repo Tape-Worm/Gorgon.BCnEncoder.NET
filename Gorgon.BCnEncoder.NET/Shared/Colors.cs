@@ -361,7 +361,6 @@ internal struct ColorXyz
     private static float PivotRgb(float n) => (n > 0.04045f ? (float)System.Math.Pow((n + 0.055f) / 1.055f, 2.4f) : n / 12.92f) * 100;
 }
 
-
 internal struct ColorLab
 {
     public float l;
@@ -382,7 +381,6 @@ internal struct ColorLab
         var xyz = new ColorXyz(color);
         return XyzToLab(xyz);
     }
-
 
     public static ColorLab XyzToLab(ColorXyz xyz)
     {

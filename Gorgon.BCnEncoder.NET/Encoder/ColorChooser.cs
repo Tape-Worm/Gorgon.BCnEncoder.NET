@@ -40,7 +40,6 @@ internal static class ColorChooser
         return idx;
     }
 
-
     public static int ChooseClosestColor4AlphaCutoff(ReadOnlySpan<ColorRgb24> colors, GorgonColor color, float rWeight, float gWeight, float bWeight, int alphaCutoff, bool hasAlpha, out float error)
     {
         (int R, int G, int B, int A) = color.GetIntegerComponents();

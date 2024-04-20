@@ -3,7 +3,6 @@ using System.Numerics;
 using Gorgon.BCnEncoder.Shared;
 using Gorgon.Graphics;
 
-
 namespace Gorgon.BCnEncoder.Encoder;
 
 internal class Bc1BlockEncoder : BcBlockEncoder<Bc1Block>
@@ -184,7 +183,6 @@ internal class Bc1BlockEncoder : BcBlockEncoder<Bc1Block>
         }
     }
 
-
 }
 
 internal class Bc1AlphaBlockEncoder
@@ -273,7 +271,6 @@ internal class Bc1AlphaBlockEncoder
     {
         private const int MaxTries = 24 * 2;
         private const float ErrorThreshsold = 0.05f;
-
 
         internal static Bc1Block EncodeBlock(RawBlock4X4Rgba32 rawBlock)
         {
@@ -395,6 +392,5 @@ internal class Bc1AlphaBlockEncoder
             return best;
         }
     }
-
 
 }

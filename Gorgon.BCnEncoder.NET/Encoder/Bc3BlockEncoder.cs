@@ -81,7 +81,6 @@ internal class Bc3BlockEncoder : BcBlockEncoder<Bc3Block>
             }
         }
 
-
         int SelectAlphaIndices(ref Bc3Block block, Span<GorgonColor> aPixels)
         {
             int cumulativeError = 0;
@@ -310,7 +309,6 @@ internal class Bc3BlockEncoder : BcBlockEncoder<Bc3Block>
     {
         private const int MaxTries = 9999;
         private const float ErrorThreshsold = 0.01f;
-
 
         internal static Bc3Block EncodeBlock(RawBlock4X4Rgba32 rawBlock)
         {

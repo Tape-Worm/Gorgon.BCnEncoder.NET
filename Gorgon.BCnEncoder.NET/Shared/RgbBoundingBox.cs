@@ -239,7 +239,6 @@ internal static class RgbBoundingBox
             }
         }
 
-
         int insetR = (maxR - minR) >> colorInsetShift;
         int insetG = (maxG - minG) >> colorInsetShift;
         int insetB = (maxB - minB) >> colorInsetShift;

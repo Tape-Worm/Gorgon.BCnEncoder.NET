@@ -56,7 +56,6 @@ internal static class Bc7Mode4Encoder
 
                     bool needsRedo = false;
 
-
                     if ((colorIndices[0] & (idxMode == 0 ? 0b10 : 0b100)) > 0) //If anchor index most significant bit is 1, switch endpoints
                     {
                         ColorRgba32 c = scaledEp0;

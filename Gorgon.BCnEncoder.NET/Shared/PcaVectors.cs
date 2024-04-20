@@ -130,7 +130,6 @@ internal static class PcaVectors
         Span<Vector4> vectors = stackalloc Vector4[colors.Length];
         ConvertToVector4(colors, vectors);
 
-
         CalculateCovariance(vectors, out Vector4 v4Mean, out Matrix4x4 cov);
         mean = new Vector3(v4Mean.X, v4Mean.Y, v4Mean.Z);
 
@@ -155,7 +154,6 @@ internal static class PcaVectors
         CalculateCovariance(vectors, out mean, out Matrix4x4 cov);
         CalculatePrincipalAxis(ref cov, out principalAxis);
     }
-
 
     public static void GetExtremePoints(Span<int> colors, Vector3 mean, Vector3 principalAxis, out ColorRgb24 min, out ColorRgb24 max)
     {
@@ -381,7 +379,6 @@ internal static class PcaVectors
             }
             return cumulativeError;
         }
-
 
         for (int i = 0; i < vectorColors.Length; i++)
         {
@@ -743,8 +740,6 @@ internal static class PcaVectors
                     endPoint0.Z = prevZ;
                 }
             }
-
-
 
             Clamp565(ref endPoint0);
             Clamp565(ref endPoint1);

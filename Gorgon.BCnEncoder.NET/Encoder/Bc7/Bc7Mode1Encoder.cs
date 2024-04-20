@@ -12,7 +12,6 @@ internal static class Bc7Mode1Encoder
         var output = new Bc7Block();
         const Bc7BlockType type = Bc7BlockType.Type1;
 
-
         ColorRgba32[] colors = ArrayPool<ColorRgba32>.Shared.Rent(4);
         (byte r, byte g, byte b)[] endPoints = ArrayPool<(byte, byte, byte)>.Shared.Rent(4);
         byte[] pBits = new byte[2];

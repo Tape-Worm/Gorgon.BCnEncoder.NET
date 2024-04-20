@@ -64,7 +64,6 @@ internal unsafe struct Bc1Block
     }
 }
 
-
 [StructLayout(LayoutKind.Sequential)]
 internal unsafe struct Bc2Block
 {

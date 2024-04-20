@@ -19,7 +19,6 @@ internal static class LinearClustering
         public float x;
         public float y;
 
-
         public static LabXy operator +(LabXy left, LabXy right) => new()
         {
             l = left.l + right.l,
