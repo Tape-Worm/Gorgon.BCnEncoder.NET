@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Numerics;
 
 /* Unmerged change from project 'BCnEncoder (net5.0)'
@@ -127,32 +128,52 @@ internal static class PcaVectors
 
     public static void Create(Span<GorgonColor> colors, out Vector3 mean, out Vector3 principalAxis)
     {
-        Span<Vector4> vectors = stackalloc Vector4[colors.Length];
-        ConvertToVector4(colors, vectors);
+        Vector4[] colorData = ArrayPool<Vector4>.Shared.Rent(colors.Length);
 
-        CalculateCovariance(vectors, out Vector4 v4Mean, out Matrix4x4 cov);
-        mean = new Vector3(v4Mean.X, v4Mean.Y, v4Mean.Z);
-
-        CalculatePrincipalAxis(ref cov, out Vector4 pa);
-        principalAxis = new Vector3(pa.X, pa.Y, pa.Z);
-        if (principalAxis.LengthSquared() == 0)
+        try
         {
-            principalAxis = Vector3.UnitY;
-        }
-        else
-        {
-            principalAxis = Vector3.Normalize(principalAxis);
-        }
+            Span<Vector4> vectors = colorData.AsSpan(0, colors.Length);
+            vectors.Clear();
 
+            ConvertToVector4(colors, vectors);
+
+            CalculateCovariance(vectors, out Vector4 v4Mean, out Matrix4x4 cov);
+            mean = new Vector3(v4Mean.X, v4Mean.Y, v4Mean.Z);
+
+            CalculatePrincipalAxis(ref cov, out Vector4 pa);
+            principalAxis = new Vector3(pa.X, pa.Y, pa.Z);
+            if (principalAxis.LengthSquared() == 0)
+            {
+                principalAxis = Vector3.UnitY;
+            }
+            else
+            {
+                principalAxis = Vector3.Normalize(principalAxis);
+            }
+        }
+        finally
+        {
+            ArrayPool<Vector4>.Shared.Return(colorData, true);
+        }
     }
 
     public static void CreateWithAlpha(Span<GorgonColor> colors, out Vector4 mean, out Vector4 principalAxis)
     {
-        Span<Vector4> vectors = stackalloc Vector4[colors.Length];
-        ConvertToVector4(colors, vectors);
+        Vector4[] colorData = ArrayPool<Vector4>.Shared.Rent(colors.Length);
 
-        CalculateCovariance(vectors, out mean, out Matrix4x4 cov);
-        CalculatePrincipalAxis(ref cov, out principalAxis);
+        try
+        {
+            Span<Vector4> vectors = colorData.AsSpan(0, colors.Length);
+            vectors.Clear();
+            ConvertToVector4(colors, vectors);
+
+            CalculateCovariance(vectors, out mean, out Matrix4x4 cov);
+            CalculatePrincipalAxis(ref cov, out principalAxis);
+        }
+        finally
+        {
+            ArrayPool<Vector4>.Shared.Return(colorData, true);
+        }
     }
 
     public static void GetExtremePoints(Span<int> colors, Vector3 mean, Vector3 principalAxis, out ColorRgb24 min, out ColorRgb24 max)

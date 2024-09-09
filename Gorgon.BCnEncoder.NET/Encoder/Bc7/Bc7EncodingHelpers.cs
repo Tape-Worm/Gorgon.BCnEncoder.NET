@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -63,29 +64,38 @@ internal class ClusterIndices4X4
     {
         var result = new ClusterIndices4X4();
         numClusters = NumClusters;
-        Span<int> mapKey = stackalloc int[numClusters];
-        Span<int> indices = AsSpan;
-        Span<int> outIndices = result.AsSpan;
-        int next = 0;
-        for (int i = 0; i < 16; i++)
+        int[] clusterData = ArrayPool<int>.Shared.Rent(numClusters);
+
+        try
         {
-            int cluster = indices[i];
-            bool found = false;
-            for (int j = 0; j < next; j++)
+            Span<int> mapKey = clusterData;
+            Span<int> indices = AsSpan;
+            Span<int> outIndices = result.AsSpan;
+            int next = 0;
+            for (int i = 0; i < 16; i++)
             {
-                if (mapKey[j] == cluster)
+                int cluster = indices[i];
+                bool found = false;
+                for (int j = 0; j < next; j++)
                 {
-                    found = true;
-                    outIndices[i] = j;
-                    break;
+                    if (mapKey[j] == cluster)
+                    {
+                        found = true;
+                        outIndices[i] = j;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    outIndices[i] = next;
+                    mapKey[next] = cluster;
+                    ++next;
                 }
             }
-            if (!found)
-            {
-                outIndices[i] = next;
-                mapKey[next] = cluster;
-                ++next;
-            }
+        }
+        finally
+        {
+            ArrayPool<int>.Shared.Return(clusterData, true);  
         }
 
         return result;
@@ -289,12 +299,14 @@ internal static class Bc7EncodingHelpers
         bestError = 999;
         int bestPartition = 0;
 
-        int CalculatePartitionError(int partitionIndex)
+        int CalculatePartitionError(int partitionIndex, Span<int> subset0, Span<int> subset1)
         {
+            subset0.Clear();
+            subset1.Clear();
+
             int error = 0;
             ReadOnlySpan<int> partitionTable = Bc7Block.Subsets2PartitionTable[partitionIndex];
-            Span<int> subset0 = stackalloc int[numDistinctClusters];
-            Span<int> subset1 = stackalloc int[numDistinctClusters];
+
             int max0Idx = 0;
             int max1Idx = 0;
 
@@ -345,25 +357,37 @@ internal static class Bc7EncodingHelpers
             return error;
         }
 
-        for (int i = 0; i < 64; i++) // Loop through all possible indices
+        int[] subset0Data = ArrayPool<int>.Shared.Rent(numDistinctClusters);
+        int[] subset1Data = ArrayPool<int>.Shared.Rent(numDistinctClusters);
+
+        try
         {
-            int error = CalculatePartitionError(i);
-            if (first)
+            for (int i = 0; i < 64; i++) // Loop through all possible indices
             {
-                bestError = error;
-                bestPartition = i;
-                first = false;
+                int error = CalculatePartitionError(i, subset0Data.AsSpan(0, numDistinctClusters), subset1Data.AsSpan(0, numDistinctClusters));
+
+                if (first)
+                {
+                    bestError = error;
+                    bestPartition = i;
+                    first = false;
+                }
+                else if (error < bestError)
+                {
+                    bestError = error;
+                    bestPartition = i;
+                }
+                // Break early if exact match
+                if (bestError == 0)
+                {
+                    break;
+                }
             }
-            else if (error < bestError)
-            {
-                bestError = error;
-                bestPartition = i;
-            }
-            // Break early if exact match
-            if (bestError == 0)
-            {
-                break;
-            }
+        }
+        finally
+        {
+            ArrayPool<int>.Shared.Return(subset0Data, true);
+            ArrayPool<int>.Shared.Return(subset1Data, true);
         }
 
         return bestPartition;
@@ -373,12 +397,13 @@ internal static class Bc7EncodingHelpers
     {
         int[] output = Enumerable.Range(0, 64).ToArray();
 
-        int CalculatePartitionError(int partitionIndex)
+        int CalculatePartitionError(int partitionIndex, Span<int> subset0, Span<int> subset1)
         {
+            subset0.Clear();
+            subset1.Clear();
+
             int error = 0;
             ReadOnlySpan<int> partitionTable = Bc7Block.Subsets2PartitionTable[partitionIndex];
-            Span<int> subset0 = stackalloc int[numDistinctClusters];
-            Span<int> subset1 = stackalloc int[numDistinctClusters];
             int max0Idx = 0;
             int max1Idx = 0;
 
@@ -429,7 +454,23 @@ internal static class Bc7EncodingHelpers
             return error;
         }
 
-        output = [.. output.OrderBy(CalculatePartitionError)];
+        int[] subset0Data = ArrayPool<int>.Shared.Rent(numDistinctClusters);
+        int[] subset1Data = ArrayPool<int>.Shared.Rent(numDistinctClusters);
+
+        try
+        {
+            for (int i = 0; i < output.Length; ++i)
+            {
+                output[i] = CalculatePartitionError(i, subset0Data.AsSpan(0, numDistinctClusters), subset1Data.AsSpan(0, numDistinctClusters));
+            }
+
+            Array.Sort(output);
+        }
+        finally
+        {
+            ArrayPool<int>.Shared.Return(subset0Data, true);
+            ArrayPool<int>.Shared.Return(subset1Data, true);
+        }
 
         return output;
     }
@@ -440,14 +481,15 @@ internal static class Bc7EncodingHelpers
         bestError = 999;
         int bestPartition = 0;
 
-        int CalculatePartitionError(int partitionIndex)
+        int CalculatePartitionError(int partitionIndex, Span<int> subset0, Span<int> subset1, Span<int> subset2)
         {
+            subset0.Clear();
+            subset1.Clear();
+            subset2.Clear();
+
             int error = 0;
             ReadOnlySpan<int> partitionTable = Bc7Block.Subsets3PartitionTable[partitionIndex];
 
-            Span<int> subset0 = stackalloc int[numDistinctClusters];
-            Span<int> subset1 = stackalloc int[numDistinctClusters];
-            Span<int> subset2 = stackalloc int[numDistinctClusters];
             int max0Idx = 0;
             int max1Idx = 0;
             int max2Idx = 0;
@@ -516,25 +558,38 @@ internal static class Bc7EncodingHelpers
             return error;
         }
 
-        for (int i = 0; i < 64; i++) // Loop through all possible indices
+        int[] subset0Data = ArrayPool<int>.Shared.Rent(numDistinctClusters);
+        int[] subset1Data = ArrayPool<int>.Shared.Rent(numDistinctClusters);
+        int[] subset2Data = ArrayPool<int>.Shared.Rent(numDistinctClusters);
+
+        try
         {
-            int error = CalculatePartitionError(i);
-            if (first)
+            for (int i = 0; i < 64; i++) // Loop through all possible indices
             {
-                bestError = error;
-                bestPartition = i;
-                first = false;
+                int error = CalculatePartitionError(i, subset0Data.AsSpan(0, numDistinctClusters), subset1Data.AsSpan(0, numDistinctClusters), subset2Data.AsSpan(0, numDistinctClusters));
+                if (first)
+                {
+                    bestError = error;
+                    bestPartition = i;
+                    first = false;
+                }
+                else if (error < bestError)
+                {
+                    bestError = error;
+                    bestPartition = i;
+                }
+                // Break early if exact match
+                if (bestError == 0)
+                {
+                    break;
+                }
             }
-            else if (error < bestError)
-            {
-                bestError = error;
-                bestPartition = i;
-            }
-            // Break early if exact match
-            if (bestError == 0)
-            {
-                break;
-            }
+        }
+        finally
+        {
+            ArrayPool<int>.Shared.Return(subset0Data, true);
+            ArrayPool<int>.Shared.Return(subset1Data, true);
+            ArrayPool<int>.Shared.Return(subset2Data, true);
         }
 
         return bestPartition;
@@ -544,14 +599,15 @@ internal static class Bc7EncodingHelpers
     {
         int[] output = Enumerable.Range(0, 64).ToArray();
 
-        int CalculatePartitionError(int partitionIndex)
+        int CalculatePartitionError(int partitionIndex, Span<int> subset0, Span<int> subset1, Span<int> subset2)
         {
+            subset0.Clear();
+            subset1.Clear();
+            subset2.Clear();
+
             int error = 0;
             ReadOnlySpan<int> partitionTable = Bc7Block.Subsets3PartitionTable[partitionIndex];
 
-            Span<int> subset0 = stackalloc int[numDistinctClusters];
-            Span<int> subset1 = stackalloc int[numDistinctClusters];
-            Span<int> subset2 = stackalloc int[numDistinctClusters];
             int max0Idx = 0;
             int max1Idx = 0;
             int max2Idx = 0;
@@ -620,7 +676,25 @@ internal static class Bc7EncodingHelpers
             return error;
         }
 
-        output = [.. output.OrderBy(CalculatePartitionError)];
+        int[] subset0Data = ArrayPool<int>.Shared.Rent(numDistinctClusters);
+        int[] subset1Data = ArrayPool<int>.Shared.Rent(numDistinctClusters);
+        int[] subset2Data = ArrayPool<int>.Shared.Rent(numDistinctClusters);
+
+        try
+        {
+            for (int i = 0; i < output.Length; ++i)
+            {
+                output[i] = CalculatePartitionError(i, subset0Data.AsSpan(0, numDistinctClusters), subset1Data.AsSpan(0, numDistinctClusters), subset2Data.AsSpan(0, numDistinctClusters));
+            }
+
+            Array.Sort(output);
+        }
+        finally
+        {
+            ArrayPool<int>.Shared.Return(subset0Data, true);
+            ArrayPool<int>.Shared.Return(subset1Data, true);
+            ArrayPool<int>.Shared.Return(subset2Data, true);
+        }
 
         return output;
     }
@@ -640,7 +714,6 @@ internal static class Bc7EncodingHelpers
     public static void GetInitialUnscaledEndpointsForSubset(RawBlock4X4Rgba32 block, out ColorRgba32 ep0,
         out ColorRgba32 ep1, ReadOnlySpan<int> partitionTable, int subsetIndex)
     {
-
         Span<GorgonColor> originalPixels = block.AsSpan;
 
         int count = 0;
@@ -652,21 +725,30 @@ internal static class Bc7EncodingHelpers
             }
         }
 
-        Span<GorgonColor> subsetColors = stackalloc GorgonColor[count];
-        int next = 0;
-        for (int i = 0; i < 16; i++)
+        GorgonColor[] subsetColorData = ArrayPool<GorgonColor>.Shared.Rent(count);
+
+        try
         {
-            if (partitionTable[i] == subsetIndex)
+            Span<GorgonColor> subsetColors = subsetColorData.AsSpan(0, count);
+            int next = 0;
+            for (int i = 0; i < 16; i++)
             {
-                subsetColors[next++] = originalPixels[i];
+                if (partitionTable[i] == subsetIndex)
+                {
+                    subsetColors[next++] = originalPixels[i];
+                }
             }
+
+            PcaVectors.CreateWithAlpha(subsetColors, out Vector4 mean, out Vector4 pa);
+            PcaVectors.GetExtremePointsWithAlpha(block.AsSpan, mean, pa, out Vector4 min, out Vector4 max);
+
+            ep0 = new ColorRgba32((byte)(min.X * 255), (byte)(min.Y * 255), (byte)(min.Z * 255), (byte)(min.W * 255));
+            ep1 = new ColorRgba32((byte)(max.X * 255), (byte)(max.Y * 255), (byte)(max.Z * 255), (byte)(max.W * 255));
         }
-
-        PcaVectors.CreateWithAlpha(subsetColors, out Vector4 mean, out Vector4 pa);
-        PcaVectors.GetExtremePointsWithAlpha(block.AsSpan, mean, pa, out Vector4 min, out Vector4 max);
-
-        ep0 = new ColorRgba32((byte)(min.X * 255), (byte)(min.Y * 255), (byte)(min.Z * 255), (byte)(min.W * 255));
-        ep1 = new ColorRgba32((byte)(max.X * 255), (byte)(max.Y * 255), (byte)(max.Z * 255), (byte)(max.W * 255));
+        finally
+        {
+            ArrayPool<GorgonColor>.Shared.Return(subsetColorData, true);
+        }
     }
 
     public static ColorRgba32 ScaleDownEndpoint(ColorRgba32 endpoint, Bc7BlockType type, bool ignoreAlpha, out byte pBit)
@@ -827,42 +909,59 @@ internal static class Bc7EncodingHelpers
     {
         int colorIndexPrecision = GetColorIndexBitCount(type, type4IdxMode);
         int alphaIndexPrecision = GetAlphaIndexBitCount(type, type4IdxMode);
+        int size = 1 << colorIndexPrecision;
 
         if (type is Bc7BlockType.Type4 or Bc7BlockType.Type5)
-        { //separate indices for color and alpha
-            Span<ColorYCbCr> colors = stackalloc ColorYCbCr[1 << colorIndexPrecision];
-            Span<byte> alphas = stackalloc byte[1 << alphaIndexPrecision];
-
-            for (int i = 0; i < colors.Length; i++)
-            {
-                colors[i] = new ColorYCbCr(InterpolateColor(ep0, ep1, i,
-                    0, colorIndexPrecision, 0));
-            }
-
-            for (int i = 0; i < alphas.Length; i++)
-            {
-                alphas[i] = InterpolateColor(ep0, ep1, 0,
-                    i, 0, alphaIndexPrecision).a;
-            }
-
-            Span<GorgonColor> pixels = raw.AsSpan;
-            float error = 0;
-
-            for (int i = 0; i < 16; i++)
-            {
-                var pixelColor = new ColorYCbCr(pixels[i]);
-
-                FindClosestColorIndex(pixelColor, colors, out float ce);
-                FindClosestAlphaIndex((byte)(pixels[i].Alpha * 255.0f), alphas, out float ae);
-
-                error += ce + ae;
-            }
-
-            return error / 16;
-        }
-        else
         {
-            Span<ColorYCbCrAlpha> colors = stackalloc ColorYCbCrAlpha[1 << colorIndexPrecision];
+            //separate indices for color and alpha            
+            int alphaSize = 1 << alphaIndexPrecision;
+            ColorYCbCr[] colorYCbCrData = ArrayPool<ColorYCbCr>.Shared.Rent(size);
+            byte[] alphaData = ArrayPool<byte>.Shared.Rent(alphaSize);
+
+            try
+            {
+                Span<ColorYCbCr> colors = colorYCbCrData.AsSpan(0, size);
+                Span<byte> alphas = alphaData.AsSpan(0, alphaSize);
+
+                for (int i = 0; i < colors.Length; i++)
+                {
+                    colors[i] = new ColorYCbCr(InterpolateColor(ep0, ep1, i,
+                        0, colorIndexPrecision, 0));
+                }
+
+                for (int i = 0; i < alphas.Length; i++)
+                {
+                    alphas[i] = InterpolateColor(ep0, ep1, 0,
+                        i, 0, alphaIndexPrecision).a;
+                }
+
+                Span<GorgonColor> pixels = raw.AsSpan;
+                float error = 0;
+
+                for (int i = 0; i < 16; i++)
+                {
+                    var pixelColor = new ColorYCbCr(pixels[i]);
+
+                    FindClosestColorIndex(pixelColor, colors, out float ce);
+                    FindClosestAlphaIndex((byte)(pixels[i].Alpha * 255.0f), alphas, out float ae);
+
+                    error += ce + ae;
+                }
+
+                return error / 16;
+            }
+            finally
+            {
+                ArrayPool<ColorYCbCr>.Shared.Return(colorYCbCrData, true);
+                ArrayPool<byte>.Shared.Return(alphaData, true);
+            }
+        }
+
+        ColorYCbCrAlpha[] colorYCbCrAlphaData = ArrayPool<ColorYCbCrAlpha>.Shared.Rent(size);
+
+        try
+        {
+            Span<ColorYCbCrAlpha> colors = colorYCbCrAlphaData.AsSpan(0, size);
             for (int i = 0; i < colors.Length; i++)
             {
                 colors[i] = new ColorYCbCrAlpha(InterpolateColor(ep0, ep1, i,
@@ -888,7 +987,10 @@ internal static class Bc7EncodingHelpers
             error /= count;
             return error;
         }
-
+        finally
+        {
+            ArrayPool<ColorYCbCrAlpha>.Shared.Return(colorYCbCrAlphaData, true);
+        }
     }
 
     public static void FillSubsetIndices(Bc7BlockType type, RawBlock4X4Rgba32 raw, ColorRgba32 ep0, ColorRgba32 ep1, ReadOnlySpan<int> partitionTable, int subsetIndex,
@@ -903,24 +1005,34 @@ internal static class Bc7EncodingHelpers
         }
         else
         {
-            Span<ColorYCbCrAlpha> colors = stackalloc ColorYCbCrAlpha[1 << colorIndexPrecision];
-            for (int i = 0; i < colors.Length; i++)
-            {
-                colors[i] = new ColorYCbCrAlpha(InterpolateColor(ep0, ep1, i,
-                    i, colorIndexPrecision, alphaIndexPrecision));
-            }
+            int size = 1 << colorIndexPrecision;
+            ColorYCbCrAlpha[] colorYCbCrData = ArrayPool<ColorYCbCrAlpha>.Shared.Rent(size);
 
-            Span<GorgonColor> pixels = raw.AsSpan;
-
-            for (int i = 0; i < 16; i++)
+            try
             {
-                if (partitionTable[i] == subsetIndex)
+                Span<ColorYCbCrAlpha> colors = colorYCbCrData.AsSpan(0, size);
+                for (int i = 0; i < colors.Length; i++)
                 {
-                    var pixelColor = new ColorYCbCrAlpha(pixels[i]);
-
-                    int index = FindClosestColorIndex(pixelColor, colors, out float e);
-                    indicesToFill[i] = (byte)index;
+                    colors[i] = new ColorYCbCrAlpha(InterpolateColor(ep0, ep1, i,
+                        i, colorIndexPrecision, alphaIndexPrecision));
                 }
+
+                Span<GorgonColor> pixels = raw.AsSpan;
+
+                for (int i = 0; i < 16; i++)
+                {
+                    if (partitionTable[i] == subsetIndex)
+                    {
+                        var pixelColor = new ColorYCbCrAlpha(pixels[i]);
+
+                        int index = FindClosestColorIndex(pixelColor, colors, out float _);
+                        indicesToFill[i] = (byte)index;
+                    }
+                }
+            }
+            finally
+            {
+                ArrayPool<ColorYCbCrAlpha>.Shared.Return(colorYCbCrData, true);
             }
         }
     }
@@ -938,33 +1050,46 @@ internal static class Bc7EncodingHelpers
         {
             case Bc7BlockType.Type4:
             case Bc7BlockType.Type5:
-                Span<ColorYCbCr> colors = stackalloc ColorYCbCr[1 << colorIndexPrecision];
-                Span<byte> alphas = stackalloc byte[1 << alphaIndexPrecision];
+                int size = 1 << colorIndexPrecision;
+                int alphaSize = 1 << alphaIndexPrecision;
+                ColorYCbCr[] colorYCbCrData = ArrayPool<ColorYCbCr>.Shared.Rent(size);
+                byte[] alphaData = ArrayPool<byte>.Shared.Rent(alphaSize);
 
-                for (int i = 0; i < colors.Length; i++)
+                try
                 {
-                    colors[i] = new ColorYCbCr(InterpolateColor(ep0, ep1, i,
-                        0, colorIndexPrecision, 0));
+                    Span<ColorYCbCr> colors = colorYCbCrData.AsSpan(0, size);
+                    Span<byte> alphas = alphaData.AsSpan(0, size);
+
+                    for (int i = 0; i < colors.Length; i++)
+                    {
+                        colors[i] = new ColorYCbCr(InterpolateColor(ep0, ep1, i,
+                            0, colorIndexPrecision, 0));
+                    }
+
+                    for (int i = 0; i < alphas.Length; i++)
+                    {
+                        alphas[i] = InterpolateColor(ep0, ep1, 0,
+                            i, 0, alphaIndexPrecision).a;
+                    }
+
+                    Span<GorgonColor> pixels = raw.AsSpan;
+
+                    for (int i = 0; i < 16; i++)
+                    {
+                        GorgonColor color = pixels[i];
+                        var pixelColor = new ColorYCbCr(color);
+
+                        int index = FindClosestColorIndex(pixelColor, colors, out float _);
+                        colorIndicesToFill[i] = (byte)index;
+
+                        index = FindClosestAlphaIndex((byte)(color.Alpha * 255.0f), alphas, out float _);
+                        alphaIndicesToFill[i] = (byte)index;
+                    }
                 }
-
-                for (int i = 0; i < alphas.Length; i++)
+                finally
                 {
-                    alphas[i] = InterpolateColor(ep0, ep1, 0,
-                        i, 0, alphaIndexPrecision).a;
-                }
-
-                Span<GorgonColor> pixels = raw.AsSpan;
-
-                for (int i = 0; i < 16; i++)
-                {
-                    GorgonColor color = pixels[i];
-                    var pixelColor = new ColorYCbCr(color);
-
-                    int index = FindClosestColorIndex(pixelColor, colors, out float e);
-                    colorIndicesToFill[i] = (byte)index;
-
-                    index = FindClosestAlphaIndex((byte)(color.Alpha * 255.0f), alphas, out float _);
-                    alphaIndicesToFill[i] = (byte)index;
+                    ArrayPool<ColorYCbCr>.Shared.Return(colorYCbCrData, true);
+                    ArrayPool<byte>.Shared.Return(alphaData, true);
                 }
                 break;
             default:
