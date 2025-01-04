@@ -95,7 +95,7 @@ internal class ClusterIndices4X4
         }
         finally
         {
-            ArrayPool<int>.Shared.Return(clusterData, true);  
+            ArrayPool<int>.Shared.Return(clusterData, true);
         }
 
         return result;
