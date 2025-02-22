@@ -395,7 +395,7 @@ internal static class Bc7EncodingHelpers
 
     public static int[] Rank2SubsetPartitions(ClusterIndices4X4 reducedIndicesBlock, int numDistinctClusters)
     {
-        int[] output = Enumerable.Range(0, 64).ToArray();
+        int[] output = [.. Enumerable.Range(0, 64)];
 
         int CalculatePartitionError(int partitionIndex, Span<int> subset0, Span<int> subset1)
         {
@@ -597,7 +597,7 @@ internal static class Bc7EncodingHelpers
 
     public static int[] Rank3SubsetPartitions(ClusterIndices4X4 reducedIndicesBlock, int numDistinctClusters)
     {
-        int[] output = Enumerable.Range(0, 64).ToArray();
+        int[] output = [.. Enumerable.Range(0, 64)];
 
         int CalculatePartitionError(int partitionIndex, Span<int> subset0, Span<int> subset1, Span<int> subset2)
         {
