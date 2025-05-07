@@ -1,3 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -9,7 +10,6 @@
     <PackageLicenseExpression>MIT OR Unlicense</PackageLicenseExpression>
     <Copyright />
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>1.2.3</Version>
     <Authors>Nominom</Authors>
     <Company />
     <Product>BCnEncoder.Net</Product>
@@ -31,12 +31,13 @@ Supported formats are:
     <PackageReleaseNotes>Upgraded ImageSharp dependency from 1.0.0 beta 7 to version 1.0.1</PackageReleaseNotes>
     <Configurations>Debug;Release;BuildLocal</Configurations>
     <SignAssembly>false</SignAssembly>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile></AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <NeutralLanguage>en</NeutralLanguage>
-
     <RootNamespace>Gorgon.BCnEncoder</RootNamespace>
+    <VersionPrefix>4.0.0</VersionPrefix>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
+    <FileVersion>4.0.0.0</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -51,6 +52,7 @@ Supported formats are:
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <VersionSuffix>Dev</VersionSuffix>
   </PropertyGroup>
   <ItemGroup Condition="'$(Configuration)'=='BuildLocal'">
     <!--<ProjectReference Include="..\..\..\Gorgon\develop\Gorgon\Gorgon.Core\Gorgon.Core.csproj" />-->
